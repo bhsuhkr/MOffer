@@ -23,41 +23,30 @@
 
 <script>
 import "bootstrap/dist/css/bootstrap.min.css";
+import axios from 'axios';
 
 export default {
   name: "Transactions",
-  setup() {
-    // sample data
-    const transactionData = [
-      {
-        ID: "01",
-        Name: "Abiola Esther",
-        Balance: "17",
-      },
-      {
-        ID: "02",
-        Name: "Robert V. Kratz",
-        Balance: "19",
-      },
-      {
-        ID: "03",
-        Name: "Kristen Anderson",
-        Balance: "20",
-      },
-      {
-        ID: "04",
-        Name: "Adam Simon",
-        Balance: "21",
-      },
-      {
-        ID: "05",
-        Name: "Daisy Katherine",
-        Balance: "22",
-      },
-    ];
-    const fields = ["ID", "Name", "Balance"];
-
-    return { transactionData, fields };
+  data() {
+    return {
+      transactionData: [],
+      fields: ["ID", "Name", "Balance"]
+    };
+  },
+  mounted() {
+    this.fetchData();
+  },
+  methods: {
+    async fetchData() {
+      await axios.get('http://localhost:3000/api/transactions')
+        .then(response => {
+          console.log("fetched", response.data);
+          this.transactionData = response.data;
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    },
   },
 };
 </script>
