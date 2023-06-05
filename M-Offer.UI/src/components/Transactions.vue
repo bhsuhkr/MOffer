@@ -37,10 +37,9 @@ export default {
     this.fetchData();
   },
   methods: {
-    async fetchData() {
-      await axios.get('http://localhost:3000/api/transactions')
+    fetchData() {
+      axios.get('http://localhost:3000/api/transactions')
         .then(response => {
-          console.log("fetched", response.data);
           this.transactionData = response.data;
         })
         .catch(error => {

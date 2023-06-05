@@ -1,31 +1,18 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container">
+    <div class="navbar-container">
       <a class="navbar-brand" href="/">M Offer</a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item">
+        <ul class="navbar-ul">
+          <li class="navbar-item">
             <router-link class="nav-link" to="/">Transactions</router-link>
           </li>
-          <li class="nav-item">
+          <li class="navbar-item">
             <router-link class="nav-link" to="/Users">Users</router-link>
           </li>
-          <li class="nav-item">
+          <li class="navbar-item">
             <router-link class="nav-link" to="/Admin">Admin</router-link>
           </li>
         </ul>
-      </div>
     </div>
   </nav>
 </template>
@@ -35,3 +22,25 @@ export default {
   name: "Navbar",
 };
 </script>
+
+<style scoped>
+.navbar-container {
+  margin-left: 40px;
+  margin-right: 40px;
+  display: flex;
+}
+.navbar-ul {
+  display: flex;
+  list-style: none;
+  margin-bottom: 0px;
+  color: #000000ab;
+}
+.navbar-item {
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-top: 8px;
+}
+.navbar-item:hover {
+  color: #000000dc;
+}
+</style>
