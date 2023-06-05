@@ -26,14 +26,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 export default {
   name: "Transactions",
-  // props: {
-  //   transactionData: {
-  //     type: Array,
-  //   },
-  //   fields: {
-  //     type: Array,
-  //   },
-  // },
   setup() {
     // sample data
     const transactionData = [
