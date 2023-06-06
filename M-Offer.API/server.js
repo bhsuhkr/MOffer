@@ -19,7 +19,7 @@ const config = {
 sql
   .connect(config)
   .then(async (pool) => {
-    console.log("Connected to MSSQL");
+    console.log("Connected to Database");
 
     app.get("/api/transactions", async (req, res) => {
       try {
