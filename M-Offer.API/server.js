@@ -23,11 +23,11 @@ sql
 
     app.get("/api/transactions", async (req, res) => {
       try {
-        await pool.query("select * from users", function (err, recordset) {
+        pool.query("select * from users", function (err, recordSet) {
           if (err) console.log(err);
           else {
-            console.log(recordset);
-            res.json(recordset);
+            console.log(recordSet);
+            res.json(recordSet);
           }
         });
       } catch (error) {
