@@ -5,7 +5,7 @@
       <input type="text" v-model="searchQuery" placeholder="Search ID" />
       <button @click="search">Search</button>
     </div>
-    
+
     <div class="user-info">
       <p><strong>Name:</strong> 뉴송교인</p>
       <p><strong>ID:</strong> NewSong1234</p>

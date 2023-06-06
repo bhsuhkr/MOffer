@@ -1,40 +1,46 @@
 const express = require("express");
 const cors = require("cors");
-const sql = require("mssql");
+const sql = require("mssql/msnodesqlv8");
 
 const app = express();
 
 // Enable CORS
 app.use(cors());
 
-// Database configuration
-const dbConfig = {
-  server: "localhost",
-  user: "your_username",
-  password: "your_password",
-  database: "your_database",
+const config = {
+  database: "master",
+  server: "DESKTOP-BEL0LR2\\SQLEXPRESS",
+  driver: "msnodesqlv8",
   options: {
-    trustServerCertificate: true, // For development/testing purposes only
+    trustedConnection: true,
   },
 };
 
-// API endpoint to fetch data from SQL Express
-app.get("/api/data", async (req, res) => {
-  try {
-    // Create a connection pool
-    const pool = await sql.connect(dbConfig);
+sql
+  .connect(config)
+  .then(async (pool) => {
+    console.log("Connected to MSSQL");
 
-    // Execute a query
-    const result = await pool.request().query("SELECT * FROM YourTable");
+    app.get("/api/transactions", async (req, res) => {
+      try {
+        await pool.query("select * from users", function (err, recordset) {
+          if (err) console.log(err);
+          else {
+            console.log(recordset);
+            res.json(recordset);
+          }
+        });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "An error occurred" });
+      }
+    });
 
-    res.json(result.recordset);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "An error occurred" });
-  }
-});
+    return pool;
+  })
+  .catch((err) => console.log("Database Connection Failed", err));
 
-app.get("/api/transactions", async (req, res) => {
+app.get("/api/test", async (req, res) => {
   try {
     res.json([
       {

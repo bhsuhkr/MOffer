@@ -2,17 +2,17 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="navbar-container">
       <a class="navbar-brand" href="/">M Offer</a>
-        <ul class="navbar-ul">
-          <li class="navbar-item">
-            <router-link class="nav-link" to="/">Transactions</router-link>
-          </li>
-          <li class="navbar-item">
-            <router-link class="nav-link" to="/Users">Users</router-link>
-          </li>
-          <li class="navbar-item">
-            <router-link class="nav-link" to="/Admin">Admin</router-link>
-          </li>
-        </ul>
+      <ul class="navbar-ul">
+        <li class="navbar-item">
+          <router-link class="nav-link" to="/">Transactions</router-link>
+        </li>
+        <li class="navbar-item">
+          <router-link class="nav-link" to="/Users">Users</router-link>
+        </li>
+        <li class="navbar-item">
+          <router-link class="nav-link" to="/Admin">Admin</router-link>
+        </li>
+      </ul>
     </div>
   </nav>
 </template>

@@ -11,27 +11,27 @@
   </div>
 </template>
 <script>
-import QRCode from 'qrcode';
+import QRCode from "qrcode";
 
 export default {
   name: "Admin",
   data() {
     return {
-      text: '',
-      qrCodeData: ''
+      text: "",
+      qrCodeData: "",
     };
   },
   methods: {
     generateQRCode() {
       QRCode.toDataURL(this.text)
-        .then(url => {
+        .then((url) => {
           this.qrCodeData = url;
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error);
         });
-    }
-  }
+    },
+  },
 };
 </script>
 

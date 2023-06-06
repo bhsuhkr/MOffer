@@ -23,14 +23,14 @@
 
 <script>
 import "bootstrap/dist/css/bootstrap.min.css";
-import axios from 'axios';
+import axios from "axios";
 
 export default {
   name: "Transactions",
   data() {
     return {
       transactionData: [],
-      fields: ["ID", "Name", "Balance"]
+      fields: ["id", "name", "balance"],
     };
   },
   mounted() {
@@ -38,11 +38,14 @@ export default {
   },
   methods: {
     fetchData() {
-      axios.get('http://localhost:3000/api/transactions')
-        .then(response => {
-          this.transactionData = response.data;
+      axios
+        .get("http://localhost:3000/api/transactions")
+        .then((response) => {
+          console.log("successful", response.data.recordset);
+
+          this.transactionData = response.data.recordset;
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error);
         });
     },
