@@ -8,8 +8,8 @@ const app = express();
 app.use(cors());
 
 const config = {
-  database: "master",
-  server: "DESKTOP-BEL0LR2\\SQLEXPRESS",
+  database: "moffer",
+  server: "DESKTOP-4SIT040\\SQLEXPRESS",
   driver: "msnodesqlv8",
   options: {
     trustedConnection: true,
@@ -23,7 +23,7 @@ sql
 
     app.get("/api/transactions", async (req, res) => {
       try {
-        pool.query("select * from users", function (err, recordSet) {
+        pool.query("select * from nc_transactions", function (err, recordSet) {
           if (err) console.log(err);
           else {
             console.log(recordSet);
