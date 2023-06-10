@@ -27,15 +27,26 @@ export default {
   name: "Login",
   data() {
     return {
+      loading: false,
       username: "",
       password: "",
     };
   },
   methods: {
     login() {
-      console.log("login", this.$router);
-      this.$router.push("/admin");
+      console.log("login clicked");
 
+      this.loading = true;
+
+      this.$store.dispatch("auth/login", user).then(
+        () => {
+          this.$router.push("/users");
+        },
+        (error) => {
+          this.loading = false;
+          console.error("Login failed");
+        }
+      );
       //make sure username OR password are not empty
       // if (this.input.username != "" || this.input.username != "") {
       //   this.output = "Authentication complete"

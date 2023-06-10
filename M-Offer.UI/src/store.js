@@ -9,8 +9,28 @@ export const useAuthStore = defineStore({
     user: (state) => state.authUser
   },
   actions: {
-    getToken() {
-      console.log("get token called");
+    login() {
+      console.log("login called");
+      axios.post('http://localhost:3000/api/login', {
+        username: user.username,
+        password: user.password
+      })
+      .then(response => {
+        if (response.data.accessToken) {
+          localStorage.setItem('userToken', JSON.stringify(response.data));
+          console.log("user token saved in local storage", JSON.stringify(response.data));
+        }
+      });
     },
+    logout() {
+      localStorage.removeItem('user');
+    },
+    register(user) {
+      return axios.post('http://localhost:3000/api/signup', {
+        username: user.username,
+        email: user.email,
+        password: user.password
+      });
+    }
   },
 });

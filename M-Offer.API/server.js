@@ -31,7 +31,7 @@ sql
   .then(async (pool) => {
     console.log("Connected to Database");
 
-    app.post('/login', (req, res) =>
+    app.post('/api/auth/signin', (req, res) =>
     {
       const { username, password } = req.body
       const userID = isAuthenticated({ username, password });
