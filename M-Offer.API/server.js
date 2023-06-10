@@ -1,8 +1,11 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 const cors = require("cors");
 const sql = require("mssql/msnodesqlv8");
+// const jwt = require("jsonwebtoken");
 
 const app = express();
+app.use(bodyParser.json());
 
 // Enable CORS
 app.use(cors());
@@ -16,51 +19,48 @@ const config = {
   },
 };
 
-function createToken(payload)
-{
-  return jwt.sign(payload, SECRET_KEY, { expiresIn })
-}
+// function createToken(payload) {
+//   return jwt.sign(payload, "newsongtest");
+// }
 
-function verifyToken(token)
-{
-  return jwt.verify(token, SECRET_KEY)
-}
+// function verifyToken(token) {
+//   return jwt.verify(token, "newsongtest");
+// }
 
 sql
   .connect(config)
   .then(async (pool) => {
     console.log("Connected to Database");
 
-    app.post('/api/auth/signin', (req, res) =>
-    {
-      const { username, password } = req.body
-      const userID = isAuthenticated({ username, password });
-      if (userID === 0)
-      {
-        const status = 401
-        const message = 'Incorrect username or password'
-        res.status(status).json({ status, message })
-        return
-      }
-      const accessToken = createToken({ id: userID })
-      res.cookie('sessionCookieName', accessToken, {httpOnly: true})
-      res.status(200).json({ success: true })
-    });
+    // Middleware to authenticate user
+    const authenticateUser = async (req, res, next) => {
+      const { username, password } = req.body;
 
-    app.get('/verify', (req, res, next) =>
-    {
-      var cookie = req.cookies.sessionCookieName;
-      try
-      {
-        verifyToken(cookie)
-        next()
+      const user = await pool.query(
+        "select * from nc_users where userid = '" +
+          username +
+          "' and password ='" +
+          password +
+          "'"
+      );
+      console.log("user", user.recordset[0]);
+      if (user && user.recordset && user.recordset.length) {
+        req.user = username;
+        req.role = user.recordset[0]["Role"];
+        // const accessToken = createToken({ id: username });
+        // res.cookie("sessionCookieName", accessToken, { httpOnly: true });
+        next();
+      } else {
+        res.status(401).json({ message: "Invalid credentials" });
       }
-      catch (err)
-      {
-        const status = 401
-        const message = 'Unauthorized'
-        res.status(status).json({ status, message })
-      } 
+    };
+
+    app.get("/api/auth/login", authenticateUser, (req, res) => {
+      res.json({
+        message: "Access granted to protected route",
+        user: req.user,
+        role: req.role,
+      });
     });
 
     app.get("/api/transactions", async (req, res) => {
@@ -77,45 +77,8 @@ sql
         res.status(500).json({ error: "An error occurred" });
       }
     });
-
-    return pool;
   })
   .catch((err) => console.log("Database Connection Failed", err));
-
-app.get("/api/test", async (req, res) => {
-  try {
-    res.json([
-      {
-        ID: "01",
-        Name: "Abiola Esther",
-        Balance: "17",
-      },
-      {
-        ID: "02",
-        Name: "Robert V. Kratz",
-        Balance: "19",
-      },
-      {
-        ID: "03",
-        Name: "Kristen Anderson",
-        Balance: "20",
-      },
-      {
-        ID: "04",
-        Name: "Adam Simon",
-        Balance: "21",
-      },
-      {
-        ID: "05",
-        Name: "Daisy Katherine",
-        Balance: "22",
-      },
-    ]);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "An error occurred" });
-  }
-});
 
 // Start the server
 app.listen(3000, () => {
