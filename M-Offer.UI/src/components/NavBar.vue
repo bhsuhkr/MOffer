@@ -4,13 +4,30 @@
       <a class="navbar-brand" href="/">M Offer</a>
       <ul class="navbar-ul">
         <li class="navbar-item">
-          <router-link class="nav-link" to="/">Transactions</router-link>
+          <router-link class="nav-link" to="/">Pay</router-link>
         </li>
         <li class="navbar-item">
-          <router-link class="nav-link" to="/Users">Users</router-link>
+          <router-link class="nav-link" to="/Users">Deposit</router-link>
         </li>
         <li class="navbar-item">
-          <router-link class="nav-link" to="/Admin">Admin</router-link>
+          <router-link class="nav-link" to="/Admin"
+            >Member Management</router-link
+          >
+        </li>
+        <li class="navbar-item">
+          <router-link class="nav-link" to="/Admin"
+            >User Management</router-link
+          >
+        </li>
+        <li class="navbar-item">
+          <router-link class="nav-link" to="/Admin"
+            >Barcode Inquiry</router-link
+          >
+        </li>
+        <li class="navbar-item">
+          <router-link class="nav-link" to="/Admin"
+            >Balance Inquiry</router-link
+          >
         </li>
       </ul>
     </div>

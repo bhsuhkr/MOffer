@@ -16,10 +16,52 @@ const config = {
   },
 };
 
+function createToken(payload)
+{
+  return jwt.sign(payload, SECRET_KEY, { expiresIn })
+}
+
+function verifyToken(token)
+{
+  return jwt.verify(token, SECRET_KEY)
+}
+
 sql
   .connect(config)
   .then(async (pool) => {
     console.log("Connected to Database");
+
+    app.post('/login', (req, res) =>
+    {
+      const { username, password } = req.body
+      const userID = isAuthenticated({ username, password });
+      if (userID === 0)
+      {
+        const status = 401
+        const message = 'Incorrect username or password'
+        res.status(status).json({ status, message })
+        return
+      }
+      const accessToken = createToken({ id: userID })
+      res.cookie('sessionCookieName', accessToken, {httpOnly: true})
+      res.status(200).json({ success: true })
+    });
+
+    app.get('/verify', (req, res, next) =>
+    {
+      var cookie = req.cookies.sessionCookieName;
+      try
+      {
+        verifyToken(cookie)
+        next()
+      }
+      catch (err)
+      {
+        const status = 401
+        const message = 'Unauthorized'
+        res.status(status).json({ status, message })
+      } 
+    });
 
     app.get("/api/transactions", async (req, res) => {
       try {
