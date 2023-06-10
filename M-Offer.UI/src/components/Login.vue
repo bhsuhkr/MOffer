@@ -12,16 +12,16 @@
     <button
       class="btn btn-outline-dark"
       type="submit"
-      v-on:click.prevent="login()"
+      @click="login(this.username, this.password)"
     >
       Login
     </button>
   </form>
-  <h4>{{ this.username }}</h4>
 </template>
 
 <script>
 // import { useStore } from 'pinia';
+import { useAuthStore } from "../store";
 
 export default {
   name: "Login",
@@ -32,34 +32,15 @@ export default {
       password: "",
     };
   },
-  methods: {
-    login() {
-      console.log("login clicked");
+  setup() {
+    const authStore = useAuthStore();
 
-      this.loading = true;
-
-      this.$store.dispatch("auth/login", user).then(
-        () => {
-          this.$router.push("/users");
-        },
-        (error) => {
-          this.loading = false;
-          console.error("Login failed");
-        }
-      );
-      //make sure username OR password are not empty
-      // if (this.input.username != "" || this.input.username != "") {
-      //   this.output = "Authentication complete"
-      //   //stores true to the set_authentication and username to the set_username
-      //   this.$store.commit(`auth/${SET_AUTHENTICATION}`, true);
-      //   this.$store.commit(`auth/${SET_USERNAME}`, this.input.username);
-      //   this.output = "Authentication complete."
-      //   this.$router.push('/home')
-      // } else {
-      //   this.$store.commit(`auth/${SET_AUTHENTICATION}`, false);
-      //   this.output = "Username and password can not be empty"
-      // }
-    },
+    const login = (username, password) => {
+      authStore.login({ username, password });
+    };
+    return {
+      login,
+    };
   },
 };
 </script>

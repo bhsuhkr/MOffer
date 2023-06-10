@@ -35,7 +35,6 @@ sql
     // Middleware to authenticate user
     const authenticateUser = async (req, res, next) => {
       const { username, password } = req.body;
-
       const user = await pool.query(
         "select * from nc_users where userid = '" +
           username +
@@ -44,6 +43,7 @@ sql
           "'"
       );
       console.log("user", user.recordset[0]);
+
       if (user && user.recordset && user.recordset.length) {
         req.user = username;
         req.role = user.recordset[0]["Role"];
@@ -55,7 +55,7 @@ sql
       }
     };
 
-    app.get("/api/auth/login", authenticateUser, (req, res) => {
+    app.post("/api/auth/signin", authenticateUser, (req, res) => {
       res.json({
         message: "Access granted to protected route",
         user: req.user,
