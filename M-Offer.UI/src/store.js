@@ -34,9 +34,11 @@ export const useAuthStore = defineStore('auth', {
           // Handle any errors
         });
     },
-    // logout() {
-    //   localStorage.removeItem('user');
-    // },
+    logout() {
+      this.user = null;
+      this.token = null;
+      // localStorage.removeItem('user');
+    },
     // register(user) {
     //   return axios.post('http://localhost:3000/api/auth/signup', {
     //     username: user.username,

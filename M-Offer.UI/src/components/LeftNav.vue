@@ -1,7 +1,7 @@
 <template>
   <nav class="leftnav leftnav-expand-lg leftnav-light bg-light">
     <div class="leftnav-container">
-      <a class="leftnav-brand" href="/">M Offer</a>
+      <a class="leftnav-brand" href="/pay">M Offer</a>
       <ul class="leftnav-ul">
         <li class="leftnav-item">
           <router-link class="nav-link" to="/Admin">Pay</router-link>
@@ -29,14 +29,28 @@
             >Balance Inquiry</router-link
           >
         </li>
+        <li class="leftnav-item">
+          <router-link class="nav-link" to="/" @click="logout"
+            >Log out</router-link
+          >
+        </li>
       </ul>
     </div>
   </nav>
 </template>
 
 <script>
+import { useAuthStore } from "@/store";
+
 export default {
   name: "leftnav",
+  setup() {
+    const authStore = useAuthStore();
+    const logout = authStore.logout;
+    return {
+      logout,
+    };
+  },
 };
 </script>
 
@@ -72,12 +86,12 @@ export default {
   .leftnav {
     flex-direction: row;
   }
-  
+
   .leftnav-container {
     display: flex;
     align-items: center;
   }
-  
+
   .leftnav-item {
     margin-bottom: 0;
     margin-right: 10px;
