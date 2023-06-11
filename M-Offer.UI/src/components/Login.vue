@@ -1,19 +1,17 @@
 <template>
-  <div name="login-form">
-    <div class="mb-3">
-      <label for="username">Username: </label>
-      <input type="text" id="username" v-model="username" />
+  <div class="login-container">
+    <h2>M Offer Login</h2>
+    <div class="form">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" v-model="username" />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" v-model="password" />
+      </div>
+      <button @click="login(this.username, this.password)">Login</button>
     </div>
-    <div class="mb-3">
-      <label for="password">Password: </label>
-      <input type="password" id="password" v-model="password" />
-    </div>
-    <button
-      class="btn btn-outline-dark"
-      @click="login(this.username, this.password)"
-    >
-      Login
-    </button>
   </div>
 </template>
 
@@ -41,3 +39,57 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.login-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.form {
+  width: 100%;
+  max-width: 300px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  width: 100%;
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+button:active {
+  background-color: #3c903b;
+}
+</style>
