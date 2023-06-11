@@ -1,31 +1,30 @@
 <template>
-  <nav class="leftnav leftnav-expand-lg leftnav-light bg-light">
+  <nav class="leftnav">
     <div class="leftnav-container">
-      <a class="leftnav-brand" href="/pay">M Offer</a>
       <ul class="leftnav-ul">
         <li class="leftnav-item">
-          <router-link class="nav-link" to="/Admin">Pay</router-link>
+          <router-link class="nav-link" to="/admin">Pay</router-link>
         </li>
         <li class="leftnav-item">
-          <router-link class="nav-link" to="/Users">Deposit</router-link>
+          <router-link class="nav-link" to="/users">Deposit</router-link>
         </li>
         <li class="leftnav-item">
-          <router-link class="nav-link" to="/Admin"
+          <router-link class="nav-link" to="/admin"
             >Member Management</router-link
           >
         </li>
         <li class="leftnav-item">
-          <router-link class="nav-link" to="/Admin"
+          <router-link class="nav-link" to="/admin"
             >User Management</router-link
           >
         </li>
         <li class="leftnav-item">
-          <router-link class="nav-link" to="/Admin"
+          <router-link class="nav-link" to="/admin"
             >Barcode Inquiry</router-link
           >
         </li>
         <li class="leftnav-item">
-          <router-link class="nav-link" to="/Admin"
+          <router-link class="nav-link" to="/admin"
             >Balance Inquiry</router-link
           >
         </li>
@@ -55,6 +54,9 @@ export default {
 </script>
 
 <style scoped>
+body {
+  margin: 0;
+}
 .leftnav {
   display: flex;
   flex-direction: column;
@@ -62,8 +64,8 @@ export default {
   align-items: flex-start;
 }
 
-.leftnav-brand {
-  margin: 10px 0;
+.leftnav-container {
+  background-color: #f9f9f9;
 }
 
 .leftnav-ul {
@@ -73,7 +75,9 @@ export default {
 }
 
 .leftnav-item {
-  margin-bottom: 10px;
+  margin: 30px;
+  font-size: 20px;
+  font-weight: 500;
 }
 
 .nav-link {
@@ -81,7 +85,6 @@ export default {
   color: #000;
 }
 
-/* Additional styles for responsiveness (optional) */
 @media (max-width: 991px) {
   .leftnav {
     flex-direction: row;

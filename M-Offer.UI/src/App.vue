@@ -1,7 +1,8 @@
 <template>
-  <LeftNav v-if="token"></LeftNav>
-  <router-view />
-  <h3>{{ token }}</h3>
+  <div class="app-container">
+    <LeftNav v-if="token"></LeftNav>
+    <router-view />
+  </div>
 </template>
 
 <script>
@@ -33,4 +34,9 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.app-container {
+  display: flex;
+  margin: -8px;
+}
+</style>
