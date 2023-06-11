@@ -1,11 +1,11 @@
 <template>
-  <NavBar v-if="token"></NavBar>
+  <LeftNav v-if="token"></LeftNav>
   <router-view />
   <h3>{{ token }}</h3>
 </template>
 
 <script>
-import NavBar from "./components/NavBar.vue";
+import LeftNav from "./components/LeftNav.vue";
 import { defineComponent } from "vue";
 import { ref, watch } from "vue";
 import { useAuthStore } from "@/store";
@@ -13,7 +13,7 @@ import { useAuthStore } from "@/store";
 export default defineComponent({
   name: "App",
   components: {
-    NavBar,
+    LeftNav,
   },
   setup() {
     const authStore = useAuthStore();
