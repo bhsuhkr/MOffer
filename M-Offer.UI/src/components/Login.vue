@@ -11,6 +11,7 @@
         <input type="password" id="password" v-model="password" />
       </div>
       <button @click="login(this.username, this.password)">Login</button>
+      <p class="validation" hidden>Invalid username or password.</p>
     </div>
   </div>
 </template>
@@ -60,7 +61,7 @@ export default {
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 label {
@@ -73,6 +74,7 @@ input[type="password"] {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  box-sizing:border-box
 }
 
 button {
@@ -83,6 +85,7 @@ button {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  margin-top: 15px;
 }
 
 button:hover {
@@ -91,5 +94,8 @@ button:hover {
 
 button:active {
   background-color: #3c903b;
+}
+.validation {
+  color: red;
 }
 </style>
