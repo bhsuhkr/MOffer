@@ -4,7 +4,7 @@
       <a class="navbar-brand" href="/">M Offer</a>
       <ul class="navbar-ul">
         <li class="navbar-item">
-          <router-link class="nav-link" to="/">Pay</router-link>
+          <router-link class="nav-link" to="/Admin">Pay</router-link>
         </li>
         <li class="navbar-item">
           <router-link class="nav-link" to="/Users">Deposit</router-link>

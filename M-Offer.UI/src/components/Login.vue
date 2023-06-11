@@ -1,6 +1,5 @@
-<!-- MyComponent.vue -->
 <template>
-  <form name="login-form">
+  <div name="login-form">
     <div class="mb-3">
       <label for="username">Username: </label>
       <input type="text" id="username" v-model="username" />
@@ -11,16 +10,14 @@
     </div>
     <button
       class="btn btn-outline-dark"
-      type="submit"
       @click="login(this.username, this.password)"
     >
       Login
     </button>
-  </form>
+  </div>
 </template>
 
 <script>
-// import { useStore } from 'pinia';
 import { useAuthStore } from "../store";
 
 export default {
@@ -35,8 +32,8 @@ export default {
   setup() {
     const authStore = useAuthStore();
 
-    const login = (username, password) => {
-      authStore.login({ username, password });
+    const login = async (username, password) => {
+      await authStore.login({ username, password });
     };
     return {
       login,

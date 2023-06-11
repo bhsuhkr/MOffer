@@ -1,16 +1,20 @@
 import { defineStore } from 'pinia';
 import axios from "axios";
+import router from './router';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    authUser: null
+    user: null,
+    token: null,
   }),
-  getters: {
-    user: (state) => state.authUser
-  },
   actions: {
+    setUser(user) {
+      this.user = user;
+    },
+    setToken(token) {
+      this.token = token;
+    },
     async login(cred) {
-      console.log("login called", cred);
       const userData = {
         username: cred.username,
         password: cred.password
@@ -20,6 +24,10 @@ export const useAuthStore = defineStore('auth', {
         .then(response => {
           console.log("login successfully", response);
           // Handle the response from the backend
+          this.setUser(cred.username);
+          this.setToken("test");
+          router.push('/admin');
+
         })
         .catch(error => {
           console.error("Axios Login failed", error);
