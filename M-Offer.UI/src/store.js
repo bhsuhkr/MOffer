@@ -26,25 +26,18 @@ export const useAuthStore = defineStore('auth', {
           // Handle the response from the backend
           this.setUser(cred.username);
           this.setToken("test");
-          router.push('/admin');
+          localStorage.setItem("userToken", this.token);
+          router.push('/pay');
 
         })
         .catch(error => {
           console.error("Axios Login failed", error);
-          // Handle any errors
         });
     },
     logout() {
       this.user = null;
       this.token = null;
-      // localStorage.removeItem('user');
+      localStorage.removeItem('userToken');
     },
-    // register(user) {
-    //   return axios.post('http://localhost:3000/api/auth/signup', {
-    //     username: user.username,
-    //     email: user.email,
-    //     password: user.password
-    //   });
-    // }
   },
 });

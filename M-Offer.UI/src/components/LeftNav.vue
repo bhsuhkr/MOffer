@@ -1,30 +1,30 @@
 <template>
-  <nav class="leftnav">
+  <nav class="leftnav" v-if="token !== null">
     <div class="leftnav-container">
       <ul class="leftnav-ul">
         <li class="leftnav-item">
-          <router-link class="nav-link" to="/admin">Pay</router-link>
+          <router-link class="nav-link" to="/pay">Pay</router-link>
         </li>
         <li class="leftnav-item">
-          <router-link class="nav-link" to="/users">Deposit</router-link>
+          <router-link class="nav-link" to="/deposit">Deposit</router-link>
         </li>
         <li class="leftnav-item">
-          <router-link class="nav-link" to="/admin"
+          <router-link class="nav-link" to="/member-management"
             >Member Management</router-link
           >
         </li>
         <li class="leftnav-item">
-          <router-link class="nav-link" to="/admin"
+          <router-link class="nav-link" to="/user-management"
             >User Management</router-link
           >
         </li>
         <li class="leftnav-item">
-          <router-link class="nav-link" to="/admin"
+          <router-link class="nav-link" to="/barcode-inquiry"
             >Barcode Inquiry</router-link
           >
         </li>
         <li class="leftnav-item">
-          <router-link class="nav-link" to="/admin"
+          <router-link class="nav-link" to="/balance-inquiry"
             >Balance Inquiry</router-link
           >
         </li>
@@ -40,14 +40,36 @@
 
 <script>
 import { useAuthStore } from "@/store";
+import { ref, onMounted, watch } from "vue";
 
 export default {
   name: "leftnav",
   setup() {
     const authStore = useAuthStore();
+    const token = ref(null);
+
     const logout = authStore.logout;
+    const localToken = localStorage.getItem("userToken");
+
+    if (localToken) {
+      authStore.setToken(localToken);
+    }
+
+    onMounted(() => {
+      token.value = authStore.token;
+    });
+
+    watch(
+      () => authStore.token,
+      (newToken) => {
+        token.value = newToken;
+        console.log("watch", authStore.token);
+      }
+    );
+
     return {
       logout,
+      token,
     };
   },
 };
@@ -66,6 +88,7 @@ body {
 
 .leftnav-container {
   background-color: #f9f9f9;
+  height: 100vh;
 }
 
 .leftnav-ul {
