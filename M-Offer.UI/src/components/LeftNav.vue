@@ -114,7 +114,6 @@ body {
   }
 
   .leftnav-container {
-    display: flex;
     align-items: center;
   }
 
