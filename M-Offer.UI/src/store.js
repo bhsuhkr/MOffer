@@ -40,3 +40,24 @@ export const useAuthStore = defineStore('auth', {
     },
   },
 });
+
+export const useMemberStore = defineStore('auth', {
+  actions: {
+    async pay(userInfo) {
+      const userData = {
+        memberId: userInfo.memberId,
+        memberEngName: userInfo.memberEngName,
+        memberKorName: userInfo.memberKorName,
+        memberTel: userInfo.memberTel,
+        memberEmail: userInfo.memberEmail,
+      };
+      await axios.post('http://localhost:3000/api/member/pay', userData)
+        .then(response => {
+          console.log("Paid successfully", response);
+        })
+        .catch(error => {
+          console.error("Axios Pay failed", error);
+        });
+    },
+  },
+});

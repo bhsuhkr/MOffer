@@ -21,13 +21,6 @@ import { useAuthStore } from "../store";
 
 export default {
   name: "Login",
-  data() {
-    return {
-      loading: false,
-      username: "",
-      password: "",
-    };
-  },
   setup() {
     const authStore = useAuthStore();
 
