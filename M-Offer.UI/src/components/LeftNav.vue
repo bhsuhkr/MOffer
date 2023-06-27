@@ -1,5 +1,5 @@
 <template>
-  <nav class="leftnav" v-if="token !== null">
+  <nav class="leftnav" v-if="isAuth">
     <div class="leftnav-container">
       <ul class="leftnav-ul">
         <li class="leftnav-item">
@@ -8,7 +8,7 @@
         <li class="leftnav-item">
           <router-link class="nav-link" to="/deposit">Deposit</router-link>
         </li>
-        <li class="leftnav-item">
+        <!-- <li class="leftnav-item">
           <router-link class="nav-link" to="/member-management"
             >Member Management</router-link
           >
@@ -17,12 +17,7 @@
           <router-link class="nav-link" to="/user-management"
             >User Management</router-link
           >
-        </li>
-        <li class="leftnav-item">
-          <router-link class="nav-link" to="/barcode-inquiry"
-            >Barcode Inquiry</router-link
-          >
-        </li>
+        </li> -->
         <li class="leftnav-item">
           <router-link class="nav-link" to="/balance-inquiry"
             >Balance Inquiry</router-link
@@ -40,36 +35,24 @@
 
 <script>
 import { useAuthStore } from "@/store";
-import { ref, onMounted, watch } from "vue";
+import { ref, watch } from "vue";
 
 export default {
   name: "leftnav",
   setup() {
     const authStore = useAuthStore();
-    const token = ref(null);
-
-    const logout = authStore.logout;
-    const localToken = localStorage.getItem("userToken");
-
-    if (localToken) {
-      authStore.setToken(localToken);
-    }
-
-    onMounted(() => {
-      token.value = authStore.token;
-    });
+    let isAuth = ref(false);
 
     watch(
-      () => authStore.token,
-      (newToken) => {
-        token.value = newToken;
-        console.log("watch", authStore.token);
+      () => authStore.isAuthenticated,
+      (newValue) => {
+        isAuth.value = newValue;
       }
     );
 
     return {
-      logout,
-      token,
+      isAuth,
+      logout: authStore.logout,
     };
   },
 };

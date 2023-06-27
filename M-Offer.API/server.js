@@ -32,7 +32,6 @@ sql
   .then(async (pool) => {
     console.log("Connected to Database");
 
-    // Middleware to authenticate user
     const authenticateUser = async (req, res, next) => {
       const { username, password } = req.body;
       const user = await pool.query(
