@@ -1,6 +1,7 @@
 <template>
   <div class="balance-inquiry-container">
     <h3>Balance Inquiry</h3>
+    <p>남은 금액:</p>
   </div>
 </template>
 
@@ -9,7 +10,6 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "BalanceInquiry",
-  components: {},
 });
 </script>
 

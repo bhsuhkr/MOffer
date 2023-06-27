@@ -18,46 +18,30 @@
         </tbody>
       </table>
     </div>
+    <button @click="pay(`00490100`)">transactions</button>
   </div>
 </template>
 
 <script>
-import { defineComponent } from "vue";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { defineComponent } from "vue";
+import { useTransactionStore } from "@/store";
 
 export default defineComponent({
   name: "Pay",
   setup() {
-    // sample data
-    const transactionData = [
-      {
-        ID: "01",
-        Name: "Abiola Esther",
-        Balance: "17",
-      },
-      {
-        ID: "02",
-        Name: "Robert V. Kratz",
-        Balance: "19",
-      },
-      {
-        ID: "03",
-        Name: "Kristen Anderson",
-        Balance: "20",
-      },
-      {
-        ID: "04",
-        Name: "Adam Simon",
-        Balance: "21",
-      },
-      {
-        ID: "05",
-        Name: "Daisy Katherine",
-        Balance: "22",
-      },
-    ];
-    const fields = ["ID", "Name", "Balance"];
-    return { transactionData, fields };
+    const fields = ["TransType", "TransTime", "RunningBalance"];
+    const transactionStore = useTransactionStore();
+
+    const pay = async (memberId) => {
+      await transactionStore.pay(memberId);
+    };
+
+    return {
+      transactionData: transactionStore.transactions,
+      fields,
+      pay,
+    };
   },
 });
 </script>

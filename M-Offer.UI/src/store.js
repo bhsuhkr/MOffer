@@ -16,7 +16,7 @@ export const useAuthStore = defineStore('auth', {
       await axios.post('http://localhost:3000/api/auth/signin', userData)
         .then(response => {
           this.isAuthenticated = true;
-          console.log("login successfully", this.isAuthenticated, response);
+          console.log("login successfully", response);
           router.push('/pay');
         })
         .catch(error => {
@@ -25,6 +25,23 @@ export const useAuthStore = defineStore('auth', {
     },
     logout() {
       this.isAuthenticated = false;
+    },
+  },
+});
+
+export const useTransactionStore = defineStore('transaction', {
+  state: () => ({
+    transactions: [],
+  }),
+  actions: {
+    async pay(memberId) {
+      await axios.post('http://localhost:3000/api/transaction', { memberId })
+        .then(response => {
+          this.transactions.push(...response.data.recordset.recordset);
+        })
+        .catch(error => {
+          console.error("Transaction load failed", error);
+        });
     },
   },
 });

@@ -2,7 +2,6 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const sql = require("mssql/msnodesqlv8");
-// const jwt = require("jsonwebtoken");
 
 const app = express();
 app.use(bodyParser.json());
@@ -18,14 +17,6 @@ const config = {
     trustedConnection: true,
   },
 };
-
-// function createToken(payload) {
-//   return jwt.sign(payload, "newsongtest");
-// }
-
-// function verifyToken(token) {
-//   return jwt.verify(token, "newsongtest");
-// }
 
 sql
   .connect(config)
@@ -46,8 +37,6 @@ sql
       if (user && user.recordset && user.recordset.length) {
         req.user = username;
         req.role = user.recordset[0]["Role"];
-        // const accessToken = createToken({ id: username });
-        // res.cookie("sessionCookieName", accessToken, { httpOnly: true });
         next();
       } else {
         res.status(401).json({ message: "Invalid credentials" });
@@ -62,26 +51,18 @@ sql
       });
     });
 
-    app.get("/api/member/pay", async (req, res) => {
+    app.post("/api/transaction", async (req, res) => {
       try {
         pool.query(
-          `exec sp_insertTransaction
-        '00731100',
-        'DEBIT',
-        'MAINMEAL',
-        0,
-        'SCAN',
-        '172.16.1.25',
-        'LAPTOP21',
-        'MS EDGE',
-        'bsuh',
-        'MAINCAFE'
-        `,
-          function (err) {
+          "select TransType, TransTime, RunningBalance from  nc_transactions where memberid = '" +
+            req.body.memberId +
+            "'",
+          function (err, recordset) {
             if (err) console.log(err);
             else {
               res.status(200).json({
                 message: "Paid successfully",
+                recordset,
               });
             }
           }
@@ -91,6 +72,36 @@ sql
         res.status(500).json({ error: "An error occurred" });
       }
     });
+
+    // app.get("/api/member/pay", async (req, res) => {
+    //   try {
+    //     pool.query(
+    //       `exec sp_insertTransaction
+    //     '00731100',
+    //     'DEBIT',
+    //     'MAINMEAL',
+    //     0,
+    //     'SCAN',
+    //     '172.16.1.25',
+    //     'LAPTOP21',
+    //     'MS EDGE',
+    //     'bsuh',
+    //     'MAINCAFE'
+    //     `,
+    //       function (err) {
+    //         if (err) console.log(err);
+    //         else {
+    //           res.status(200).json({
+    //             message: "Paid successfully",
+    //           });
+    //         }
+    //       }
+    //     );
+    //   } catch (error) {
+    //     console.error(error);
+    //     res.status(500).json({ error: "An error occurred" });
+    //   }
+    // });
   })
   .catch((err) => console.log("Database Connection Failed", err));
 
