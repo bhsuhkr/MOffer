@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="deposit-container">
     <h3>Deposit</h3>
   </div>
 </template>
@@ -13,4 +13,9 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.deposit-container {
+  margin: 20px 40px;
+  width: 100%;
+}
+</style>

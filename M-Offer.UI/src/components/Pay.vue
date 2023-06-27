@@ -1,64 +1,70 @@
 <template>
   <div class="pay-container">
     <h3 class="pay-title">Pay</h3>
+    <div class="transaction-container">
+      <table id="tableComponent" class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th v-for="field in fields" :key="field">
+              {{ field }}
+              <i class="bi bi-sort-alpha-down" aria-label="Sort Icon"></i>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in transactionData" :key="item">
+            <td v-for="field in fields" :key="field">{{ item[field] }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
 <script>
 import { defineComponent } from "vue";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 export default defineComponent({
   name: "Pay",
+  setup() {
+    // sample data
+    const transactionData = [
+      {
+        ID: "01",
+        Name: "Abiola Esther",
+        Balance: "17",
+      },
+      {
+        ID: "02",
+        Name: "Robert V. Kratz",
+        Balance: "19",
+      },
+      {
+        ID: "03",
+        Name: "Kristen Anderson",
+        Balance: "20",
+      },
+      {
+        ID: "04",
+        Name: "Adam Simon",
+        Balance: "21",
+      },
+      {
+        ID: "05",
+        Name: "Daisy Katherine",
+        Balance: "22",
+      },
+    ];
+    const fields = ["ID", "Name", "Balance"];
+    return { transactionData, fields };
+  },
 });
 </script>
 
 <style scoped>
-.item-row {
-  margin-bottom: 20px;
-}
 .pay-container {
-  margin: 10px 40px;
+  margin: 20px 40px;
   width: 100%;
-}
-.message-container {
-  border: solid 1px green;
-  margin-top: 20px;
-  padding: 30px;
-  width: 30%;
-}
-.confirm-btn {
-  width: 20%;
-  background-color: #4caf50;
-  color: white;
-  padding: 14px 20px;
-  margin: 8px 0;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.input-fields {
-  font-size: 15px;
-}
-#member-id {
-  margin-left: 10px;
-}
-#member-eng-name,
-#member-kor-name,
-#member-tel {
-  margin-left: 25px;
-}
-#memeber-email {
-  margin-left: 40px;
-}
-#member-id-search,
-#member-eng-name-search,
-#member-kor-name-search,
-#member-tel-search,
-#memeber-email-search {
-  margin-left: 10px;
-}
-#item-menu,
-#item-quantity {
-  margin-left: 55px;
 }
 </style>

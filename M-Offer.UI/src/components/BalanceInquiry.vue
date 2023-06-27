@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="balance-inquiry-container">
     <h3>Balance Inquiry</h3>
   </div>
 </template>
@@ -13,4 +13,9 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.balance-inquiry-container {
+  margin: 20px 40px;
+  width: 100%;
+}
+</style>

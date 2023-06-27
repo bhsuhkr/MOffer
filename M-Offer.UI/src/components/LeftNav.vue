@@ -72,6 +72,7 @@ body {
 .leftnav-container {
   background-color: #f9f9f9;
   height: 100vh;
+  min-width: 220px;
 }
 
 .leftnav-ul {
@@ -89,20 +90,5 @@ body {
 .nav-link {
   text-decoration: none;
   color: #000;
-}
-
-@media (max-width: 991px) {
-  .leftnav {
-    flex-direction: row;
-  }
-
-  .leftnav-container {
-    align-items: center;
-  }
-
-  .leftnav-item {
-    margin-bottom: 0;
-    margin-right: 10px;
-  }
 }
 </style>
