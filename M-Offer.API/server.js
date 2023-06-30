@@ -73,35 +73,57 @@ sql
       }
     });
 
-    // app.get("/api/member/pay", async (req, res) => {
-    //   try {
-    //     pool.query(
-    //       `exec sp_insertTransaction
-    //     '00731100',
-    //     'DEBIT',
-    //     'MAINMEAL',
-    //     0,
-    //     'SCAN',
-    //     '172.16.1.25',
-    //     'LAPTOP21',
-    //     'MS EDGE',
-    //     'bsuh',
-    //     'MAINCAFE'
-    //     `,
-    //       function (err) {
-    //         if (err) console.log(err);
-    //         else {
-    //           res.status(200).json({
-    //             message: "Paid successfully",
-    //           });
-    //         }
-    //       }
-    //     );
-    //   } catch (error) {
-    //     console.error(error);
-    //     res.status(500).json({ error: "An error occurred" });
-    //   }
-    // });
+    app.get("/api/member/id", async (req, res) => {
+        try {
+          pool.query(
+            `exec sp_getMemberId
+            ${req.body.contId}
+          `,
+            function (err,recordset) {
+              if (err) console.log(err);
+              else {
+                res.status(200).json({
+                  memgerId: recordset.recordset[0].MemberID
+                });
+              }
+            }
+          );
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ error: "Can't fetch Member ID" });
+        }
+      });
+
+    app.get("/api/member/pay", async (req, res) => {
+      try {
+        pool.query(
+          `exec sp_insertTransaction
+        '00731100',
+        'DEBIT',
+        'MAINMEAL',
+        0,
+        'SCAN',
+        '172.16.1.25',
+        'LAPTOP21',
+        'MS EDGE',
+        'bsuh', 
+        'MAINCAFE'
+        `,
+          function (err, recordset) {
+            if (err) console.log(err);
+            else {
+              res.status(200).json({
+                message: "Paid successfully",
+                data: recordset
+              });
+            }
+          }
+        );
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "An error occurred" });
+      }
+    });
   })
   .catch((err) => console.log("Database Connection Failed", err));
 

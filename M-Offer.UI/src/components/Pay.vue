@@ -18,6 +18,7 @@
         </tbody>
       </table>
     </div>
+    <input type="text" @keydown.enter="handleEnterKey">
     <button @click="pay(`00490100`)">transactions</button>
   </div>
 </template>
@@ -43,6 +44,11 @@ export default defineComponent({
       pay,
     };
   },
+  methods: {
+    handleEnterKey(event) {
+      console.log("test", event.target.value);
+    }
+  }
 });
 </script>
 
