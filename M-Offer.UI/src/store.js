@@ -32,6 +32,7 @@ export const useAuthStore = defineStore('auth', {
 export const useTransactionStore = defineStore('transaction', {
   state: () => ({
     transactions: [],
+    memberId: "",
   }),
   actions: {
     async pay(memberId) {
@@ -41,6 +42,15 @@ export const useTransactionStore = defineStore('transaction', {
         })
         .catch(error => {
           console.error("Transaction load failed", error);
+        });
+    },
+    async getMemberId(contId) {
+      await axios.get('http://localhost:3000/api/member/id', {params:{ contId: contId }})
+        .then(response => {
+          this.memberId = response.data.memberId;
+        })
+        .catch(error => {
+          console.error("MemberId failed to fetch", error);
         });
     },
   },

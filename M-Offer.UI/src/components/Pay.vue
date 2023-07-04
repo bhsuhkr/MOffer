@@ -18,8 +18,7 @@
         </tbody>
       </table>
     </div>
-    <input type="text" @keydown.enter="handleEnterKey">
-    <button @click="pay(`00490100`)">transactions</button>
+    <input ref="contIdField" type="text" @keydown.enter="handleEnterKey" />
   </div>
 </template>
 
@@ -37,18 +36,24 @@ export default defineComponent({
     const pay = async (memberId) => {
       await transactionStore.pay(memberId);
     };
+    const getMemberId = async (contId) => {
+      await transactionStore.getMemberId(contId);
+    };
 
     return {
       transactionData: transactionStore.transactions,
       fields,
       pay,
+      getMemberId,
     };
   },
   methods: {
     handleEnterKey(event) {
-      console.log("test", event.target.value);
-    }
-  }
+      this.getMemberId(event.target.value);
+      console.log("submitted", event.target.value);
+      this.$refs["contIdField"].value = "";
+    },
+  },
 });
 </script>
 

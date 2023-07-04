@@ -74,25 +74,25 @@ sql
     });
 
     app.get("/api/member/id", async (req, res) => {
-        try {
-          pool.query(
-            `exec sp_getMemberId
-            ${req.body.contId}
+      try {
+        pool.query(
+          `exec sp_getMemberId
+            ${req.query.contId}
           `,
-            function (err,recordset) {
-              if (err) console.log(err);
-              else {
-                res.status(200).json({
-                  memgerId: recordset.recordset[0].MemberID
-                });
-              }
+          function (err, recordset) {
+            if (err) console.log(err);
+            else {
+              res.status(200).json({
+                memberId: recordset.recordset[0].MemberID,
+              });
             }
-          );
-        } catch (error) {
-          console.error(error);
-          res.status(500).json({ error: "Can't fetch Member ID" });
-        }
-      });
+          }
+        );
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Can't fetch Member ID" });
+      }
+    });
 
     app.get("/api/member/pay", async (req, res) => {
       try {
@@ -114,7 +114,7 @@ sql
             else {
               res.status(200).json({
                 message: "Paid successfully",
-                data: recordset
+                data: recordset,
               });
             }
           }
