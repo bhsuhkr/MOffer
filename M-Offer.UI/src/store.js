@@ -36,7 +36,7 @@ export const useTransactionStore = defineStore('transaction', {
   }),
   actions: {
     async pay(memberId) {
-      await axios.post('http://localhost:3000/api/transaction', { memberId })
+      await axios.get('http://localhost:3000/api/transaction', { params: { memberId } })
         .then(response => {
           this.transactions.push(...response.data.recordset.recordset);
         })
@@ -45,7 +45,7 @@ export const useTransactionStore = defineStore('transaction', {
         });
     },
     async getMemberId(contId) {
-      await axios.get('http://localhost:3000/api/member/id', {params:{ contId: contId }})
+      await axios.get('http://localhost:3000/api/member/id', { params:{ contId: contId } })
         .then(response => {
           this.memberId = response.data.memberId;
         })

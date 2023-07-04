@@ -51,12 +51,10 @@ sql
       });
     });
 
-    app.post("/api/transaction", async (req, res) => {
+    app.get("/api/transaction", async (req, res) => {
       try {
         pool.query(
-          "select TransType, TransTime, RunningBalance from  nc_transactions where memberid = '" +
-            req.body.memberId +
-            "'",
+          `select TransType, TransTime, RunningBalance from  nc_transactions where memberid = ${req.query.memberId}`,
           function (err, recordset) {
             if (err) console.log(err);
             else {
