@@ -164,6 +164,37 @@ sql
         res.status(500).json({ error: "Can't make a payment" });
       }
     });
+
+    app.post("/api/member/deposit", async (req, res) => {
+      try {
+        pool.query(
+          `exec sp_insertTransaction 
+        '${req.body.memberId}',
+        'CREDIT',
+        'MAINMEAL',
+        0,
+        'SCAN',
+        '172.16.1.25',
+        'LAPTOP21',
+        'MS EDGE',
+        '${req.body.username}', 
+        'MAINCAFE'
+        `,
+          function (err, recordset) {
+            if (err) console.log(err);
+            else {
+              res.status(200).json({
+                message: "Added deposit successfully",
+                data: recordset,
+              });
+            }
+          }
+        );
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Can't make a deposit" });
+      }
+    });
   })
   .catch((err) => console.log("Database Connection Failed", err));
 
