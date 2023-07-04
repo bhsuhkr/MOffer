@@ -32,10 +32,6 @@ export default defineComponent({
   setup() {
     const fields = ["TransType", "TransTime", "RunningBalance"];
     const transactionStore = useTransactionStore();
-
-    const pay = async (memberId) => {
-      await transactionStore.pay(memberId);
-    };
     const getMemberId = async (contId) => {
       await transactionStore.getMemberId(contId);
     };
@@ -43,7 +39,6 @@ export default defineComponent({
     return {
       transactionData: transactionStore.transactions,
       fields,
-      pay,
       getMemberId,
     };
   },

@@ -54,12 +54,12 @@ sql
     app.get("/api/transaction", async (req, res) => {
       try {
         pool.query(
-          `select TransType, TransTime, RunningBalance from  nc_transactions where memberid = ${req.query.memberId}`,
+          `select TOP 1 TransType, TransTime, RunningBalance from  nc_transactions where memberid = ${req.query.memberId} ORDER BY TransTime DESC;`,
           function (err, recordset) {
             if (err) console.log(err);
             else {
               res.status(200).json({
-                message: "Paid successfully",
+                message: "Transaction fetched successfully",
                 recordset,
               });
             }
@@ -92,11 +92,11 @@ sql
       }
     });
 
-    app.get("/api/member/pay", async (req, res) => {
+    app.post("/api/member/pay", async (req, res) => {
       try {
         pool.query(
-          `exec sp_insertTransaction
-        '00731100',
+          `exec sp_insertTransaction 
+        '${req.body.memberId}',
         'DEBIT',
         'MAINMEAL',
         0,
