@@ -1,15 +1,45 @@
 <template>
   <div class="balance-inquiry-container">
     <h3>Balance Inquiry</h3>
-    <p>남은 금액:</p>
+    <input
+      class="cont-input"
+      ref="contIdField"
+      type="text"
+      @keydown.enter="handleEnterKey"
+      placeholder="여기를 먼저 누른 후 바코드를 스캔하세요."
+    />
+    <p class="balance-text">남은 금액: ${{ balance }}</p>
   </div>
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
+import { useTransactionStore } from "@/store";
 
 export default defineComponent({
   name: "BalanceInquiry",
+  setup() {
+    const transactionStore = useTransactionStore();
+    const getMemberId = async (contId) => {
+      await transactionStore.getMemberId(contId);
+    };
+
+    const balance = computed({
+      get: () => transactionStore.balance,
+      set: (newValue) => (transactionStore.balance = newValue),
+    });
+
+    return {
+      getMemberId,
+      balance,
+    };
+  },
+  methods: {
+    handleEnterKey(event) {
+      this.getMemberId(event.target.value, false);
+      this.$refs["contIdField"].value = "";
+    },
+  },
 });
 </script>
 
@@ -17,5 +47,14 @@ export default defineComponent({
 .balance-inquiry-container {
   margin: 20px 40px;
   width: 100%;
+}
+.cont-input {
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+.balance-text {
+  font-weight: 600;
+  font-size: 20px;
 }
 </style>

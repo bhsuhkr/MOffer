@@ -2,6 +2,13 @@
   <div class="pay-container">
     <h3 class="pay-title">Pay</h3>
     <div class="transaction-container">
+      <input
+        class="cont-input"
+        ref="contIdField"
+        type="text"
+        @keydown.enter="handleEnterKey"
+        placeholder="여기를 먼저 누른 후 바코드를 스캔하세요."
+      />
       <table id="tableComponent" class="table table-bordered table-striped">
         <thead>
           <tr>
@@ -18,7 +25,6 @@
         </tbody>
       </table>
     </div>
-    <input ref="contIdField" type="text" @keydown.enter="handleEnterKey" />
   </div>
 </template>
 
@@ -30,8 +36,10 @@ import { useTransactionStore } from "@/store";
 export default defineComponent({
   name: "Pay",
   setup() {
-    const fields = ["TransType", "TransTime", "RunningBalance"];
+    const fields = ["MemberID", "TransType", "TransTime", "RunningBalance"];
     const transactionStore = useTransactionStore();
+
+    transactionStore.getTodayTransactions();
     const getMemberId = async (contId) => {
       await transactionStore.getMemberId(contId);
     };
@@ -44,8 +52,7 @@ export default defineComponent({
   },
   methods: {
     handleEnterKey(event) {
-      this.getMemberId(event.target.value);
-      console.log("submitted", event.target.value);
+      this.getMemberId(event.target.value, true);
       this.$refs["contIdField"].value = "";
     },
   },
@@ -56,5 +63,10 @@ export default defineComponent({
 .pay-container {
   margin: 20px 40px;
   width: 100%;
+}
+.cont-input {
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 </style>

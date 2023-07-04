@@ -51,10 +51,30 @@ sql
       });
     });
 
+    app.get("/api/balance", async (req, res) => {
+      try {
+        pool.query(
+          `select TOP 1 RunningBalance from  nc_transactions where memberid = ${req.query.memberId} ORDER BY TransTime DESC`,
+          function (err, recordset) {
+            if (err) console.log(err);
+            else {
+              res.status(200).json({
+                message: "Balance fetched successfully",
+                balance: recordset.recordset[0].RunningBalance,
+              });
+            }
+          }
+        );
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Can't fetch a transaction" });
+      }
+    });
+
     app.get("/api/transaction", async (req, res) => {
       try {
         pool.query(
-          `select TOP 1 TransType, TransTime, RunningBalance from  nc_transactions where memberid = ${req.query.memberId} ORDER BY TransTime DESC;`,
+          `select TOP 1 MemberID, TransType, TransTime, RunningBalance from  nc_transactions where memberid = ${req.query.memberId} ORDER BY TransTime DESC`,
           function (err, recordset) {
             if (err) console.log(err);
             else {
@@ -67,7 +87,29 @@ sql
         );
       } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "An error occurred" });
+        res.status(500).json({ error: "Can't fetch a transaction" });
+      }
+    });
+
+    app.get("/api/transactions", async (req, res) => {
+      try {
+        pool.query(
+          `select MemberID, TransType, TransTime, RunningBalance from  nc_transactions 
+            WHERE CONVERT(DATE, TransTime) = CONVERT(DATE, GETDATE())
+            ORDER BY TransTime DESC`,
+          function (err, recordset) {
+            if (err) console.log(err);
+            else {
+              res.status(200).json({
+                message: "Transactions fetched successfully",
+                recordset,
+              });
+            }
+          }
+        );
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Can't fetch transactions" });
       }
     });
 
@@ -104,7 +146,7 @@ sql
         '172.16.1.25',
         'LAPTOP21',
         'MS EDGE',
-        'bsuh', 
+        '${req.body.username}', 
         'MAINCAFE'
         `,
           function (err, recordset) {
@@ -119,7 +161,7 @@ sql
         );
       } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "An error occurred" });
+        res.status(500).json({ error: "Can't make a payment" });
       }
     });
   })
