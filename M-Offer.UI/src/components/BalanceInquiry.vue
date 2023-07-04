@@ -8,7 +8,10 @@
       @keydown.enter="handleEnterKey"
       placeholder="여기를 먼저 누른 후 바코드를 스캔하세요."
     />
-    <p class="balance-text">남은 금액: ${{ balance }}</p>
+    <p class="balance-text" v-if="isValidContId">남은 금액: ${{ balance }}</p>
+    <p class="balance-validation" v-if="!isValidContId">
+      잘못된 아이디입니다. 다시 시도해 주세요.
+    </p>
   </div>
 </template>
 
@@ -23,15 +26,19 @@ export default defineComponent({
     const getMemberId = async (contId) => {
       await transactionStore.getMemberId(contId);
     };
-
     const balance = computed({
       get: () => transactionStore.balance,
       set: (newValue) => (transactionStore.balance = newValue),
+    });
+    const isValidContId = computed({
+      get: () => transactionStore.isValidContId,
+      set: (newValue) => (transactionStore.isValidContId = newValue),
     });
 
     return {
       getMemberId,
       balance,
+      isValidContId,
     };
   },
   methods: {
@@ -56,5 +63,8 @@ export default defineComponent({
 .balance-text {
   font-weight: 600;
   font-size: 20px;
+}
+.balance-validation {
+  color: red;
 }
 </style>

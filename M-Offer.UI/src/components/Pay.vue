@@ -9,6 +9,9 @@
         @keydown.enter="handleEnterKey"
         placeholder="여기를 먼저 누른 후 바코드를 스캔하세요."
       />
+      <p class="balance-validation" v-if="!isValidContId">
+        잘못된 아이디입니다. 다시 시도해 주세요.
+      </p>
       <table id="tableComponent" class="table table-bordered table-striped">
         <thead>
           <tr>
@@ -30,7 +33,7 @@
 
 <script>
 import "bootstrap/dist/css/bootstrap.min.css";
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
 import { useTransactionStore } from "@/store";
 
 export default defineComponent({
@@ -38,16 +41,21 @@ export default defineComponent({
   setup() {
     const fields = ["MemberID", "TransType", "TransTime", "RunningBalance"];
     const transactionStore = useTransactionStore();
+    const isValidContId = computed({
+      get: () => transactionStore.isValidContId,
+      set: (newValue) => (transactionStore.isValidContId = newValue),
+    });
 
     transactionStore.getTodayTransactions();
     const getMemberId = async (contId) => {
-      await transactionStore.getMemberId(contId);
+      await transactionStore.getMemberId(contId, true);
     };
 
     return {
       transactionData: transactionStore.transactions,
       fields,
       getMemberId,
+      isValidContId,
     };
   },
   methods: {
@@ -68,5 +76,8 @@ export default defineComponent({
   width: 100%;
   margin-top: 10px;
   margin-bottom: 20px;
+}
+.balance-validation {
+  color: red;
 }
 </style>

@@ -34,7 +34,8 @@ export const useAuthStore = defineStore('auth', {
 export const useTransactionStore = defineStore('transaction', {
   state: () => ({
     transactions: [],
-    balance: 0
+    balance: 0,
+    isValidContId: true
   }),
   actions: {
     async getTransaction(memberId) {
@@ -55,17 +56,25 @@ export const useTransactionStore = defineStore('transaction', {
           console.error("Transactions load failed", error);
         });
     },
-    async getMemberId(contId, makePayment = false) {
+    async getMemberId(contId, makePayment) {
       await axios.get('http://localhost:3000/api/member/id', { params:{ contId: contId } })
         .then(response => {
+          const memberId = response.data.memberId;
+
           if (makePayment) {
-            this.pay(response.data.memberId);
+            this.pay(memberId);
           } else {
-            this.getBalance(response.data.memberId);
+            this.getBalance(memberId);
+          }
+          if (memberId !== "NONE" ) {
+            this.isValidContId = true;
+          } else {
+            this.isValidContId = false;
           }
         })
         .catch(error => {
           console.error("MemberId failed to fetch", error);
+          this.isValidContId = false;
         });
     },
     async getBalance(memberId) {
