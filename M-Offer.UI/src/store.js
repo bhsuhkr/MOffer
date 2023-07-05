@@ -35,7 +35,8 @@ export const useTransactionStore = defineStore('transaction', {
   state: () => ({
     transactions: [],
     balance: 0,
-    isValidContId: true
+    isValidContId: true,
+    isGetTodayTransactionsCalled: false // call getTodayTransactions() only once
   }),
   actions: {
     async getTransaction(memberId) {
@@ -48,13 +49,16 @@ export const useTransactionStore = defineStore('transaction', {
         });
     },
     async getTodayTransactions() {
-      await axios.get('http://localhost:3000/api/transactions')
+      if (!this.isGetTodayTransactionsCalled) {
+        await axios.get('http://localhost:3000/api/transactions')
         .then(response => {
           this.transactions.push(...response.data.recordset.recordset);
+          this.isGetTodayTransactionsCalled = true;
         })
         .catch(error => {
           console.error("Transactions load failed", error);
         });
+      }
     },
     async getMemberId(contId, makePayment) {
       await axios.get('http://localhost:3000/api/member/id', { params:{ contId: contId } })

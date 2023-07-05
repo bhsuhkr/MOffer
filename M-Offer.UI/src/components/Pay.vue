@@ -39,7 +39,13 @@ import { useTransactionStore } from "@/store";
 export default defineComponent({
   name: "Pay",
   setup() {
-    const fields = ["MemberID", "TransType", "TransTime", "RunningBalance"];
+    const fields = [
+      "KoreanName",
+      "ContId",
+      "TransType",
+      "TransTime",
+      "RunningBalance",
+    ];
     const transactionStore = useTransactionStore();
     const isValidContId = computed({
       get: () => transactionStore.isValidContId,

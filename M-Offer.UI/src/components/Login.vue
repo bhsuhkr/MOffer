@@ -18,15 +18,20 @@
 
 <script>
 import { useAuthStore } from "../store";
+import router from "../router";
 
 export default {
   name: "Login",
   setup() {
     const authStore = useAuthStore();
-
     const login = async (username, password) => {
       await authStore.login({ username, password });
     };
+
+    if (authStore.isAuthenticated) {
+      router.push("/pay");
+    }
+
     return {
       login,
     };

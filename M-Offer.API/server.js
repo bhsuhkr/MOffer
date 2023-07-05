@@ -74,7 +74,9 @@ sql
     app.get("/api/transaction", async (req, res) => {
       try {
         pool.query(
-          `select TOP 1 MemberID, TransType, TransTime, RunningBalance from  nc_transactions where memberid = ${req.query.memberId} ORDER BY TransTime DESC`,
+          `select TOP 1 nc_transactions.MemberID, nc_transactions.TransType, nc_transactions.TransTime, nc_transactions.RunningBalance, nc_members.KoreanName, nc_members.ContId
+            from  nc_transactions left join nc_members on nc_transactions.memberid = nc_members.memberid
+            where nc_transactions.memberid = ${req.query.memberId} ORDER BY TransTime DESC`,
           function (err, recordset) {
             if (err) console.log(err);
             else {
@@ -94,9 +96,11 @@ sql
     app.get("/api/transactions", async (req, res) => {
       try {
         pool.query(
-          `select MemberID, TransType, TransTime, RunningBalance from  nc_transactions 
-            WHERE CONVERT(DATE, TransTime) = CONVERT(DATE, GETDATE())
-            ORDER BY TransTime DESC`,
+          `select nc_transactions.MemberID, nc_transactions.TransType, nc_transactions.TransTime, nc_transactions.RunningBalance, nc_members.KoreanName, nc_members.ContId
+            from nc_transactions 
+            left join nc_members on nc_transactions.memberid = nc_members.memberid
+            where CONVERT(DATE, TransTime) = CONVERT(DATE, GETDATE())
+            order by TransTime desc`,
           function (err, recordset) {
             if (err) console.log(err);
             else {

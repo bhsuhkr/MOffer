@@ -72,7 +72,6 @@ body {
 .leftnav-container {
   background-color: #f9f9f9;
   height: 100vh;
-  min-width: 220px;
 }
 
 .leftnav-ul {
