@@ -5,7 +5,8 @@ import router from './router';
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     isAuthenticated: false,
-    username: ""
+    username: "",
+    showValidationMessage: false
   }),
   actions: {
     async login(cred) {
@@ -19,14 +20,17 @@ export const useAuthStore = defineStore('auth', {
           this.isAuthenticated = true;
           console.log("login successfully", response);
           this.username = cred.username;
+          this.showValidationMessage = false;
           router.push('/pay');
         })
         .catch(error => {
           console.error("Axios Login failed", error);
+          this.showValidationMessage = true;
         });
     },
     logout() {
       this.isAuthenticated = false;
+      this.showValidationMessage = false;
     },
   },
 });

@@ -10,8 +10,10 @@
         <label for="password">Password</label>
         <input type="password" id="password" v-model="password" />
       </div>
+      <p class="validation" v-if="showValidationMessage">
+        아이디와 비밀번호가 일치하지 않습니다.
+      </p>
       <button @click="login(this.username, this.password)">Login</button>
-      <p class="validation" hidden>Invalid username or password.</p>
     </div>
   </div>
 </template>
@@ -19,14 +21,19 @@
 <script>
 import { useAuthStore } from "../store";
 import router from "../router";
+import { defineComponent, computed } from "vue";
 
-export default {
+export default defineComponent({
   name: "Login",
   setup() {
     const authStore = useAuthStore();
     const login = async (username, password) => {
       await authStore.login({ username, password });
     };
+    const showValidationMessage = computed({
+      get: () => authStore.showValidationMessage,
+      set: (newValue) => (authStore.showValidationMessage = newValue),
+    });
 
     if (authStore.isAuthenticated) {
       router.push("/pay");
@@ -34,14 +41,16 @@ export default {
 
     return {
       login,
+      showValidationMessage,
     };
   },
-};
+});
 </script>
 
 <style scoped>
 .login-container {
   max-width: 400px;
+  min-width: 330px;
   margin: 20px auto;
   padding: 20px;
   border: 1px solid #ccc;
