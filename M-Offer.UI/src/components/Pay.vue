@@ -53,20 +53,20 @@ export default defineComponent({
     });
 
     transactionStore.getTodayTransactions();
-    const getMemberId = async (contId) => {
-      await transactionStore.getMemberId(contId, "pay");
+    const pay = async (contId) => {
+      await transactionStore.pay(contId, "pay");
     };
 
     return {
       transactionData: transactionStore.transactions,
       fields,
-      getMemberId,
+      pay,
       isValidContId,
     };
   },
   methods: {
     handleEnterKey(event) {
-      this.getMemberId(event.target.value, "pay");
+      this.pay(event.target.value);
       this.$refs["contIdField"].value = "";
     },
   },

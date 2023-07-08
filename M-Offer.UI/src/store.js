@@ -70,6 +70,7 @@ export const useAuthStore = defineStore('auth', {
 export const useTransactionStore = defineStore('transaction', {
   state: () => ({
     transactions: [],
+    memberId: "",
     balance: 0,
     isValidContId: true,
     isGetTodayTransactionsCalled: false // call getTodayTransactions() only once
@@ -96,22 +97,12 @@ export const useTransactionStore = defineStore('transaction', {
         });
       }
     },
-    async getMemberId(contId, option) {
+    async getMemberId(contId) {
       await axios.get('http://localhost:3000/api/member/id', { params:{ contId: contId } })
         .then(response => {
-          const memberId = response.data.memberId;
-
-          if (option === "pay") {
-            this.pay(memberId);
-          } else if (option === "getBalance") {
-            this.getBalance(memberId);
-          } else if (option === "deposit") {
-            this.deposit(memberId)
-          } else {
-            console.error("Invalid option for getting member ID.");
-          }
-
-          if (memberId !== "NONE" ) {
+          this.memberId = response.data.memberId;
+          
+          if (this.memberId !== "NONE" ) {
             this.isValidContId = true;
           } else {
             this.isValidContId = false;
@@ -122,8 +113,9 @@ export const useTransactionStore = defineStore('transaction', {
           this.isValidContId = false;
         });
     },
-    async getBalance(memberId) {
-      await axios.get('http://localhost:3000/api/balance', { params:{ memberId: memberId } })
+    async getBalance(contId) {
+      await this.getMemberId(contId);
+      await axios.get('http://localhost:3000/api/balance', { params: { memberId: this.memberId } })
         .then(response => {
           this.balance = response.data.balance;
         })
@@ -131,11 +123,12 @@ export const useTransactionStore = defineStore('transaction', {
           console.error("MemberId failed to fetch", error);
         });
     },
-    async pay(memberId) {
-      await axios.post('http://localhost:3000/api/member/pay', { memberId: memberId, username: useAuthStore().username,ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
+    async pay(contId) {
+      await this.getMemberId(contId);
+      await axios.post('http://localhost:3000/api/member/pay', { memberId: this.memberId, username: useAuthStore().username,ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
         .then(() => {
-          console.log("Paid for member ", memberId);
-          this.getTransaction(memberId);
+          console.log("Paid for member ", this.memberId);
+          this.getTransaction(this.memberId);
         })
         .catch(error => {
           console.error("Payment failed", error);
