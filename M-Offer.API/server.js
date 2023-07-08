@@ -147,9 +147,9 @@ sql
         'MAINMEAL',
         0,
         'SCAN',
-        '172.16.1.25',
+        '${req.body.ipAddress}',
         'LAPTOP21',
-        'MS EDGE',
+        '${req.body.browserName}',
         '${req.body.username}', 
         'MAINCAFE'
         `,
@@ -175,14 +175,14 @@ sql
           `exec sp_insertTransaction 
         '${req.body.memberId}',
         'CREDIT',
-        'MAINMEAL',
-        0,
-        'SCAN',
-        '172.16.1.25',
+        'XACT',
+        ${req.body.amount},
+        '${req.body.transType}',
+        '${req.body.ipAddress}',
         'LAPTOP21',
-        'MS EDGE',
+        '${req.body.browserName}',
         '${req.body.username}', 
-        'MAINCAFE'
+        'ACCT_OFFC'
         `,
           function (err, recordset) {
             if (err) console.log(err);

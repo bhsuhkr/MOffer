@@ -6,7 +6,10 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     isAuthenticated: false,
     username: "",
-    showValidationMessage: false
+    showValidationMessage: false,
+    browserName: "",
+    ipAddress: "",
+
   }),
   actions: {
     async login(cred) {
@@ -21,6 +24,8 @@ export const useAuthStore = defineStore('auth', {
           console.log("login successfully", response);
           this.username = cred.username;
           this.showValidationMessage = false;
+          this.fetchIpAddress();
+          this.detechBrowser();
           router.push('/pay');
         })
         .catch(error => {
@@ -32,6 +37,40 @@ export const useAuthStore = defineStore('auth', {
       this.isAuthenticated = false;
       this.showValidationMessage = false;
     },
+    async fetchIpAddress() {
+      try {
+        const response = await axios.get('https://api.ipify.org?format=json');
+        this.ipAddress = response.data.ip;
+      } catch (error) {
+        console.error('Error fetching IP address:', error);
+      }
+    },
+    detechBrowser() {
+      const userAgent = navigator.userAgent;
+
+      switch (true) {
+        case userAgent.indexOf('Chrome') !== -1:
+          this.browserName = 'Chrome';
+          break;
+        case userAgent.indexOf('Firefox') !== -1:
+          this.browserName = 'Firefox';
+          break;
+        case userAgent.indexOf('Safari') !== -1:
+          this.browserName = 'Safari';
+          break;
+        case userAgent.indexOf('Opera') !== -1 || userAgent.indexOf('OPR') !== -1:
+          this.browserName = 'Opera';
+          break;
+        case userAgent.indexOf('Edge') !== -1:
+          this.browserName = 'MS Edge';
+          break;
+        case userAgent.indexOf('Trident') !== -1:
+          this.browserName = 'Internet Explorer';
+          break;
+        default:
+          this.browserName = 'Unknown';
+      }
+    }
   },
 });
 
@@ -95,13 +134,24 @@ export const useTransactionStore = defineStore('transaction', {
         });
     },
     async pay(memberId) {
-      await axios.post('http://localhost:3000/api/member/pay', { memberId: memberId, username: useAuthStore().username })
+      await axios.post('http://localhost:3000/api/member/pay', { memberId: memberId, username: useAuthStore().username,ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
         .then(() => {
           console.log("Paid for member ", memberId);
           this.getTransaction(memberId);
         })
         .catch(error => {
           console.error("Payment failed", error);
+        });
+    },
+    async deposit(contId, amount, transType) {
+      await this.getMemberId(contId);
+      await axios.post('http://localhost:3000/api/member/deposit', { memberId: this.memberId, amount: amount, transType: transType, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
+        .then(() => {
+          console.log("Deposit for member ", this.memberId);
+          this.getTransaction(this.memberId);
+        })
+        .catch(error => {
+          console.error("Deposit failed", error);
         });
     }
   },
