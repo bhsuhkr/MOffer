@@ -3,12 +3,12 @@
     <h3>Deposit</h3>
     <form @submit.prevent="submitForm" class="deposit-form">
       <div>
-        <label for="name">헌금 아이디:</label>
+        <label for="contId">헌금 아이디:</label>
         <input
           type="text"
-          id="name"
+          id="contId"
           ref="contIdField"
-          v-model="contId"
+          v-model.trim="contId"
           required
         />
       </div>
@@ -18,13 +18,18 @@
           type="number"
           id="amount"
           ref="amountField"
-          v-model="amount"
+          v-model.number.trim="amount"
           required
         />
       </div>
       <div>
-        <label for="type">지불 방법:</label>
-        <select id="type" v-model="transType" required>
+        <label for="transType">지불 방법:</label>
+        <select
+          id="transType"
+          v-model="transType"
+          ref="transTypeField"
+          required
+        >
           <option value="CASH">Cash</option>
           <option value="CHECK">Check</option>
         </select>
@@ -32,16 +37,18 @@
       <button type="submit">Deposit</button>
     </form>
     <div class="confirmation-msg">
-      <h4>confirmation Message</h4>
-      <p>헌금 아이디: {{ this.contId }}</p>
-      <p>금액: {{ this.amount }}</p>
-      <p>지불 방법: {{ this.transType }}</p>
+      <h4>확인 메시지</h4>
+      <p>헌금 아이디: {{ contId }}</p>
+      <p>금액: {{ amount }}</p>
+      <p>지불 방법: {{ transType }}</p>
     </div>
   </div>
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, computed } from "vue";
+import { useVuelidate } from "@vuelidate/core";
+import { required, numeric } from "@vuelidate/validators";
 import { useTransactionStore } from "@/store";
 
 export default defineComponent({
@@ -50,8 +57,16 @@ export default defineComponent({
     let contId = ref("");
     let amount = ref(0);
     let transType = ref("CASH");
-    const transactionStore = useTransactionStore();
+    const rules = {
+      contId: { required },
+      amount: { required, numeric },
+      transType: { required },
+    };
 
+    let v$ = useVuelidate(rules, { contId, amount, transType });
+    const invalid = computed(() => v$.value.$invalid);
+
+    const transactionStore = useTransactionStore();
     transactionStore.getTodayTransactions();
     const deposit = async (contId, amount, transType) => {
       await transactionStore.deposit(contId, amount, transType);
@@ -62,13 +77,21 @@ export default defineComponent({
       amount,
       transType,
       deposit,
+      invalid,
     };
   },
   methods: {
     submitForm() {
-      this.deposit(this.contId, this.amount, this.transType);
-      this.$refs["contIdField"].value = "";
-      this.$refs["amountField"].value = "";
+      if (this.invalid) {
+        console.log("Validation failed");
+        return;
+      } else {
+        this.deposit(this.contId, this.amount, this.transType);
+
+        this.$refs["contIdField"].value = "";
+        this.$refs["amountField"].value = 0;
+        this.$refs["transTypeField"].value = "CASH";
+      }
     },
   },
 });
@@ -79,8 +102,9 @@ export default defineComponent({
   margin: 20px 40px;
   width: 100%;
 }
-.deposit-form{
+.deposit-form {
   margin-top: 20px;
+  max-width: 400px;
 }
 input[type="text"],
 input[type="number"],
