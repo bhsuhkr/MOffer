@@ -32,7 +32,7 @@ sql
           password +
           "'"
       );
-      console.log("user", user.recordset[0]);
+      // console.log("user", user.recordset[0]);
 
       if (user && user.recordset && user.recordset.length) {
         req.user = username;

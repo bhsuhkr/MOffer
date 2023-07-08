@@ -24,7 +24,7 @@ export default defineComponent({
   setup() {
     const transactionStore = useTransactionStore();
     const getMemberId = async (contId) => {
-      await transactionStore.getMemberId(contId);
+      await transactionStore.getMemberId(contId, "getBalance");
     };
     const balance = computed({
       get: () => transactionStore.balance,
@@ -43,7 +43,7 @@ export default defineComponent({
   },
   methods: {
     handleEnterKey(event) {
-      this.getMemberId(event.target.value, false);
+      this.getMemberId(event.target.value, "getBalance");
       this.$refs["contIdField"].value = "";
     },
   },

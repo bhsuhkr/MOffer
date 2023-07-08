@@ -48,27 +48,20 @@ export const useAuthStore = defineStore('auth', {
     detechBrowser() {
       const userAgent = navigator.userAgent;
 
-      switch (true) {
-        case userAgent.indexOf('Chrome') !== -1:
-          this.browserName = 'Chrome';
-          break;
-        case userAgent.indexOf('Firefox') !== -1:
-          this.browserName = 'Firefox';
-          break;
-        case userAgent.indexOf('Safari') !== -1:
-          this.browserName = 'Safari';
-          break;
-        case userAgent.indexOf('Opera') !== -1 || userAgent.indexOf('OPR') !== -1:
-          this.browserName = 'Opera';
-          break;
-        case userAgent.indexOf('Edge') !== -1:
-          this.browserName = 'MS Edge';
-          break;
-        case userAgent.indexOf('Trident') !== -1:
-          this.browserName = 'Internet Explorer';
-          break;
-        default:
-          this.browserName = 'Unknown';
+      if (userAgent.indexOf('Chrome') !== -1) {
+        this.browserName = 'Chrome';
+      } else if (userAgent.indexOf('Firefox') !== -1) {
+        this.browserName = 'Firefox';
+      } else if (userAgent.indexOf('Safari') !== -1) {
+        this.browserName = 'Safari';
+      } else if (userAgent.indexOf('Opera') !== -1 || userAgent.indexOf('OPR') !== -1) {
+        this.browserName = 'Opera';
+      } else if (userAgent.indexOf('Edge') !== -1) {
+        this.browserName = 'MS Edge';
+      } else if (userAgent.indexOf('Trident') !== -1) {
+        this.browserName = 'Internet Explorer';
+      } else {
+        this.browserName = 'Unknown';
       }
     }
   },
@@ -103,16 +96,21 @@ export const useTransactionStore = defineStore('transaction', {
         });
       }
     },
-    async getMemberId(contId, makePayment) {
+    async getMemberId(contId, option) {
       await axios.get('http://localhost:3000/api/member/id', { params:{ contId: contId } })
         .then(response => {
           const memberId = response.data.memberId;
 
-          if (makePayment) {
+          if (option === "pay") {
             this.pay(memberId);
-          } else {
+          } else if (option === "getBalance") {
             this.getBalance(memberId);
+          } else if (option === "deposit") {
+            this.deposit(memberId)
+          } else {
+            console.error("Invalid option for getting member ID.");
           }
+
           if (memberId !== "NONE" ) {
             this.isValidContId = true;
           } else {

@@ -54,7 +54,7 @@ export default defineComponent({
 
     transactionStore.getTodayTransactions();
     const getMemberId = async (contId) => {
-      await transactionStore.getMemberId(contId, true);
+      await transactionStore.getMemberId(contId, "pay");
     };
 
     return {
@@ -66,7 +66,7 @@ export default defineComponent({
   },
   methods: {
     handleEnterKey(event) {
-      this.getMemberId(event.target.value, true);
+      this.getMemberId(event.target.value, "pay");
       this.$refs["contIdField"].value = "";
     },
   },
