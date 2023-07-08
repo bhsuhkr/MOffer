@@ -19,9 +19,8 @@ export const useAuthStore = defineStore('auth', {
       };
       
       await axios.post('http://localhost:3000/api/auth/signin', userData)
-        .then(response => {
+        .then(() => {
           this.isAuthenticated = true;
-          console.log("login successfully", response);
           this.username = cred.username;
           this.showValidationMessage = false;
           this.fetchIpAddress();

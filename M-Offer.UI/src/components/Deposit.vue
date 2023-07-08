@@ -1,7 +1,7 @@
 <template>
   <div class="deposit-container">
     <h3>Deposit</h3>
-    <form @submit.prevent="submitForm">
+    <form @submit.prevent="submitForm" class="deposit-form">
       <div>
         <label for="name">헌금 아이디:</label>
         <input
@@ -31,7 +31,12 @@
       </div>
       <button type="submit">Deposit</button>
     </form>
-    <div>confirmation Message</div>
+    <div class="confirmation-msg">
+      <h4>confirmation Message</h4>
+      <p>헌금 아이디: {{ this.contId }}</p>
+      <p>금액: {{ this.amount }}</p>
+      <p>지불 방법: {{ this.transType }}</p>
+    </div>
   </div>
 </template>
 
@@ -73,5 +78,27 @@ export default defineComponent({
 .deposit-container {
   margin: 20px 40px;
   width: 100%;
+}
+.deposit-form{
+  margin-top: 20px;
+}
+input[type="text"],
+input[type="number"],
+select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+button {
+  width: 100%;
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 15px;
 }
 </style>
