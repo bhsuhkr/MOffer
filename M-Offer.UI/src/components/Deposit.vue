@@ -36,62 +36,82 @@
       </div>
       <button type="submit">Deposit</button>
     </form>
-    <div class="confirmation-msg">
-      <h4>확인 메시지</h4>
-      <p>헌금 아이디: {{ contId }}</p>
-      <p>금액: {{ amount }}</p>
-      <p>지불 방법: {{ transType }}</p>
-    </div>
+
+    <Popup
+      ref="popup"
+      v-if="showConfirmationMsg"
+      :contId="contId"
+      :amount="amount"
+      :transType="transType"
+      @close-popup="handlePopupClosed"
+    />
   </div>
 </template>
 
 <script>
 import { defineComponent, ref, computed } from "vue";
 import { useVuelidate } from "@vuelidate/core";
-import { required, numeric } from "@vuelidate/validators";
+import { required, minValue } from "@vuelidate/validators";
 import { useTransactionStore } from "@/store";
+import Popup from "./Popup.vue";
 
 export default defineComponent({
   name: "Deposit",
+  components: {
+    Popup,
+  },
   setup() {
+    let showConfirmationMsg = ref(false);
     let contId = ref("");
     let amount = ref(0);
     let transType = ref("CASH");
     const rules = {
       contId: { required },
-      amount: { required, numeric },
+      amount: { required, minValue: minValue(1) },
       transType: { required },
     };
 
     let v$ = useVuelidate(rules, { contId, amount, transType });
-    const invalid = computed(() => v$.value.$invalid);
+    const formInvalid = computed(() => v$.value.$invalid);
 
     const transactionStore = useTransactionStore();
     transactionStore.getTodayTransactions();
     const deposit = async (contId, amount, transType) => {
       await transactionStore.deposit(contId, amount, transType);
     };
+    const isValidContId = computed({
+      get: () => transactionStore.isValidContId,
+      set: (newValue) => (transactionStore.isValidContId = newValue),
+    });
 
     return {
+      showConfirmationMsg,
       contId,
       amount,
       transType,
       deposit,
-      invalid,
+      formInvalid,
+      isValidContId,
     };
   },
   methods: {
-    submitForm() {
-      if (this.invalid) {
-        console.log("Validation failed");
-        return;
-      } else {
-        this.deposit(this.contId, this.amount, this.transType);
-
-        this.$refs["contIdField"].value = "";
-        this.$refs["amountField"].value = 0;
-        this.$refs["transTypeField"].value = "CASH";
+    async submitForm() {
+      if (this.formInvalid) {
+        this.showConfirmationMsg = false;
+      } else if (window.confirm("$" + this.amount + "을 입금하시겠습니까?")) {
+        await this.deposit(this.contId, this.amount, this.transType);
+        if (this.isValidContId) {
+          this.showConfirmationMsg = true;
+        } else {
+          this.showConfirmationMsg = false;
+        }
       }
+    },
+    handlePopupClosed() {
+      this.showConfirmationMsg = false;
+      this.$refs["contIdField"].value = "";
+      this.$refs["amountField"].value = 0;
+      this.$refs["transTypeField"].value = "CASH";
     },
   },
 });

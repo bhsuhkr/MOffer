@@ -114,28 +114,33 @@ export const useTransactionStore = defineStore('transaction', {
     },
     async getBalance(contId) {
       await this.getMemberId(contId);
-      await axios.get('http://localhost:3000/api/balance', { params: { memberId: this.memberId } })
-        .then(response => {
-          this.balance = response.data.balance;
-        })
-        .catch(error => {
-          console.error("MemberId failed to fetch", error);
-        });
+      if (this.isValidContId) {
+        await axios.get('http://localhost:3000/api/balance', { params: { memberId: this.memberId } })
+          .then(response => {
+            this.balance = response.data.balance;
+          })
+          .catch(error => {
+            console.error("MemberId failed to fetch", error);
+          });
+      }
     },
     async pay(contId) {
       await this.getMemberId(contId);
-      await axios.post('http://localhost:3000/api/member/pay', { memberId: this.memberId, username: useAuthStore().username,ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
-        .then(() => {
-          console.log("Paid for member ", this.memberId);
-          this.getTransaction(this.memberId);
-        })
-        .catch(error => {
-          console.error("Payment failed", error);
-        });
+      if (this.isValidContId) {
+        await axios.post('http://localhost:3000/api/member/pay', { memberId: this.memberId, username: useAuthStore().username,ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
+          .then(() => {
+            console.log("Paid for member ", this.memberId);
+            this.getTransaction(this.memberId);
+          })
+          .catch(error => {
+            console.error("Payment failed", error);
+          });
+      }
     },
     async deposit(contId, amount, transType) {
       await this.getMemberId(contId);
-      await axios.post('http://localhost:3000/api/member/deposit', { memberId: this.memberId, amount: amount, transType: transType, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
+      if (this.isValidContId) {
+        await axios.post('http://localhost:3000/api/member/deposit', { memberId: this.memberId, amount: amount, transType: transType, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
         .then(() => {
           console.log("Deposit for member ", this.memberId);
           this.getTransaction(this.memberId);
@@ -143,6 +148,7 @@ export const useTransactionStore = defineStore('transaction', {
         .catch(error => {
           console.error("Deposit failed", error);
         });
+      }
     }
   },
 });
