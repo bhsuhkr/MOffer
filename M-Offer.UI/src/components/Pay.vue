@@ -76,7 +76,7 @@ export default defineComponent({
   methods: {
     async handleEnterKey(event) {
       await this.getBalance(event.target.value);
-      if (this.balance <= -8) {
+      if (this.balance <= -10) {
         window.alert("잔액이 부족합니다. $" + this.balance);
       } else {
         this.pay(event.target.value);
