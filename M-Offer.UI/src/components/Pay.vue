@@ -47,6 +47,13 @@ export default defineComponent({
       "RunningBalance",
     ];
     const transactionStore = useTransactionStore();
+    const getBalance = async (contId) => {
+      await transactionStore.getBalance(contId);
+    };
+    const balance = computed({
+      get: () => transactionStore.balance,
+      set: (newValue) => (transactionStore.balance = newValue),
+    });
     const isValidContId = computed({
       get: () => transactionStore.isValidContId,
       set: (newValue) => (transactionStore.isValidContId = newValue),
@@ -58,6 +65,8 @@ export default defineComponent({
     };
 
     return {
+      getBalance,
+      balance,
       transactionData: transactionStore.transactions,
       fields,
       pay,
@@ -65,8 +74,13 @@ export default defineComponent({
     };
   },
   methods: {
-    handleEnterKey(event) {
-      this.pay(event.target.value);
+    async handleEnterKey(event) {
+      await this.getBalance(event.target.value);
+      if (this.balance <= -8) {
+        window.alert("잔액이 부족합니다. $" + this.balance);
+      } else {
+        this.pay(event.target.value);
+      }
       this.$refs["contIdField"].value = "";
     },
   },

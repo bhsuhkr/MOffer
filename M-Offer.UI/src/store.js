@@ -127,7 +127,7 @@ export const useTransactionStore = defineStore('transaction', {
     async pay(contId) {
       await this.getMemberId(contId);
       if (this.isValidContId) {
-        await axios.post('http://localhost:3000/api/member/pay', { memberId: this.memberId, username: useAuthStore().username,ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
+        await axios.post('http://localhost:3000/api/member/pay', { memberId: this.memberId, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
           .then(() => {
             console.log("Paid for member ", this.memberId);
             this.getTransaction(this.memberId);
