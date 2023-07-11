@@ -98,12 +98,14 @@ export default defineComponent({
     async submitForm() {
       if (this.formInvalid) {
         this.showConfirmationMsg = false;
+        window.alert("최소 $1 이상 입력해주세요");
       } else if (window.confirm("$" + this.amount + "을 입금하시겠습니까?")) {
         await this.deposit(this.contId, this.amount, this.transType);
         if (this.isValidContId) {
           this.showConfirmationMsg = true;
         } else {
           this.showConfirmationMsg = false;
+          window.alert("잘못된 헌금 아이디입니다");
         }
       }
     },
