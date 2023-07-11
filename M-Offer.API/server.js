@@ -55,7 +55,7 @@ sql
       try {
         pool.query(
           `select TOP 1 RunningBalance from  nc_transactions where memberid = ${req.query.memberId} ORDER BY TransTime DESC`,
-          function (err, recordset) {
+          (err, recordset) => {
             if (err) console.log(err);
             else {
               res.status(200).json({
@@ -77,7 +77,7 @@ sql
           `select TOP 1 nc_transactions.MemberID, nc_transactions.TransType, nc_transactions.TransTime, nc_transactions.RunningBalance, nc_members.KoreanName, nc_members.ContId
             from  nc_transactions left join nc_members on nc_transactions.memberid = nc_members.memberid
             where nc_transactions.memberid = ${req.query.memberId} ORDER BY TransTime DESC`,
-          function (err, recordset) {
+          (err, recordset) => {
             if (err) console.log(err);
             else {
               res.status(200).json({
@@ -101,7 +101,7 @@ sql
             left join nc_members on nc_transactions.memberid = nc_members.memberid
             where CONVERT(DATE, TransTime) = CONVERT(DATE, GETDATE())
             order by TransTime desc`,
-          function (err, recordset) {
+          (err, recordset) => {
             if (err) console.log(err);
             else {
               res.status(200).json({
@@ -123,7 +123,7 @@ sql
           `exec sp_getMemberId
             ${req.query.contId}
           `,
-          function (err, recordset) {
+          (err, recordset) => {
             if (err) console.log(err);
             else {
               res.status(200).json({
@@ -153,7 +153,7 @@ sql
         '${req.body.username}', 
         'MAINCAFE'
         `,
-          function (err, recordset) {
+          (err, recordset) => {
             if (err) console.log(err);
             else {
               res.status(200).json({
@@ -184,7 +184,7 @@ sql
         '${req.body.username}', 
         'ACCT_OFFC'
         `,
-          function (err, recordset) {
+          (err, recordset) => {
             if (err) console.log(err);
             else {
               res.status(200).json({
