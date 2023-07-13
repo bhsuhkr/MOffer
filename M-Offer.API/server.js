@@ -199,6 +199,37 @@ sql
         res.status(500).json({ error: "Can't make a deposit" });
       }
     });
+
+    app.post("/api/member/refund", async (req, res) => {
+      try {
+        pool.query(
+          `exec sp_insertTransaction 
+        '${req.body.memberId}',
+        'CREDIT',
+        'XACT',
+        '2',
+        'CASH',
+        '${req.body.ipAddress}',
+        'LAPTOP21',
+        '${req.body.browserName}',
+        '${req.body.username}', 
+        'ACCT_OFFC'
+        `,
+          (err, recordset) => {
+            if (err) console.log(err);
+            else {
+              res.status(200).json({
+                message: "Refunded successfully",
+                data: recordset,
+              });
+            }
+          }
+        );
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Can't make a deposit" });
+      }
+    });
   })
   .catch((err) => console.log("Database Connection Failed", err));
 

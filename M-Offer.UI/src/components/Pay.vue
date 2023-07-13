@@ -1,6 +1,9 @@
 <template>
   <div class="pay-container">
-    <h3 class="pay-title">Pay</h3>
+    <div class="pay-header">
+      <h3 class="pay-title">Pay</h3>
+      <button @click="getRefund()" class="refund-btn">환불하기</button>
+    </div>
     <div class="transaction-container">
       <input
         class="cont-input"
@@ -12,6 +15,7 @@
       <p class="balance-validation" v-if="!isValidContId">
         잘못된 아이디입니다. 다시 시도해 주세요.
       </p>
+
       <table id="tableComponent" class="table table-bordered table-striped">
         <thead>
           <tr>
@@ -50,9 +54,16 @@ export default defineComponent({
     const getBalance = async (contId) => {
       await transactionStore.getBalance(contId);
     };
+    const refund = async () => {
+      await transactionStore.refund();
+    };
     const balance = computed({
       get: () => transactionStore.balance,
       set: (newValue) => (transactionStore.balance = newValue),
+    });
+    const memberId = computed({
+      get: () => transactionStore.memberId,
+      set: (newValue) => (transactionStore.memberId = newValue),
     });
     const isValidContId = computed({
       get: () => transactionStore.isValidContId,
@@ -66,10 +77,12 @@ export default defineComponent({
 
     return {
       getBalance,
+      memberId,
       balance,
       transactionData: transactionStore.transactions,
       fields,
       pay,
+      refund,
       isValidContId,
     };
   },
@@ -83,6 +96,13 @@ export default defineComponent({
       }
       this.$refs["contIdField"].value = "";
     },
+    getRefund() {
+      if (this.memberId) {
+        this.refund();
+      } else {
+        window.alert("이미 환불 되었습니다.");
+      }
+    },
   },
 });
 </script>
@@ -95,9 +115,19 @@ export default defineComponent({
 .cont-input {
   width: 100%;
   margin-top: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 .balance-validation {
   color: red;
+}
+.refund-btn {
+  background-color: red;
+  margin-top: 0px;
+  margin-bottom: 10px;
+  width: 200px;
+}
+.pay-header {
+  display: flex;
+  justify-content: space-between;
 }
 </style>

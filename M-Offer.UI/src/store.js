@@ -149,6 +149,19 @@ export const useTransactionStore = defineStore('transaction', {
           console.error("Deposit failed", error);
         });
       }
+    },
+    async refund() {
+      if (this.isValidContId) {
+        await axios.post('http://localhost:3000/api/member/refund', { memberId: this.memberId, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
+        .then(() => {
+          console.log("Refund for member ", this.memberId);
+          this.getTransaction(this.memberId);
+          this.memberId = ""
+        })
+        .catch(error => {
+          console.error("Refund failed", error);
+        });
+      }
     }
   },
 });
