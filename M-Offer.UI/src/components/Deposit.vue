@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed } from "vue";
+import { defineComponent, ref, computed, onMounted } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required, minValue } from "@vuelidate/validators";
 import { useTransactionStore } from "@/store";
@@ -84,6 +84,11 @@ export default defineComponent({
       set: (newValue) => (transactionStore.isValidContId = newValue),
     });
 
+    const contIdField = ref("");
+    onMounted(() => {
+      contIdField.value.focus();
+    });
+
     return {
       showConfirmationMsg,
       contId,
@@ -92,6 +97,7 @@ export default defineComponent({
       deposit,
       formInvalid,
       isValidContId,
+      contIdField,
     };
   },
   methods: {

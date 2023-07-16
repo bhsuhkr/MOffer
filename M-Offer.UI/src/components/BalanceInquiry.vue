@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, onMounted, ref } from "vue";
 import { useTransactionStore } from "@/store";
 
 export default defineComponent({
@@ -35,10 +35,16 @@ export default defineComponent({
       set: (newValue) => (transactionStore.isValidContId = newValue),
     });
 
+    const contIdField = ref("");
+    onMounted(() => {
+      contIdField.value.focus();
+    });
+
     return {
       getBalance,
       balance,
       isValidContId,
+      contIdField,
     };
   },
   methods: {

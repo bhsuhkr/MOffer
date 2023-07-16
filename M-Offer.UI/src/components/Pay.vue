@@ -37,7 +37,7 @@
 
 <script>
 import "bootstrap/dist/css/bootstrap.min.css";
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, onMounted, ref } from "vue";
 import { useTransactionStore } from "@/store";
 
 export default defineComponent({
@@ -75,6 +75,11 @@ export default defineComponent({
       await transactionStore.pay(contId, "pay");
     };
 
+    const contIdField = ref("");
+    onMounted(() => {
+      contIdField.value.focus();
+    });
+
     return {
       getBalance,
       memberId,
@@ -84,6 +89,7 @@ export default defineComponent({
       pay,
       refund,
       isValidContId,
+      contIdField,
     };
   },
   methods: {
