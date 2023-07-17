@@ -93,6 +93,28 @@ sql
       }
     });
 
+    app.get("/api/member/transactions", async (req, res) => {
+      try {
+        pool.query(
+          `select nc_transactions.MemberID, nc_transactions.TransType, nc_transactions.TransTime, nc_transactions.RunningBalance, nc_members.KoreanName, nc_members.ContId
+            from  nc_transactions left join nc_members on nc_transactions.memberid = nc_members.memberid
+            where nc_transactions.memberid = ${req.query.memberId} ORDER BY TransTime DESC`,
+          (err, recordset) => {
+            if (err) console.log(err);
+            else {
+              res.status(200).json({
+                message: `Transactions for ${req.query.memberId} fetched successfully`,
+                recordset,
+              });
+            }
+          }
+        );
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Can't fetch a transaction" });
+      }
+    });
+
     app.get("/api/transactions", async (req, res) => {
       try {
         pool.query(

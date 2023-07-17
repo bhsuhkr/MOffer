@@ -16,7 +16,7 @@
         잘못된 아이디입니다. 다시 시도해 주세요.
       </p>
 
-      <table id="tableComponent" class="table table-bordered table-striped">
+      <table class="table table-bordered table-striped">
         <thead>
           <tr>
             <th v-for="field in fields" :key="field">
@@ -105,6 +105,7 @@ export default defineComponent({
     getRefund() {
       if (this.memberId) {
         this.refund();
+        window.alert("정상적으로 환불 되었습니다.");
       } else {
         window.alert("이미 환불 되었습니다.");
       }
