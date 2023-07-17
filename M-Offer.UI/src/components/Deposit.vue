@@ -34,7 +34,7 @@
           <option value="CHECK">Check</option>
         </select>
       </div>
-      <button type="submit">Deposit</button>
+      <button type="submit" :disabled="showConfirmationMsg">Deposit</button>
     </form>
 
     <Popup
@@ -109,17 +109,25 @@ export default defineComponent({
         await this.deposit(this.contId, this.amount, this.transType);
         if (this.isValidContId) {
           this.showConfirmationMsg = true;
+          document.addEventListener("keydown", this.handleKeyPress);
         } else {
           this.showConfirmationMsg = false;
           window.alert("잘못된 헌금 아이디입니다");
         }
       }
+      this.$refs.contIdField.focus();
+    },
+    handleKeyPress(event) {
+      if (event.key === "Enter" || event.key === "Escape") {
+        this.handlePopupClosed();
+      }
     },
     handlePopupClosed() {
+      this.contId = "";
+      this.amount = 0;
+      this.transType = "CASH";
+      document.removeEventListener("keydown", this.handleKeyPress);
       this.showConfirmationMsg = false;
-      this.$refs["contIdField"].value = "";
-      this.$refs["amountField"].value = 0;
-      this.$refs["transTypeField"].value = "CASH";
     },
   },
 });
