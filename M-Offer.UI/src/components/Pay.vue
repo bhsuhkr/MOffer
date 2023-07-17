@@ -109,6 +109,7 @@ export default defineComponent({
       } else {
         window.alert("이미 환불 되었습니다.");
       }
+      this.$refs.contIdField.focus();
     },
   },
 });
@@ -126,6 +127,9 @@ export default defineComponent({
 }
 .balance-validation {
   color: red;
+}
+.table {
+  margin-top: 10px;
 }
 .refund-btn {
   background-color: red;

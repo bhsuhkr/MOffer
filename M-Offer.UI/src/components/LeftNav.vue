@@ -19,11 +19,6 @@
           >
         </li> -->
         <li class="leftnav-item">
-          <router-link class="nav-link" to="/balance-inquiry"
-            >Balance Inquiry</router-link
-          >
-        </li>
-        <li class="leftnav-item">
           <router-link class="nav-link" to="/" @click="logout"
             >Log out</router-link
           >

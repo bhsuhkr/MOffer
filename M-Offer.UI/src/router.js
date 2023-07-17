@@ -6,7 +6,6 @@ import Deposit from './components/Deposit.vue';
 // TODO: Phase 2
 // import MemberManagement from './components/MemberManagement.vue';
 // import UserManagement from './components/UserManagement.vue';
-import BalanceInquiry from './components/BalanceInquiry.vue';
 
 const routes = [
   {
@@ -34,11 +33,6 @@ const routes = [
   //   component: UserManagement,
   //   meta: { requiresAuth: true }
   // },
-  {
-    path: '/balance-inquiry',
-    component: BalanceInquiry,
-    meta: { requiresAuth: true }
-  },
 ];
 
 const router = createRouter({
