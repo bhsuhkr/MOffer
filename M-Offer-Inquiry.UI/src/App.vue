@@ -1,0 +1,135 @@
+<template>
+  <div class="balance-inquiry-container">
+    <div class="inquiry-header">
+      <h3 class="inquiry-title">Balance Inquiry</h3>
+      <button @click="clearHistory()" class="clear-btn">기록 지우기</button>
+    </div>
+    <input
+      class="cont-input"
+      ref="contIdField"
+      type="text"
+      @keydown.enter="handleEnterKey"
+      placeholder="여기를 먼저 누른 후 바코드를 스캔하세요."
+    />
+    <p class="balance-text" v-if="isValidContId">남은 금액: ${{ balance }}</p>
+    <p class="balance-validation" v-if="!isValidContId">
+      잘못된 아이디입니다. 다시 시도해 주세요.
+    </p>
+
+    <h4>Transaction History</h4>
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th v-for="field in fields" :key="field">
+            {{ field }}
+            <i class="bi bi-sort-alpha-down" aria-label="Sort Icon"></i>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in transactionData" :key="item">
+          <td v-for="field in fields" :key="field">{{ item[field] }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</template>
+
+<script>
+import { defineComponent, computed, onMounted, ref } from "vue";
+import { useTransactionStore } from "@/store";
+import "bootstrap/dist/css/bootstrap.min.css";
+
+export default defineComponent({
+  name: "App",
+  setup() {
+    const fields = [
+      "KoreanName",
+      "ContId",
+      "TransType",
+      "TransTime",
+      "RunningBalance",
+    ];
+    const transactionStore = useTransactionStore();
+    const getBalance = async (contId) => {
+      await transactionStore.getBalance(contId);
+    };
+    const clearMemberTransactrions = async () => {
+      await transactionStore.clearMemberTransactrions();
+    };
+    const balance = computed({
+      get: () => transactionStore.balance,
+      set: (newValue) => (transactionStore.balance = newValue),
+    });
+    const memberTransactions = computed({
+      get: () => transactionStore.memberTransactions,
+      set: (newValue) => (transactionStore.memberTransactions = newValue),
+    });
+    const isValidContId = computed({
+      get: () => transactionStore.isValidContId,
+      set: (newValue) => (transactionStore.isValidContId = newValue),
+    });
+
+    const contIdField = ref("");
+    onMounted(() => {
+      contIdField.value.focus();
+    });
+
+    return {
+      clearMemberTransactrions,
+      getBalance,
+      balance,
+      isValidContId,
+      contIdField,
+      fields,
+      transactionData: memberTransactions,
+    };
+  },
+  methods: {
+    handleEnterKey(event) {
+      const contId = event.target.value;
+      this.getBalance(contId);
+      this.$refs["contIdField"].value = "";
+    },
+    clearHistory() {
+      this.clearMemberTransactrions();
+      window.alert("기록이 지워졌습니다.");
+      this.$refs.contIdField.focus();
+    },
+  },
+});
+</script>
+
+<style scoped>
+.balance-inquiry-container {
+  width: 100%;
+  padding: 20px;
+}
+.cont-input {
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+.balance-text {
+  font-weight: 600;
+  font-size: 20px;
+  margin-bottom: 50px;
+}
+.balance-validation {
+  color: red;
+}
+.clear-btn {
+  background-color: red;
+  margin-top: 0px;
+  margin-bottom: 10px;
+  width: 200px;
+  border-radius: 4px;
+  padding: 10px 20px;
+  color: #fff;
+  border: none;
+}
+.inquiry-header {
+  display: flex;
+  justify-content: space-between;
+}
+</style>
