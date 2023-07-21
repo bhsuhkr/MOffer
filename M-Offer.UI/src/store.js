@@ -18,7 +18,7 @@ export const useAuthStore = defineStore('auth', {
         password: cred.password
       };
       
-      await axios.post('http://localhost:3000/api/auth/signin', userData)
+      await axios.post('http://172.16.1.154:3000/api/auth/signin', userData)
         .then(() => {
           this.isAuthenticated = true;
           this.username = cred.username;
@@ -76,7 +76,7 @@ export const useTransactionStore = defineStore('transaction', {
   }),
   actions: {
     async getTransaction(memberId) {
-      await axios.get('http://localhost:3000/api/transaction', { params: { memberId } })
+      await axios.get('http://172.16.1.154:3000/api/transaction', { params: { memberId } })
         .then(response => {
           this.transactions.unshift(...response.data.recordset.recordset);
         })
@@ -86,7 +86,7 @@ export const useTransactionStore = defineStore('transaction', {
     },
     async getTodayTransactions() {
       if (!this.isGetTodayTransactionsCalled) {
-        await axios.get('http://localhost:3000/api/transactions')
+        await axios.get('http://172.16.1.154:3000/api/transactions')
         .then(response => {
           this.transactions.push(...response.data.recordset.recordset);
           this.isGetTodayTransactionsCalled = true;
@@ -97,7 +97,7 @@ export const useTransactionStore = defineStore('transaction', {
       }
     },
     async getMemberId(contId) {
-      await axios.get('http://localhost:3000/api/member/id', { params:{ contId: contId } })
+      await axios.get('http://172.16.1.154:3000/api/member/id', { params:{ contId: contId } })
         .then(response => {
           this.memberId = response.data.memberId;
           
@@ -115,7 +115,7 @@ export const useTransactionStore = defineStore('transaction', {
     async getBalance(contId) {
       await this.getMemberId(contId);
       if (this.isValidContId) {
-        await axios.get('http://localhost:3000/api/balance', { params: { memberId: this.memberId } })
+        await axios.get('http://172.16.1.154:3000/api/balance', { params: { memberId: this.memberId } })
           .then(response => {
             this.balance = response.data.balance;
           })
@@ -127,7 +127,7 @@ export const useTransactionStore = defineStore('transaction', {
     async pay(contId) {
       await this.getMemberId(contId);
       if (this.isValidContId) {
-        await axios.post('http://localhost:3000/api/member/pay', { memberId: this.memberId, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
+        await axios.post('http://172.16.1.154:3000/api/member/pay', { memberId: this.memberId, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
           .then(() => {
             console.log("Paid for member ", this.memberId);
             this.getTransaction(this.memberId);
@@ -140,7 +140,7 @@ export const useTransactionStore = defineStore('transaction', {
     async deposit(contId, amount, transType) {
       await this.getMemberId(contId);
       if (this.isValidContId) {
-        await axios.post('http://localhost:3000/api/member/deposit', { memberId: this.memberId, amount: amount, transType: transType, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
+        await axios.post('http://172.16.1.154:3000/api/member/deposit', { memberId: this.memberId, amount: amount, transType: transType, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
         .then(() => {
           console.log("Deposit for member ", this.memberId);
           this.getTransaction(this.memberId);
@@ -152,7 +152,7 @@ export const useTransactionStore = defineStore('transaction', {
     },
     async refund() {
       if (this.isValidContId) {
-        await axios.post('http://localhost:3000/api/member/refund', { memberId: this.memberId, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
+        await axios.post('http://172.16.1.154:3000/api/member/refund', { memberId: this.memberId, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
         .then(() => {
           console.log("Refund for member ", this.memberId);
           this.getTransaction(this.memberId);
