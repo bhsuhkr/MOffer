@@ -5,13 +5,16 @@
       <button @click="getRefund()" class="refund-btn">환불하기</button>
     </div>
     <div class="transaction-container">
-      <input
-        class="cont-input"
-        ref="contIdField"
-        type="text"
-        @keydown.enter="handleEnterKey"
-        placeholder="여기를 먼저 누른 후 바코드를 스캔하세요."
-      />
+      <div class="input-row">
+        <input
+          class="cont-input"
+          ref="contIdField"
+          type="text"
+          @keydown.enter="handleEnterKey"
+          placeholder="여기를 먼저 누른 후 바코드를 스캔하세요."
+        />
+        <button class="submit-btn" @click="handleEnterKey">Submit</button>
+      </div>
       <p class="balance-validation" v-if="!isValidContId">
         잘못된 아이디입니다. 다시 시도해 주세요.
       </p>
@@ -93,14 +96,18 @@ export default defineComponent({
     };
   },
   methods: {
-    async handleEnterKey(event) {
-      await this.getBalance(event.target.value);
-      if (this.balance <= -10) {
-        window.alert("잔액이 부족합니다. $" + this.balance);
-      } else {
-        this.pay(event.target.value);
+    async handleEnterKey() {
+      const contId = this.$refs["contIdField"].value;
+      if (contId) {
+        await this.getBalance(contId);
+        if (this.balance <= -10) {
+          window.alert("잔액이 부족합니다. $" + this.balance);
+        } else {
+          this.pay(contId);
+        }
+        this.$refs["contIdField"].value = "";
       }
-      this.$refs["contIdField"].value = "";
+      this.$refs.contIdField.focus();
     },
     getRefund() {
       if (this.memberId) {
@@ -140,5 +147,16 @@ export default defineComponent({
 .pay-header {
   display: flex;
   justify-content: space-between;
+}
+.input-row {
+  display: flex;
+}
+.submit-btn {
+  border-radius: 3px;
+  height: 30px;
+  margin-top: 10px;
+  margin-left: 10px;
+  padding: 0 20px;
+  max-width: 100px;
 }
 </style>
