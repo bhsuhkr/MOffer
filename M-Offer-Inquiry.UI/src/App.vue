@@ -4,13 +4,16 @@
       <h3 class="inquiry-title">Balance Inquiry</h3>
       <button @click="clearHistory()" class="clear-btn">기록 지우기</button>
     </div>
-    <input
-      class="cont-input"
-      ref="contIdField"
-      type="text"
-      @keydown.enter="handleEnterKey"
-      placeholder="여기를 먼저 누른 후 바코드를 스캔하세요."
-    />
+    <div class="input-row">
+      <input
+        class="cont-input"
+        ref="contIdField"
+        type="text"
+        @keydown.enter="handleEnterKey"
+        placeholder="여기를 먼저 누른 후 바코드를 스캔하세요."
+      />
+      <button class="submit-btn" @click="handleEnterKey">Submit</button>
+    </div>
     <p class="balance-text" v-if="isValidContId">남은 금액: ${{ balance }}</p>
     <p class="balance-validation" v-if="!isValidContId">
       잘못된 아이디입니다. 다시 시도해 주세요.
@@ -86,14 +89,15 @@ export default defineComponent({
     };
   },
   methods: {
-    handleEnterKey(event) {
-      const contId = event.target.value;
-      this.getBalance(contId);
-      this.$refs["contIdField"].value = "";
+    handleEnterKey() {
+      if (this.$refs["contIdField"].value) {
+        this.getBalance(this.$refs["contIdField"].value);
+        this.$refs["contIdField"].value = "";
+      }
+      this.$refs.contIdField.focus();
     },
     clearHistory() {
       this.clearMemberTransactrions();
-      window.alert("기록이 지워졌습니다.");
       this.$refs.contIdField.focus();
     },
   },
@@ -131,5 +135,20 @@ export default defineComponent({
 .inquiry-header {
   display: flex;
   justify-content: space-between;
+}
+.input-row {
+  display: flex;
+}
+.submit-btn {
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  height: 30px;
+  margin-top: 10px;
+  margin-left: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 </style>
