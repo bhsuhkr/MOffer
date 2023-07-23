@@ -58,10 +58,17 @@ sql
           (err, recordset) => {
             if (err) console.log(err);
             else {
-              res.status(200).json({
-                message: "Balance fetched successfully",
-                balance: recordset.recordset[0].RunningBalance,
-              });
+              if (recordset && recordset.recordset && recordset.recordset[0]) {
+                res.status(200).json({
+                  message: "Balance fetched successfully",
+                  balance: recordset.recordset[0].RunningBalance,
+                });
+              } else {
+                res.status(200).json({
+                  message: "No transaction history",
+                  balance: 0,
+                });
+              }
             }
           }
         );
@@ -148,9 +155,13 @@ sql
           (err, recordset) => {
             if (err) console.log(err);
             else {
-              res.status(200).json({
-                memberId: recordset.recordset[0].MemberID,
-              });
+              if (recordset && recordset.recordset && recordset.recordset[0]) {
+                res.status(200).json({
+                  memberId: recordset.recordset[0].MemberID,
+                });
+              } else {
+                res.status(404).json({ error: "Can't find Member ID" });
+              }
             }
           }
         );
