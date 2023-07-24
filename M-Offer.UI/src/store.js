@@ -72,6 +72,7 @@ export const useTransactionStore = defineStore('transaction', {
     memberId: "",
     balance: 0,
     isValidContId: true,
+    didPay: false,
     isGetTodayTransactionsCalled: false // call getTodayTransactions() only once
   }),
   actions: {
@@ -131,9 +132,11 @@ export const useTransactionStore = defineStore('transaction', {
           .then(() => {
             console.log("Paid for member ", this.memberId);
             this.getTransaction(this.memberId);
+            this.didPay = true;
           })
           .catch(error => {
             console.error("Payment failed", error);
+            this.didPay = false;
           });
       }
     },
@@ -156,7 +159,7 @@ export const useTransactionStore = defineStore('transaction', {
         .then(() => {
           console.log("Refund for member ", this.memberId);
           this.getTransaction(this.memberId);
-          this.memberId = ""
+          this.memberId = "";
         })
         .catch(error => {
           console.error("Refund failed", error);

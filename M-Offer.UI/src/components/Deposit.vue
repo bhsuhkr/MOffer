@@ -35,15 +35,16 @@
         </select>
       </div>
       <button type="submit" :disabled="showConfirmationMsg">Deposit</button>
+      <p class="validation-msg">{{ validationMessage }}</p>
     </form>
 
-    <Popup
-      ref="popup"
+    <DepositPopup
+      ref="deposit-popup"
       v-if="showConfirmationMsg"
       :contId="contId"
       :amount="amount"
       :transType="transType"
-      @close-popup="handlePopupClosed"
+      @close-deposit-popup="handlePopupClosed"
     />
   </div>
 </template>
@@ -53,18 +54,20 @@ import { defineComponent, ref, computed, onMounted } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required, minValue } from "@vuelidate/validators";
 import { useTransactionStore } from "@/store";
-import Popup from "./Popup.vue";
+import DepositPopup from "./DepositPopup.vue";
 
 export default defineComponent({
   name: "Deposit",
   components: {
-    Popup,
+    DepositPopup,
   },
   setup() {
     let showConfirmationMsg = ref(false);
     let contId = ref("");
     let amount = ref(0);
     let transType = ref("CASH");
+    let validationMessage = ref("");
+
     const rules = {
       contId: { required },
       amount: { required, minValue: minValue(1) },
@@ -94,6 +97,7 @@ export default defineComponent({
       contId,
       amount,
       transType,
+      validationMessage,
       deposit,
       formInvalid,
       isValidContId,
@@ -104,15 +108,17 @@ export default defineComponent({
     async submitForm() {
       if (this.formInvalid) {
         this.showConfirmationMsg = false;
-        window.alert("최소 $1 이상 입력해주세요");
+        this.validationMessage = "최소 $1 이상 입력해주세요.";
       } else if (window.confirm("$" + this.amount + "을 입금하시겠습니까?")) {
         await this.deposit(this.contId, this.amount, this.transType);
         if (this.isValidContId) {
           this.showConfirmationMsg = true;
           document.addEventListener("keydown", this.handleKeyPress);
+          this.validationMessage = "";
         } else {
           this.showConfirmationMsg = false;
-          window.alert("잘못된 헌금 아이디입니다");
+          this.validationMessage =
+            "잘못된 헌금 아이디입니다. 다시 시도해주세요.";
         }
       }
       this.$refs.contIdField.focus();
@@ -159,6 +165,10 @@ button {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  margin-top: 15px;
+}
+.validation-msg {
+  color: red;
   margin-top: 15px;
 }
 </style>

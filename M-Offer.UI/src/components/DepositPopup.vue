@@ -1,6 +1,6 @@
 <template>
-  <div class="popup">
-    <div class="popup-content">
+  <div class="deposit-popup">
+    <div class="deposit-popup-content">
       <h4>입금이 완료되었습니다.</h4>
       <p>헌금 아이디: {{ contId }}</p>
       <p>금액: ${{ amount }}</p>
@@ -28,14 +28,14 @@ export default {
   },
   methods: {
     closePopup() {
-      this.$emit("close-popup");
+      this.$emit("close-deposit-popup");
     },
   },
 };
 </script>
 
 <style>
-.popup {
+.deposit-popup {
   position: fixed;
   top: 0;
   left: 0;
@@ -47,7 +47,7 @@ export default {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-.popup-content {
+.deposit-popup-content {
   background-color: #fff;
   padding: 20px;
   border-radius: 4px;

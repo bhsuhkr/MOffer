@@ -15,11 +15,9 @@
         />
         <button class="submit-btn" @click="handleEnterKey">Submit</button>
       </div>
-      <p class="balance-validation" v-if="!isValidContId">
-        잘못된 아이디입니다. 다시 시도해 주세요.
-      </p>
+      <p class="validation-msg">{{ validationMessage }}</p>
 
-      <table class="table table-bordered table-striped">
+      <table class="table table-bordered">
         <thead>
           <tr>
             <th v-for="field in fields" :key="field">
@@ -29,7 +27,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in transactionData" :key="item">
+          <tr
+            v-for="item in transactionData"
+            :key="item"
+            :class="getRowColor(item.TransType)"
+          >
             <td v-for="field in fields" :key="field">{{ item[field] }}</td>
           </tr>
         </tbody>
@@ -46,6 +48,8 @@ import { useTransactionStore } from "@/store";
 export default defineComponent({
   name: "Pay",
   setup() {
+    let validationMessage = ref("");
+
     const fields = [
       "KoreanName",
       "ContId",
@@ -72,6 +76,10 @@ export default defineComponent({
       get: () => transactionStore.isValidContId,
       set: (newValue) => (transactionStore.isValidContId = newValue),
     });
+    const didPay = computed({
+      get: () => transactionStore.didPay,
+      set: (newValue) => (transactionStore.didPay = newValue),
+    });
 
     transactionStore.getTodayTransactions();
     const pay = async (contId) => {
@@ -84,11 +92,13 @@ export default defineComponent({
     });
 
     return {
+      validationMessage,
       getBalance,
       memberId,
       balance,
       transactionData: transactionStore.transactions,
       fields,
+      didPay,
       pay,
       refund,
       isValidContId,
@@ -100,23 +110,35 @@ export default defineComponent({
       const contId = this.$refs["contIdField"].value;
       if (contId) {
         await this.getBalance(contId);
-        if (this.balance <= -10) {
-          window.alert("잔액이 부족합니다. $" + this.balance);
+        if (!this.isValidContId) {
+          this.validationMessage =
+            "잘못된 헌금 아이디입니다. 다시 시도해 주세요.";
+        } else if (this.balance <= -10) {
+          this.validationMessage = "잔액이 부족합니다. $" + this.balance;
         } else {
           this.pay(contId);
+          this.validationMessage = "";
         }
         this.$refs["contIdField"].value = "";
       }
       this.$refs.contIdField.focus();
     },
     getRefund() {
-      if (this.memberId) {
+      if (this.memberId && this.isValidContId && this.didPay) {
         this.refund();
-        window.alert("정상적으로 환불 되었습니다.");
-      } else {
-        window.alert("이미 환불 되었습니다.");
+        this.validationMessage = "정상적으로 환불 되었습니다.";
+      } else if (this.memberId != "NONE" && this.didPay) {
+        this.validationMessage = "이미 환불 되었습니다.";
+      } else if (!this.memberId && this.isValidContId && !this.didPay) {
+        this.validationMessage = "먼저 스캔을 해주세요.";
       }
       this.$refs.contIdField.focus();
+    },
+    getRowColor(transType) {
+      return {
+        "green-row": transType === "CREDIT",
+        "red-row": transType !== "CREDIT",
+      };
     },
   },
 });
@@ -158,5 +180,16 @@ export default defineComponent({
   margin-left: 10px;
   padding: 0 20px;
   max-width: 100px;
+}
+.validation-msg {
+  color: red;
+}
+.red-row {
+  --bs-table-accent-bg: #ce5c5c;
+  --bs-table-color: white;
+}
+.green-row {
+  --bs-table-accent-bg: #69be70;
+  --bs-table-color: white;
 }
 </style>
