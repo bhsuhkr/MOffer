@@ -119,6 +119,7 @@ export const useTransactionStore = defineStore('transaction', {
         await axios.get('http://172.16.1.154:3000/api/balance', { params: { memberId: this.memberId } })
           .then(response => {
             this.balance = response.data.balance;
+            this.didPay = false;
           })
           .catch(error => {
             console.error("MemberId failed to fetch", error);

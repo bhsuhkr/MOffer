@@ -15,7 +15,7 @@
         />
         <button class="submit-btn" @click="handleEnterKey">Submit</button>
       </div>
-      <p class="validation-msg">{{ validationMessage }}</p>
+      <p id="validation-msg" class="validation-msg">{{ validationMessage }}</p>
 
       <table class="table table-bordered">
         <thead>
@@ -111,9 +111,11 @@ export default defineComponent({
       if (contId) {
         await this.getBalance(contId);
         if (!this.isValidContId) {
+          this.isSuccessValidation(false);
           this.validationMessage =
             "잘못된 헌금 아이디입니다. 다시 시도해 주세요.";
         } else if (this.balance <= -10) {
+          this.isSuccessValidation(false);
           this.validationMessage = "잔액이 부족합니다. $" + this.balance;
         } else {
           this.pay(contId);
@@ -126,10 +128,13 @@ export default defineComponent({
     getRefund() {
       if (this.memberId && this.isValidContId && this.didPay) {
         this.refund();
+        this.isSuccessValidation(true);
         this.validationMessage = "정상적으로 환불 되었습니다.";
       } else if (this.memberId != "NONE" && this.didPay) {
+        this.isSuccessValidation(false);
         this.validationMessage = "이미 환불 되었습니다.";
       } else if (!this.memberId && this.isValidContId && !this.didPay) {
+        this.isSuccessValidation(false);
         this.validationMessage = "먼저 스캔을 해주세요.";
       }
       this.$refs.contIdField.focus();
@@ -139,6 +144,17 @@ export default defineComponent({
         "green-row": transType === "CREDIT",
         "red-row": transType !== "CREDIT",
       };
+    },
+    isSuccessValidation(change) {
+      if (change) {
+        document
+          .getElementById("validation-msg")
+          .classList.add("validation-msg-success");
+      } else {
+        document
+          .getElementById("validation-msg")
+          .classList.remove("validation-msg-success");
+      }
     },
   },
 });
@@ -183,6 +199,9 @@ export default defineComponent({
 }
 .validation-msg {
   color: red;
+}
+.validation-msg-success {
+  color: #4caf50;
 }
 .red-row {
   --bs-table-accent-bg: #ce5c5c;
