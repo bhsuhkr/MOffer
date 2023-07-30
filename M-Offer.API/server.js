@@ -9,7 +9,7 @@ app.use(bodyParser.json());
 // Enable CORS
 app.use(cors());
 
-const config = {
+let config = {
   database: "moffer",
   server: "DESKTOP-4SIT040\\SQLEXPRESS",
   driver: "msnodesqlv8",
@@ -17,6 +17,10 @@ const config = {
     trustedConnection: true,
   },
 };
+
+if (process.argv.length >= 3 && process.argv[2] === "--dev") {
+  config.database = "moffer_qa";
+}
 
 sql
   .connect(config)
@@ -268,5 +272,9 @@ sql
 
 // Start the server
 app.listen(3000, () => {
-  console.log("Server is running on http://172.16.1.154:3000");
+  if (config.database === "moffer") {
+    console.log("Server is running on http://172.16.1.154:3000");
+  } else {
+    console.log("Dev Mode: Server is running on http://172.16.1.154:3000");
+  }
 });
