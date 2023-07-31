@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from "axios";
+import { format, parseISO } from 'date-fns'
 
 export const useTransactionStore = defineStore('transaction', {
   state: () => ({
@@ -13,7 +14,15 @@ export const useTransactionStore = defineStore('transaction', {
       await axios.get('http://172.16.1.154:3000/api/member/transactions', { params: { memberId: this.memberId} })
         .then(response => {
           this.memberTransactions = [];
-          this.memberTransactions.push(...response.data.recordset.recordset);
+          const transactions = response.data.recordset.recordset;
+          const formattedTransactions = transactions.map((transaction) => {
+            return {
+              ...transaction,
+              TransTime: format(parseISO(transaction.TransTime), 'yyyy-MM-dd HH:MM:SS')
+            };
+          });
+
+          this.memberTransactions.push(...formattedTransactions);
         })
         .catch(error => {
           console.error("Member Transactions load failed", error);

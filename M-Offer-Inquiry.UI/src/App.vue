@@ -20,10 +20,10 @@
     </p>
 
     <h4>Transaction History</h4>
-    <table class="table table-bordered table-striped">
+    <table class="table table-bordered table-striped table-text">
       <thead>
         <tr>
-          <th v-for="field in fields" :key="field">
+          <th v-for="field in titles" :key="field">
             {{ field }}
             <i class="bi bi-sort-alpha-down" aria-label="Sort Icon"></i>
           </th>
@@ -46,13 +46,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 export default defineComponent({
   name: "App",
   setup() {
-    const fields = [
-      "KoreanName",
-      "ContId",
-      "TransType",
-      "TransTime",
-      "RunningBalance",
-    ];
+    const titles = ["Name", "Time", "Balance ($)"];
+    const fields = ["KoreanName", "TransTime", "RunningBalance"];
     const transactionStore = useTransactionStore();
     const getBalance = async (contId) => {
       await transactionStore.getBalance(contId);
@@ -85,6 +80,7 @@ export default defineComponent({
       isValidContId,
       contIdField,
       fields,
+      titles,
       transactionData: memberTransactions,
     };
   },
@@ -151,5 +147,8 @@ export default defineComponent({
   padding-left: 20px;
   padding-right: 20px;
   max-width: 100px;
+}
+.table-text {
+  font-size: 25px;
 }
 </style>
