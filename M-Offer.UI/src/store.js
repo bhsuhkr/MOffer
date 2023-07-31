@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import axios from "axios";
 import router from './router';
+import { format, parseISO } from 'date-fns'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -76,20 +77,33 @@ export const useTransactionStore = defineStore('transaction', {
     isGetTodayTransactionsCalled: false // call getTodayTransactions() only once
   }),
   actions: {
+    // Add the latest transaction in an array after pay, deposite, or refund
     async getTransaction(memberId) {
       await axios.get('http://172.16.1.154:3000/api/transaction', { params: { memberId } })
         .then(response => {
-          this.transactions.unshift(...response.data.recordset.recordset);
+          this.transactions.unshift(...{
+            ...response.data.recordset.recordset,
+            TransTime: format(parseISO(response.data.recordset.recordset[0].TransTime), 'yyyy-MM-dd HH:MM:SS')
+          });
         })
         .catch(error => {
           console.error("Transaction load failed", error);
         });
     },
+    // Fetch today's transactions
     async getTodayTransactions() {
       if (!this.isGetTodayTransactionsCalled) {
         await axios.get('http://172.16.1.154:3000/api/transactions')
         .then(response => {
-          this.transactions.push(...response.data.recordset.recordset);
+          const transactions = response.data.recordset.recordset;
+          const formattedTransactions = transactions.map((transaction) => {
+            return {
+              ...transaction,
+              TransTime: format(parseISO(transaction.TransTime), 'yyyy-MM-dd HH:MM:SS')
+            };
+          });
+
+          this.transactions.push(...formattedTransactions);
           this.isGetTodayTransactionsCalled = true;
         })
         .catch(error => {
@@ -97,6 +111,7 @@ export const useTransactionStore = defineStore('transaction', {
         });
       }
     },
+    // Fetch member id by cont id
     async getMemberId(contId) {
       await axios.get('http://172.16.1.154:3000/api/member/id', { params:{ contId: contId } })
         .then(response => {
@@ -113,6 +128,7 @@ export const useTransactionStore = defineStore('transaction', {
           this.isValidContId = false;
         });
     },
+    // Get Balance 
     async getBalance(contId) {
       await this.getMemberId(contId);
       if (this.isValidContId) {
@@ -126,6 +142,7 @@ export const useTransactionStore = defineStore('transaction', {
           });
       }
     },
+    // Make a payment
     async pay(contId) {
       await this.getMemberId(contId);
       if (this.isValidContId) {
@@ -141,6 +158,7 @@ export const useTransactionStore = defineStore('transaction', {
           });
       }
     },
+    // Add funds
     async deposit(contId, amount, transType) {
       await this.getMemberId(contId);
       if (this.isValidContId) {
@@ -154,6 +172,7 @@ export const useTransactionStore = defineStore('transaction', {
         });
       }
     },
+    // Refund the latest transaction (main meal $2)
     async refund() {
       if (this.isValidContId) {
         await axios.post('http://172.16.1.154:3000/api/member/refund', { memberId: this.memberId, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })

@@ -49,16 +49,8 @@ export default defineComponent({
   name: "Pay",
   setup() {
     let validationMessage = ref("");
-    const titles = [
-      "Name",
-      "Time",
-      "Balance",
-    ]
-    const fields = [
-      "KoreanName",
-      "TransTime",
-      "RunningBalance",
-    ];
+    const titles = ["Name", "Time", "Balance"];
+    const fields = ["KoreanName", "TransTime", "RunningBalance"];
     const transactionStore = useTransactionStore();
     const getBalance = async (contId) => {
       await transactionStore.getBalance(contId);
