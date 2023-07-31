@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import axios from "axios";
 import router from './router';
-import { format, parseISO } from 'date-fns'
+import { format, utcToZonedTime } from 'date-fns-tz';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -83,9 +83,10 @@ export const useTransactionStore = defineStore('transaction', {
         .then(response => {
           const transactions = response.data.recordset.recordset;
           const formattedTransactions = transactions.map((transaction) => {
+            const zonedTime = utcToZonedTime(transaction.TransTime, 'UTC');
             return {
               ...transaction,
-              TransTime: format(parseISO(transaction.TransTime), 'yyyy-MM-dd HH:MM:SS')
+              TransTime: format(zonedTime, 'yyyy-MM-dd HH:mm:ss a', { timeZone: 'UTC' })
             };
           });
 
@@ -102,9 +103,10 @@ export const useTransactionStore = defineStore('transaction', {
         .then(response => {
           const transactions = response.data.recordset.recordset;
           const formattedTransactions = transactions.map((transaction) => {
+            const zonedTime = utcToZonedTime(transaction.TransTime, 'UTC');
             return {
               ...transaction,
-              TransTime: format(parseISO(transaction.TransTime), 'yyyy-MM-dd HH:MM:SS')
+              TransTime: format(zonedTime, 'yyyy-MM-dd HH:mm:ss a', { timeZone: 'UTC' })
             };
           });
 
