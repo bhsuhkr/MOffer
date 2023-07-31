@@ -81,10 +81,15 @@ export const useTransactionStore = defineStore('transaction', {
     async getTransaction(memberId) {
       await axios.get('http://172.16.1.154:3000/api/transaction', { params: { memberId } })
         .then(response => {
-          this.transactions.unshift(...{
-            ...response.data.recordset.recordset,
-            TransTime: format(parseISO(response.data.recordset.recordset[0].TransTime), 'yyyy-MM-dd HH:MM:SS')
+          const transactions = response.data.recordset.recordset;
+          const formattedTransactions = transactions.map((transaction) => {
+            return {
+              ...transaction,
+              TransTime: format(parseISO(transaction.TransTime), 'yyyy-MM-dd HH:MM:SS')
+            };
           });
+
+          this.transactions.unshift(...formattedTransactions);
         })
         .catch(error => {
           console.error("Transaction load failed", error);
