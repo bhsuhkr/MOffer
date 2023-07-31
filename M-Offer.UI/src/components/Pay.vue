@@ -17,10 +17,10 @@
       </div>
       <p id="validation-msg" class="validation-msg">{{ validationMessage }}</p>
 
-      <table class="table table-bordered">
+      <table class="table table-bordered table-text">
         <thead>
           <tr>
-            <th v-for="field in fields" :key="field">
+            <th v-for="field in titles" :key="field">
               {{ field }}
               <i class="bi bi-sort-alpha-down" aria-label="Sort Icon"></i>
             </th>
@@ -49,11 +49,13 @@ export default defineComponent({
   name: "Pay",
   setup() {
     let validationMessage = ref("");
-
+    const titles = [
+      "Name",
+      "Time",
+      "Balance",
+    ]
     const fields = [
       "KoreanName",
-      "ContId",
-      "TransType",
       "TransTime",
       "RunningBalance",
     ];
@@ -99,6 +101,7 @@ export default defineComponent({
       transactionData: transactionStore.transactions,
       fields,
       didPay,
+      titles,
       pay,
       refund,
       isValidContId,
@@ -141,8 +144,8 @@ export default defineComponent({
     },
     getRowColor(transType) {
       return {
-        "green-row": transType === "CREDIT",
-        "red-row": transType !== "CREDIT",
+        "green-row": transType !== "CREDIT",
+        "red-row": transType === "CREDIT",
       };
     },
     isSuccessValidation(change) {
@@ -210,5 +213,8 @@ export default defineComponent({
 .green-row {
   --bs-table-accent-bg: #69be70;
   --bs-table-color: white;
+}
+.table-text {
+  font-size: 25px;
 }
 </style>
