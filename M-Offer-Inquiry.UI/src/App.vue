@@ -112,8 +112,8 @@ export default defineComponent({
 }
 .balance-text {
   font-weight: 600;
-  font-size: 20px;
-  margin-bottom: 50px;
+  font-size: 30px;
+  margin-bottom: 30px;
 }
 .balance-validation {
   color: red;
