@@ -3,12 +3,15 @@
     <h3>Deposit</h3>
     <form @submit.prevent="submitForm" class="deposit-form">
       <div>
-        <label for="contId">헌금 아이디:</label>
+        <label for="phoneNumber">전화번호:</label>
         <input
-          type="text"
-          id="contId"
-          ref="contIdField"
-          v-model.trim="contId"
+          @input="onPhoneNumberInput"
+          placeholder="(123)-123-1234"
+          maxlength="14"
+          type="tel"
+          id="phoneNumber"
+          ref="phoneNumberField"
+          v-model="phoneNumber"
           required
         />
       </div>
@@ -41,7 +44,7 @@
     <DepositPopup
       ref="deposit-popup"
       v-if="showConfirmationMsg"
-      :contId="contId"
+      :phoneNumber="phoneNumber"
       :amount="amount"
       :transType="transType"
       @close-deposit-popup="handlePopupClosed"
@@ -63,45 +66,45 @@ export default defineComponent({
   },
   setup() {
     let showConfirmationMsg = ref(false);
-    let contId = ref("");
+    let phoneNumber = ref("");
     let amount = ref(0);
     let transType = ref("CASH");
     let validationMessage = ref("");
 
     const rules = {
-      contId: { required },
+      phoneNumber: { required },
       amount: { required, minValue: minValue(1) },
       transType: { required },
     };
 
-    let v$ = useVuelidate(rules, { contId, amount, transType });
+    let v$ = useVuelidate(rules, { phoneNumber, amount, transType });
     const formInvalid = computed(() => v$.value.$invalid);
 
     const transactionStore = useTransactionStore();
     transactionStore.getTodayTransactions();
-    const deposit = async (contId, amount, transType) => {
-      await transactionStore.deposit(contId, amount, transType);
+    const deposit = async (phoneNumber, amount, transType) => {
+      await transactionStore.deposit(phoneNumber, amount, transType);
     };
     const isValidContId = computed({
       get: () => transactionStore.isValidContId,
       set: (newValue) => (transactionStore.isValidContId = newValue),
     });
 
-    const contIdField = ref("");
+    const phoneNumberField = ref("");
     onMounted(() => {
-      contIdField.value.focus();
+      phoneNumberField.value.focus();
     });
 
     return {
       showConfirmationMsg,
-      contId,
       amount,
       transType,
       validationMessage,
       deposit,
       formInvalid,
       isValidContId,
-      contIdField,
+      phoneNumberField,
+      phoneNumber,
     };
   },
   methods: {
@@ -110,18 +113,17 @@ export default defineComponent({
         this.showConfirmationMsg = false;
         this.validationMessage = "최소 $1 이상 입력해주세요.";
       } else if (window.confirm("$" + this.amount + "을 입금하시겠습니까?")) {
-        await this.deposit(this.contId, this.amount, this.transType);
+        await this.deposit(this.phoneNumber, this.amount, this.transType);
         if (this.isValidContId) {
           this.showConfirmationMsg = true;
           document.addEventListener("keydown", this.handleKeyPress);
           this.validationMessage = "";
         } else {
           this.showConfirmationMsg = false;
-          this.validationMessage =
-            "잘못된 헌금 아이디입니다. 다시 시도해주세요.";
+          this.validationMessage = "잘못된 전화번호입니다. 다시 시도해주세요.";
         }
       }
-      this.$refs.contIdField.focus();
+      this.$refs.phoneNumberField.focus();
     },
     handleKeyPress(event) {
       if (event.key === "Enter" || event.key === "Escape") {
@@ -129,11 +131,27 @@ export default defineComponent({
       }
     },
     handlePopupClosed() {
-      this.contId = "";
+      this.phoneNumber = "";
       this.amount = 0;
       this.transType = "CASH";
       document.removeEventListener("keydown", this.handleKeyPress);
       this.showConfirmationMsg = false;
+    },
+    onPhoneNumberInput(event) {
+      this.phoneNumber = event.target.value.replace(/\D/g, "");
+
+      const match = this.phoneNumber.match(/^(\d{0,3})(\d{0,3})(\d{0,4})$/);
+      if (match) {
+        if (match[1] === "") {
+          this.phoneNumber = "";
+        } else if (match[2] === "" && match[3] === "") {
+          this.phoneNumber = `(${match[1]}`;
+        } else if (match[3] === "") {
+          this.phoneNumber = `(${match[1]})-${match[2]}`;
+        } else {
+          this.phoneNumber = `(${match[1]})-${match[2]}-${match[3]}`;
+        }
+      }
     },
   },
 });
@@ -148,7 +166,7 @@ export default defineComponent({
   margin-top: 20px;
   max-width: 400px;
 }
-input[type="text"],
+input[type="tel"],
 input[type="number"],
 select {
   width: 100%;

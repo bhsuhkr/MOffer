@@ -2,7 +2,7 @@
   <div class="deposit-popup">
     <div class="deposit-popup-content">
       <h4>입금이 완료되었습니다.</h4>
-      <p>헌금 아이디: {{ contId }}</p>
+      <p>전화번호: {{ phoneNumber }}</p>
       <p>금액: ${{ amount }}</p>
       <p>지불 방법: {{ transType }}</p>
       <button @click="closePopup">확인</button>
@@ -13,7 +13,7 @@
 <script>
 export default {
   props: {
-    contId: {
+    phoneNumber: {
       type: String,
       required: true,
     },
