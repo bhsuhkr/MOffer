@@ -7,7 +7,7 @@ export const useTransactionStore = defineStore('transaction', {
     memberTransactions: [],
     memberId: "",
     balance: 0,
-    isValidContId: true,
+    isValidPhoneNumber: true,
   }),
   actions: {
     async getMemberTransactions() {
@@ -32,25 +32,28 @@ export const useTransactionStore = defineStore('transaction', {
       this.memberTransactions = [];
       this.balance = 0;
     },
-    async getMemberId(contId) {
-      await axios.get('http://172.16.1.154:3000/api/member/id', { params:{ contId: contId } })
-        .then( response => {
+    // Validate phone number
+    async validatePhoneNumber(phoneNumber) {
+      await axios.get('http://172.16.1.154:3000/api/member/id', { params:{ phoneNumber: phoneNumber } })
+        .then(response => {
           this.memberId = response.data.memberId;
+          
           if (this.memberId !== "NONE" ) {
-            this.isValidContId = true;
+            this.isValidPhoneNumber = true;
             this.getMemberTransactions();
+
           } else {
-            this.isValidContId = false;
+            this.isValidPhoneNumber = false;
           }
         })
         .catch(error => {
-          console.error("MemberId failed to fetch", error);
-          this.isValidContId = false;
+          console.error("Failed to search phone number", error);
+          this.isValidPhoneNumber = false;
         });
     },
-    async getBalance(contId) {
-      await this.getMemberId(contId);
-      if (this.isValidContId) {
+    async getBalance(phoneNumber) {
+      await this.getMemberId(phoneNumber);
+      if (this.isValidPhoneNumber) {
         await axios.get('http://172.16.1.154:3000/api/balance', { params: { memberId: this.memberId } })
           .then(response => {
             this.balance = response.data.balance;

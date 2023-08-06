@@ -8,7 +8,7 @@
       <div class="input-row">
         <input
           class="cont-input"
-          ref="contIdField"
+          ref="phoneNumberField"
           type="text"
           @keydown.enter="handleEnterKey"
           placeholder="여기를 먼저 누른 후 바코드를 스캔하세요."
@@ -52,8 +52,8 @@ export default defineComponent({
     const titles = ["Name", "Time", "Balance ($)"];
     const fields = ["KoreanName", "TransTime", "RunningBalance"];
     const transactionStore = useTransactionStore();
-    const getBalance = async (contId) => {
-      await transactionStore.getBalance(contId);
+    const getBalance = async (phoneNumber) => {
+      await transactionStore.getBalance(phoneNumber);
     };
     const refund = async () => {
       await transactionStore.refund();
@@ -66,9 +66,9 @@ export default defineComponent({
       get: () => transactionStore.memberId,
       set: (newValue) => (transactionStore.memberId = newValue),
     });
-    const isValidContId = computed({
-      get: () => transactionStore.isValidContId,
-      set: (newValue) => (transactionStore.isValidContId = newValue),
+    const isValidPhoneNumber = computed({
+      get: () => transactionStore.isValidPhoneNumber,
+      set: (newValue) => (transactionStore.isValidPhoneNumber = newValue),
     });
     const didPay = computed({
       get: () => transactionStore.didPay,
@@ -76,13 +76,13 @@ export default defineComponent({
     });
 
     transactionStore.getTodayTransactions();
-    const pay = async (contId) => {
-      await transactionStore.pay(contId, "pay");
+    const pay = async (phoneNumber) => {
+      await transactionStore.pay(phoneNumber);
     };
 
-    const contIdField = ref("");
+    const phoneNumberField = ref("");
     onMounted(() => {
-      contIdField.value.focus();
+      phoneNumberField.value.focus();
     });
 
     return {
@@ -96,43 +96,42 @@ export default defineComponent({
       titles,
       pay,
       refund,
-      isValidContId,
-      contIdField,
+      isValidPhoneNumber,
+      phoneNumberField,
     };
   },
   methods: {
     async handleEnterKey() {
-      const contId = this.$refs["contIdField"].value;
-      if (contId) {
-        await this.getBalance(contId);
-        if (!this.isValidContId) {
+      const phoneNumber = this.$refs["phoneNumberField"].value;
+      if (phoneNumber) {
+        await this.getBalance(phoneNumber);
+        if (!this.isValidPhoneNumber) {
           this.isSuccessValidation(false);
-          this.validationMessage =
-            "잘못된 헌금 아이디입니다. 다시 시도해 주세요.";
+          this.validationMessage = "잘못된 바코드입니다. 다시 시도해 주세요.";
         } else if (this.balance <= -10) {
           this.isSuccessValidation(false);
           this.validationMessage = "잔액이 부족합니다. $" + this.balance;
         } else {
-          this.pay(contId);
+          this.pay(phoneNumber);
           this.validationMessage = "";
         }
-        this.$refs["contIdField"].value = "";
+        this.$refs["phoneNumberField"].value = "";
       }
-      this.$refs.contIdField.focus();
+      this.$refs.phoneNumberField.focus();
     },
     getRefund() {
-      if (this.memberId && this.isValidContId && this.didPay) {
+      if (this.memberId && this.isValidPhoneNumber && this.didPay) {
         this.refund();
         this.isSuccessValidation(true);
         this.validationMessage = "정상적으로 환불 되었습니다.";
       } else if (this.memberId != "NONE" && this.didPay) {
         this.isSuccessValidation(false);
         this.validationMessage = "이미 환불 되었습니다.";
-      } else if (!this.memberId && this.isValidContId && !this.didPay) {
+      } else if (!this.memberId && this.isValidPhoneNumber && !this.didPay) {
         this.isSuccessValidation(false);
         this.validationMessage = "먼저 스캔을 해주세요.";
       }
-      this.$refs.contIdField.focus();
+      this.$refs.phoneNumberField.focus();
     },
     getRowColor(transType) {
       return {

@@ -7,15 +7,17 @@
     <div class="input-row">
       <input
         class="cont-input"
-        ref="contIdField"
+        ref="phoneNumberField"
         type="text"
         @keydown.enter="handleEnterKey"
         placeholder="여기를 먼저 누른 후 바코드를 스캔하세요."
       />
       <button class="submit-btn" @click="handleEnterKey">Submit</button>
     </div>
-    <p class="balance-text" v-if="isValidContId">남은 금액: ${{ balance }}</p>
-    <p class="balance-validation" v-if="!isValidContId">
+    <p class="balance-text" v-if="isValidPhoneNumber">
+      남은 금액: ${{ balance }}
+    </p>
+    <p class="balance-validation" v-if="!isValidPhoneNumber">
       잘못된 아이디입니다. 다시 시도해 주세요.
     </p>
 
@@ -49,8 +51,8 @@ export default defineComponent({
     const titles = ["Name", "Time", "Balance ($)"];
     const fields = ["KoreanName", "TransTime", "RunningBalance"];
     const transactionStore = useTransactionStore();
-    const getBalance = async (contId) => {
-      await transactionStore.getBalance(contId);
+    const getBalance = async (phoneNumber) => {
+      await transactionStore.getBalance(phoneNumber);
     };
     const clearMemberTransactrions = async () => {
       await transactionStore.clearMemberTransactrions();
@@ -63,22 +65,22 @@ export default defineComponent({
       get: () => transactionStore.memberTransactions,
       set: (newValue) => (transactionStore.memberTransactions = newValue),
     });
-    const isValidContId = computed({
-      get: () => transactionStore.isValidContId,
-      set: (newValue) => (transactionStore.isValidContId = newValue),
+    const isValidPhoneNumber = computed({
+      get: () => transactionStore.isValidPhoneNumber,
+      set: (newValue) => (transactionStore.isValidPhoneNumber = newValue),
     });
 
-    const contIdField = ref("");
+    const phoneNumberField = ref("");
     onMounted(() => {
-      contIdField.value.focus();
+      phoneNumberField.value.focus();
     });
 
     return {
       clearMemberTransactrions,
       getBalance,
       balance,
-      isValidContId,
-      contIdField,
+      isValidPhoneNumber,
+      phoneNumberField,
       fields,
       titles,
       transactionData: memberTransactions,
@@ -86,15 +88,15 @@ export default defineComponent({
   },
   methods: {
     handleEnterKey() {
-      if (this.$refs["contIdField"].value) {
-        this.getBalance(this.$refs["contIdField"].value);
-        this.$refs["contIdField"].value = "";
+      if (this.$refs["phoneNumberField"].value) {
+        this.getBalance(this.$refs["phoneNumberField"].value);
+        this.$refs["phoneNumberField"].value = "";
       }
-      this.$refs.contIdField.focus();
+      this.$refs.phoneNumberField.focus();
     },
     clearHistory() {
       this.clearMemberTransactrions();
-      this.$refs.contIdField.focus();
+      this.$refs.phoneNumberField.focus();
     },
   },
 });

@@ -72,7 +72,7 @@ export const useTransactionStore = defineStore('transaction', {
     transactions: [],
     memberId: "",
     balance: 0,
-    isValidContId: true,
+    isValidPhoneNumber: true,
     didPay: false,
     isGetTodayTransactionsCalled: false // call getTodayTransactions() only once
   }),
@@ -118,27 +118,27 @@ export const useTransactionStore = defineStore('transaction', {
         });
       }
     },
-    // Fetch member id by cont id
-    async getMemberId(contId) {
-      await axios.get('http://172.16.1.154:3000/api/member/id', { params:{ contId: contId } })
+    // Validate phone number
+    async validatePhoneNumber(phoneNumber) {
+      await axios.get('http://172.16.1.154:3000/api/member/id', { params:{ phoneNumber: phoneNumber } })
         .then(response => {
           this.memberId = response.data.memberId;
           
           if (this.memberId !== "NONE" ) {
-            this.isValidContId = true;
+            this.isValidPhoneNumber = true;
           } else {
-            this.isValidContId = false;
+            this.isValidPhoneNumber = false;
           }
         })
         .catch(error => {
-          console.error("MemberId failed to fetch", error);
-          this.isValidContId = false;
+          console.error("Failed to search phone number", error);
+          this.isValidPhoneNumber = false;
         });
     },
     // Get Balance 
-    async getBalance(contId) {
-      await this.getMemberId(contId);
-      if (this.isValidContId) {
+    async getBalance(phoneNumber) {
+      await this.validatePhoneNumber(phoneNumber);
+      if (this.isValidPhoneNumber) {
         await axios.get('http://172.16.1.154:3000/api/balance', { params: { memberId: this.memberId } })
           .then(response => {
             this.balance = response.data.balance;
@@ -150,9 +150,9 @@ export const useTransactionStore = defineStore('transaction', {
       }
     },
     // Make a payment
-    async pay(contId) {
-      await this.getMemberId(contId);
-      if (this.isValidContId) {
+    async pay(phoneNumber) {
+      await this.validatePhoneNumber(phoneNumber);
+      if (this.isValidPhoneNumber) {
         await axios.post('http://172.16.1.154:3000/api/member/pay', { memberId: this.memberId, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
           .then(() => {
             console.log("Paid for member ", this.memberId);
@@ -166,9 +166,9 @@ export const useTransactionStore = defineStore('transaction', {
       }
     },
     // Add funds
-    async deposit(contId, amount, transType) {
-      await this.getMemberId(contId);
-      if (this.isValidContId) {
+    async deposit(phoneNumber, amount, transType) {
+      await this.validatePhoneNumber(phoneNumber);
+      if (this.isValidPhoneNumber) {
         await axios.post('http://172.16.1.154:3000/api/member/deposit', { memberId: this.memberId, amount: amount, transType: transType, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
         .then(() => {
           console.log("Deposit for member ", this.memberId);
@@ -181,7 +181,7 @@ export const useTransactionStore = defineStore('transaction', {
     },
     // Refund the latest transaction (main meal $2)
     async refund() {
-      if (this.isValidContId) {
+      if (this.isValidPhoneNumber) {
         await axios.post('http://172.16.1.154:3000/api/member/refund', { memberId: this.memberId, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
         .then(() => {
           console.log("Refund for member ", this.memberId);

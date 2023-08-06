@@ -85,9 +85,9 @@ export default defineComponent({
     const deposit = async (phoneNumber, amount, transType) => {
       await transactionStore.deposit(phoneNumber, amount, transType);
     };
-    const isValidContId = computed({
-      get: () => transactionStore.isValidContId,
-      set: (newValue) => (transactionStore.isValidContId = newValue),
+    const isValidPhoneNumber = computed({
+      get: () => transactionStore.isValidPhoneNumber,
+      set: (newValue) => (transactionStore.isValidPhoneNumber = newValue),
     });
 
     const phoneNumberField = ref("");
@@ -102,7 +102,7 @@ export default defineComponent({
       validationMessage,
       deposit,
       formInvalid,
-      isValidContId,
+      isValidPhoneNumber,
       phoneNumberField,
       phoneNumber,
     };
@@ -114,13 +114,13 @@ export default defineComponent({
         this.validationMessage = "최소 $1 이상 입력해주세요.";
       } else if (window.confirm("$" + this.amount + "을 입금하시겠습니까?")) {
         await this.deposit(this.phoneNumber, this.amount, this.transType);
-        if (this.isValidContId) {
+        if (this.isValidPhoneNumber) {
           this.showConfirmationMsg = true;
           document.addEventListener("keydown", this.handleKeyPress);
           this.validationMessage = "";
         } else {
           this.showConfirmationMsg = false;
-          this.validationMessage = "잘못된 전화번호입니다. 다시 시도해주세요.";
+          this.validationMessage = "없는 전화번호입니다. 다시 시도해주세요.";
         }
       }
       this.$refs.phoneNumberField.focus();

@@ -154,7 +154,7 @@ sql
       try {
         pool.query(
           `exec sp_getMemberId
-            ${req.query.contId}
+            ${req.query.phoneNumber}
           `,
           (err, recordset) => {
             if (err) console.log(err);
