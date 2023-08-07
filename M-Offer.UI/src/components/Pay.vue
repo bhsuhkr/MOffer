@@ -76,6 +76,7 @@ export default defineComponent({
     });
 
     transactionStore.getTodayTransactions();
+
     const pay = async (phoneNumber) => {
       await transactionStore.pay(phoneNumber);
     };

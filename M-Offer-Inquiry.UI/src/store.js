@@ -32,16 +32,38 @@ export const useTransactionStore = defineStore('transaction', {
       this.memberTransactions = [];
       this.balance = 0;
     },
-    // Validate phone number
-    async validatePhoneNumber(phoneNumber) {
-      await axios.get('http://172.16.1.154:3000/api/member/id', { params: { phoneNumber: phoneNumber } })
+        // Validate barcode
+    async validateBarcode(barcodeInfo) {
+      const phoneNumber = barcodeInfo.substring(0, 10);
+      const firstFourEmailChar = barcodeInfo.substring(10, barcodeInfo.length);
+
+      if (phoneNumber && firstFourEmailChar) {
+        await axios.get('http://172.16.1.154:3000/api/member/id', { params:{ phoneNumber: phoneNumber } })
         .then(response => {
           this.memberId = response.data.memberId;
           
-          if (this.memberId !== "NONE" ) {
+          if (this.memberId !== "NONE") {
+            this.isValidPhoneNumber = true;
+            this.validateEmail(firstFourEmailChar);
+          } else {
+            this.isValidPhoneNumber = false;
+          }
+        })
+        .catch(error => {
+          console.error("Failed to validate phone number", error);
+          this.isValidPhoneNumber = false;
+        });
+      } else {
+        this.isValidPhoneNumber = false;
+      }
+    },
+    // Validate first four email char
+    async validateEmail(firstFourEmailChar) {
+      await axios.get('http://172.16.1.154:3000/api/email', { params:{ memberId: this.memberId } })
+        .then(response => {
+          if (firstFourEmailChar.toLowerCase() === response.data.first_four_char_email.toLowerCase()) {
             this.isValidPhoneNumber = true;
             this.getMemberTransactions();
-
           } else {
             this.isValidPhoneNumber = false;
           }
@@ -51,8 +73,8 @@ export const useTransactionStore = defineStore('transaction', {
           this.isValidPhoneNumber = false;
         });
     },
-    async getBalance(phoneNumber) {
-      await this.validatePhoneNumber(phoneNumber);
+    async getBalance(barcodeInfo) {
+      await this.validateBarcode(barcodeInfo);
       if (this.isValidPhoneNumber) {
         await axios.get('http://172.16.1.154:3000/api/balance', { params: { memberId: this.memberId } })
           .then(response => {

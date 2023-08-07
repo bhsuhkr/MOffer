@@ -118,13 +118,38 @@ export const useTransactionStore = defineStore('transaction', {
         });
       }
     },
-    // Validate phone number
-    async validatePhoneNumber(phoneNumber) {
-      await axios.get('http://172.16.1.154:3000/api/member/id', { params:{ phoneNumber: phoneNumber } })
+    // Validate barcode
+    async validateBarcode(barcodeInfo, validateEmail = true) {
+      const phoneNumber = barcodeInfo.substring(0, 10);
+      const firstFourEmailChar = barcodeInfo.substring(10, barcodeInfo.length);
+
+      if (phoneNumber && firstFourEmailChar && validateEmail || phoneNumber && !validateEmail) {
+        await axios.get('http://172.16.1.154:3000/api/member/id', { params:{ phoneNumber: phoneNumber } })
         .then(response => {
           this.memberId = response.data.memberId;
           
-          if (this.memberId !== "NONE" ) {
+          if (this.memberId !== "NONE") {
+            this.isValidPhoneNumber = true;
+            if (validateEmail) {
+              this.validateEmail(firstFourEmailChar);
+            }
+          } else {
+            this.isValidPhoneNumber = false;
+          }
+        })
+        .catch(error => {
+          console.error("Failed to validate phone number", error);
+          this.isValidPhoneNumber = false;
+        });
+      } else {
+        this.isValidPhoneNumber = false;
+      }
+    },
+    // Validate first four email char
+    async validateEmail(firstFourEmailChar) {
+      await axios.get('http://172.16.1.154:3000/api/email', { params:{ memberId: this.memberId } })
+        .then(response => {
+          if (firstFourEmailChar.toLowerCase() === response.data.first_four_char_email.toLowerCase()) {
             this.isValidPhoneNumber = true;
           } else {
             this.isValidPhoneNumber = false;
@@ -136,8 +161,8 @@ export const useTransactionStore = defineStore('transaction', {
         });
     },
     // Get Balance 
-    async getBalance(phoneNumber) {
-      await this.validatePhoneNumber(phoneNumber);
+    async getBalance(barcodeInfo) {
+      await this.validateBarcode(barcodeInfo);
       if (this.isValidPhoneNumber) {
         await axios.get('http://172.16.1.154:3000/api/balance', { params: { memberId: this.memberId } })
           .then(response => {
@@ -150,8 +175,8 @@ export const useTransactionStore = defineStore('transaction', {
       }
     },
     // Make a payment
-    async pay(phoneNumber) {
-      await this.validatePhoneNumber(phoneNumber);
+    async pay(barcodeInfo) {
+      await this.validateBarcode(barcodeInfo);
       if (this.isValidPhoneNumber) {
         await axios.post('http://172.16.1.154:3000/api/member/pay', { memberId: this.memberId, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
           .then(() => {
@@ -166,8 +191,9 @@ export const useTransactionStore = defineStore('transaction', {
       }
     },
     // Add funds
-    async deposit(phoneNumber, amount, transType) {
-      await this.validatePhoneNumber(phoneNumber);
+    async deposit(barcodeInfo, amount, transType) {
+      await this.validateBarcode(barcodeInfo, false);
+      console.log("deposit", this.isValidPhoneNumber);
       if (this.isValidPhoneNumber) {
         await axios.post('http://172.16.1.154:3000/api/member/deposit', { memberId: this.memberId, amount: amount, transType: transType, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
         .then(() => {

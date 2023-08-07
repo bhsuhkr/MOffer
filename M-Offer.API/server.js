@@ -150,6 +150,35 @@ sql
       }
     });
 
+    app.get("/api/email", async (req, res) => {
+      try {
+        pool.query(
+          `select nc_members.Email from nc_members where nc_members.memberid = ${req.query.memberId}`,
+          (err, recordset) => {
+            if (err) console.log(err);
+            else {
+              if (recordset && recordset.recordset && recordset.recordset[0]) {
+                res.status(200).json({
+                  message: "Email fetched successfully",
+                  first_four_char_email: recordset.recordset[0].Email.substring(
+                    0,
+                    4
+                  ),
+                });
+              } else {
+                res.status(200).json({
+                  message: "No email found",
+                });
+              }
+            }
+          }
+        );
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Can't fetch transactions" });
+      }
+    });
+
     app.get("/api/member/id", async (req, res) => {
       try {
         pool.query(
@@ -280,4 +309,3 @@ if (config.database === "moffer") {
     console.log("Dev Mode: server is running on http://172.16.1.154:3001");
   });
 }
-
