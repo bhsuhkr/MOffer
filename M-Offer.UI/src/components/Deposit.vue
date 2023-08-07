@@ -113,7 +113,8 @@ export default defineComponent({
         this.showConfirmationMsg = false;
         this.validationMessage = "최소 $1 이상 입력해주세요.";
       } else if (window.confirm("$" + this.amount + "을 입금하시겠습니까?")) {
-        await this.deposit(this.phoneNumber, this.amount, this.transType);
+        const rowNumber = this.phoneNumber.replace(/\D/g, "");
+        await this.deposit(rowNumber, this.amount, this.transType);
         if (this.isValidPhoneNumber) {
           this.showConfirmationMsg = true;
           document.addEventListener("keydown", this.handleKeyPress);

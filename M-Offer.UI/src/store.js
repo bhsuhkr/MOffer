@@ -93,7 +93,7 @@ export const useTransactionStore = defineStore('transaction', {
           this.transactions.unshift(...formattedTransactions);
         })
         .catch(error => {
-          console.error("Transaction load failed", error);
+          console.error("Failed to load transaction", error);
         });
     },
     // Fetch today's transactions
@@ -114,7 +114,7 @@ export const useTransactionStore = defineStore('transaction', {
           this.isGetTodayTransactionsCalled = true;
         })
         .catch(error => {
-          console.error("Transactions load failed", error);
+          console.error("Failed to load transactions", error);
         });
       }
     },
@@ -131,7 +131,7 @@ export const useTransactionStore = defineStore('transaction', {
           }
         })
         .catch(error => {
-          console.error("Failed to search phone number", error);
+          console.error("Failed to validate phone number", error);
           this.isValidPhoneNumber = false;
         });
     },
@@ -145,7 +145,7 @@ export const useTransactionStore = defineStore('transaction', {
             this.didPay = false;
           })
           .catch(error => {
-            console.error("MemberId failed to fetch", error);
+            console.error("Failed to fetch memberId ", error);
           });
       }
     },
@@ -160,7 +160,7 @@ export const useTransactionStore = defineStore('transaction', {
             this.didPay = true;
           })
           .catch(error => {
-            console.error("Payment failed", error);
+            console.error("Failed to make a payment", error);
             this.didPay = false;
           });
       }
@@ -175,7 +175,7 @@ export const useTransactionStore = defineStore('transaction', {
           this.getTransaction(this.memberId);
         })
         .catch(error => {
-          console.error("Deposit failed", error);
+          console.error("Failed to deposit", error);
         });
       }
     },
@@ -189,7 +189,7 @@ export const useTransactionStore = defineStore('transaction', {
           this.memberId = "";
         })
         .catch(error => {
-          console.error("Refund failed", error);
+          console.error("Failed to refund", error);
         });
       }
     }

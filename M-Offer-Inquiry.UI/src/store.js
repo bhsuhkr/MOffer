@@ -25,7 +25,7 @@ export const useTransactionStore = defineStore('transaction', {
           this.memberTransactions.push(...formattedTransactions);
         })
         .catch(error => {
-          console.error("Member Transactions load failed", error);
+          console.error("Failed to load member transactions", error);
         });
     },
     clearMemberTransactrions() {
@@ -34,7 +34,7 @@ export const useTransactionStore = defineStore('transaction', {
     },
     // Validate phone number
     async validatePhoneNumber(phoneNumber) {
-      await axios.get('http://172.16.1.154:3000/api/member/id', { params:{ phoneNumber: phoneNumber } })
+      await axios.get('http://172.16.1.154:3000/api/member/id', { params: { phoneNumber: phoneNumber } })
         .then(response => {
           this.memberId = response.data.memberId;
           
@@ -47,19 +47,19 @@ export const useTransactionStore = defineStore('transaction', {
           }
         })
         .catch(error => {
-          console.error("Failed to search phone number", error);
+          console.error("Failed to validate phone number", error);
           this.isValidPhoneNumber = false;
         });
     },
     async getBalance(phoneNumber) {
-      await this.getMemberId(phoneNumber);
+      await this.validatePhoneNumber(phoneNumber);
       if (this.isValidPhoneNumber) {
         await axios.get('http://172.16.1.154:3000/api/balance', { params: { memberId: this.memberId } })
           .then(response => {
             this.balance = response.data.balance;
           })
           .catch(error => {
-            console.error("MemberId failed to fetch", error);
+            console.error("Failed to fetch memberId", error);
           });
       }
     },
