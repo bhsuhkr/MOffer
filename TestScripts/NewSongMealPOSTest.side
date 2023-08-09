@@ -1,0 +1,1246 @@
+{
+  "id": "a477768f-8aa1-4202-bf77-d2ef403b46e7",
+  "version": "2.0",
+  "name": "NewSongMealPOSTest",
+  "url": "http://moffer.newsongdallas.org:8082/",
+  "tests": [{
+    "id": "dca18c62-d56e-41f8-a047-0f6861141d6c",
+    "name": "Balance Inquiry",
+    "commands": [{
+      "id": "7feb2a76-2b45-46a3-a133-769a62ec49da",
+      "comment": "QAChurchMemberPhone variable",
+      "command": "store",
+      "target": "1231231235",
+      "targets": [],
+      "value": "QAChurchMemberPhone"
+    }, {
+      "id": "4d29c9d9-7063-4650-88a7-a973fb0bb77d",
+      "comment": "QAChurchMemberBarcode variable",
+      "command": "store",
+      "target": "12312312351235",
+      "targets": [],
+      "value": "QAChurchMemberBarcode"
+    }, {
+      "id": "51938509-cf59-44ec-b4f8-cf8df06798ef",
+      "comment": "QABalanceAmount variable",
+      "command": "store",
+      "target": "0",
+      "targets": [],
+      "value": "QABalanceAmount"
+    }, {
+      "id": "654a4219-bcd1-4f4a-992f-732ba1f49000",
+      "comment": "Open Balance Page",
+      "command": "open",
+      "target": "http://moffer.newsongdallas.org:8082/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "eae3d187-78ec-4967-a6c7-fa5fd4ee2de1",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1300x981",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "5707f1c8-8070-4d84-9d1e-13dad86b08de",
+      "comment": "Click ID field",
+      "command": "click",
+      "target": "css=.cont-input",
+      "targets": [
+        ["css=.cont-input", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "45dd2d15-9da6-4d43-af8e-774e889657d1",
+      "comment": "Enter Member Barcode",
+      "command": "type",
+      "target": "css=.cont-input",
+      "targets": [
+        ["css=.cont-input", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "${QAChurchMemberBarcode}"
+    }, {
+      "id": "22b79f34-ed0e-4195-803e-6e38780fad6b",
+      "comment": "Click Submit Button",
+      "command": "click",
+      "target": "css=.submit-btn",
+      "targets": [
+        ["css=.submit-btn", "css:finder"],
+        ["xpath=//div[@id='app']/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "0b668e26-d37d-4441-9801-5e4380c70b9b",
+      "comment": "Test Balance Amount HTML present",
+      "command": "assertElementPresent",
+      "target": "css=.balance-text",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "3879a9c8-a4c3-408f-b176-172cc3fb3d1d",
+      "comment": "Test Balance Amount value",
+      "command": "assertText",
+      "target": "css=.balance-text",
+      "targets": [
+        ["css=.balance-text", "css:finder"],
+        ["xpath=//div[@id='app']/div/p", "xpath:idRelative"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'남은 금액: $24')]", "xpath:innerText"]
+      ],
+      "value": "남은 금액: $${QABalanceAmount}"
+    }]
+  }, {
+    "id": "9029af8e-b3b3-4e07-a9bb-99f753a7be41",
+    "name": "Deposit Good value - $4 Pay $2x2 Balance Test",
+    "commands": [{
+      "id": "ae73af5e-ba66-4802-b491-e7340505d34f",
+      "comment": "QAChurchMemberPhone variable",
+      "command": "store",
+      "target": "1231231235",
+      "targets": [],
+      "value": "QAChurchMemberPhone"
+    }, {
+      "id": "88206532-c851-40d5-a71a-205598c60de3",
+      "comment": "QAChurchMemberBarcode variable",
+      "command": "store",
+      "target": "12312312351235",
+      "targets": [],
+      "value": "QAChurchMemberBarcode"
+    }, {
+      "id": "e2d168ec-0de4-4230-b4bc-e0957f49bd68",
+      "comment": "QABalanceAmount variable",
+      "command": "store",
+      "target": "0",
+      "targets": [],
+      "value": "QABalanceAmount"
+    }, {
+      "id": "f07e87e9-a951-4b8d-be2b-78fbf14ed681",
+      "comment": "QADepositAmount variable",
+      "command": "store",
+      "target": "4",
+      "targets": [],
+      "value": "QADepositAmount"
+    }, {
+      "id": "f053b381-3e33-40bd-a0d8-7db4a7456d6e",
+      "comment": "Open Login Page",
+      "command": "open",
+      "target": "http://moffer.newsongdallas.org/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "ce2aae63-3619-45d8-af16-80457a0733f6",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1300x981",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "b508ac06-fd8a-41f9-b3c8-5d3bfb3410fc",
+      "comment": "Click username",
+      "command": "click",
+      "target": "xpath=//input[@id='username']",
+      "targets": [
+        ["css=.cont-input", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "3b264e09-3d81-4216-bc34-4891cb409a6d",
+      "comment": "Enter username",
+      "command": "type",
+      "target": "xpath=//input[@id='username']",
+      "targets": [
+        ["css=.cont-input", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "bsuh"
+    }, {
+      "id": "a45c00aa-a209-4f2c-a3fb-2c6b8ff9dabc",
+      "comment": "Click password",
+      "command": "click",
+      "target": "xpath=//input[@id='password']",
+      "targets": [
+        ["css=.cont-input", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "7a5f47dd-249c-43d8-b92e-5c595a185a91",
+      "comment": "Enter password",
+      "command": "type",
+      "target": "xpath=//input[@id='password']",
+      "targets": [
+        ["css=.cont-input", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "123123"
+    }, {
+      "id": "85a884f1-5c56-4e07-996f-53412dd1011a",
+      "comment": "Click login",
+      "command": "click",
+      "target": "xpath=//button",
+      "targets": [
+        ["css=.submit-btn", "css:finder"],
+        ["xpath=//div[@id='app']/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "9f1fb20c-1d13-4a7e-ad97-a2a9bb9adbbd",
+      "comment": "After login, land on Pay page",
+      "command": "assertElementPresent",
+      "target": "css=.pay-container",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "118f1732-ba4d-4a12-8a38-6126296929a1",
+      "comment": "Deposit Link present",
+      "command": "assertElementPresent",
+      "target": "xpath=//a[@href='/deposit']",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "d261041e-6b94-4351-a7c0-3f36ebe92e4e",
+      "comment": "Click Deposit Link",
+      "command": "click",
+      "target": "xpath=//a[@href='/deposit']",
+      "targets": [
+        ["css=.submit-btn", "css:finder"],
+        ["xpath=//div[@id='app']/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "7b3c6e00-f137-463e-aa84-0ead71e470df",
+      "comment": "Pause for page to load",
+      "command": "pause",
+      "target": "1000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "57f43714-2ed5-44a1-9505-8769700b6fe5",
+      "comment": "Deposit Title HTML present",
+      "command": "assertElementPresent",
+      "target": "css=.deposit-container",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "428734ee-57da-4383-8383-57abdb11d87a",
+      "comment": "Enter Member Phone",
+      "command": "type",
+      "target": "xpath=//input[@id='phoneNumber']",
+      "targets": [
+        ["css=.cont-input", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "${QAChurchMemberPhone}"
+    }, {
+      "id": "8192b311-52b8-4723-9f79-754c78a20199",
+      "comment": "Deposit Type HTML present",
+      "command": "assertElementPresent",
+      "target": "xpath=//select[@id='transType']",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "6e73ea9b-d74f-4c74-b865-a7c34f274ad5",
+      "comment": "Select Deposit Type",
+      "command": "select",
+      "target": "xpath=//select[@id='transType']",
+      "targets": [],
+      "value": "label=Check"
+    }, {
+      "id": "6e2ceb92-19b7-4458-b390-8c3875aa1ec0",
+      "comment": "Click amount",
+      "command": "click",
+      "target": "xpath=//input[@id='amount']",
+      "targets": [
+        ["css=.cont-input", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "57522012-c92f-4bd8-b962-7f5bfdeff6ba",
+      "comment": "Enter Correct Amount",
+      "command": "sendKeys",
+      "target": "xpath=//input[@id='amount']",
+      "targets": [],
+      "value": "${QADepositAmount}"
+    }, {
+      "id": "832c11f5-9149-4dde-afcc-7ceee0a3694c",
+      "comment": "Check OK on popup after next deposit button click",
+      "command": "chooseOkOnNextConfirmation",
+      "target": "",
+      "targets": [],
+      "value": "$100를 입금하시겠습니까?"
+    }, {
+      "id": "fdd5df6d-4905-4102-b1e0-3d4db7aafdd7",
+      "comment": "Click Deposit Button with correct amount",
+      "command": "click",
+      "target": "xpath=//button[@type='submit']",
+      "targets": [
+        ["css=.submit-btn", "css:finder"],
+        ["xpath=//div[@id='app']/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "ecd51203-7ad6-45b7-a8b9-c9fbb67f8112",
+      "comment": "Click Pay Link",
+      "command": "click",
+      "target": "xpath=//a[@href='/pay']",
+      "targets": [
+        ["css=.submit-btn", "css:finder"],
+        ["xpath=//div[@id='app']/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "e5c09c54-c440-4e27-981e-0f832a0cd433",
+      "comment": "Pause for page to load",
+      "command": "pause",
+      "target": "1000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "57162c15-6355-4f55-8949-73e8bc363b07",
+      "comment": "Enter Member Barcode",
+      "command": "type",
+      "target": "css=.cont-input",
+      "targets": [],
+      "value": "${QAChurchMemberBarcode}"
+    }, {
+      "id": "e8f8f3a0-4e9b-43ea-8b5c-c44f952e1231",
+      "comment": "Click Submit Button",
+      "command": "click",
+      "target": "css=.submit-btn",
+      "targets": [
+        ["css=.submit-btn", "css:finder"],
+        ["xpath=//div[@id='app']/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "293c1d9e-cb88-462a-8f7f-357117a9301b",
+      "comment": "Pause for payment to process",
+      "command": "pause",
+      "target": "1000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "0ed75479-5103-4c2d-92f7-34aa826c40c3",
+      "comment": "Enter Member Barcode",
+      "command": "type",
+      "target": "css=.cont-input",
+      "targets": [],
+      "value": "${QAChurchMemberBarcode}"
+    }, {
+      "id": "12ca7b7f-e3c2-4bea-a3e2-ccec6316aa11",
+      "comment": "Click Submit Button",
+      "command": "click",
+      "target": "css=.submit-btn",
+      "targets": [
+        ["css=.submit-btn", "css:finder"],
+        ["xpath=//div[@id='app']/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "bef5b06a-b396-4fc6-9765-7fc49814d054",
+      "comment": "Pause for payment to process",
+      "command": "pause",
+      "target": "1000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "746e756a-8d20-46e1-8199-823f38dc2710",
+      "comment": "Open Balance Page",
+      "command": "open",
+      "target": "http://moffer.newsongdallas.org:8082/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "ee4fde7c-3838-4df8-98c8-f8de74775723",
+      "comment": "Pause for page to load",
+      "command": "pause",
+      "target": "1000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "178fb9b4-c66f-4845-8e10-097e4cb0057d",
+      "comment": "Enter Member Barcode",
+      "command": "type",
+      "target": "css=.cont-input",
+      "targets": [
+        ["css=.cont-input", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "${QAChurchMemberBarcode}"
+    }, {
+      "id": "7b885575-311e-4a5f-b28d-bdd4cd899bbb",
+      "comment": "Click Submit Button",
+      "command": "click",
+      "target": "css=.submit-btn",
+      "targets": [
+        ["css=.submit-btn", "css:finder"],
+        ["xpath=//div[@id='app']/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "3c387aa3-308e-4395-8277-e32b06cd3618",
+      "comment": "Test Balance Amount HTML present",
+      "command": "assertElementPresent",
+      "target": "css=.balance-text",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "bfd39eeb-bd3c-4a3d-9745-f5a578475d30",
+      "comment": "Test Balance Amount value",
+      "command": "assertText",
+      "target": "css=.balance-text",
+      "targets": [
+        ["css=.balance-text", "css:finder"],
+        ["xpath=//div[@id='app']/div/p", "xpath:idRelative"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'남은 금액: $24')]", "xpath:innerText"]
+      ],
+      "value": "남은 금액: $${QABalanceAmount}"
+    }]
+  }, {
+    "id": "f883322a-53a9-4547-aad2-fe455f02b4ae",
+    "name": "No Deposit Negative Balance Test",
+    "commands": [{
+      "id": "56f5a67a-a3b7-4a76-8fcd-e1642d066dc6",
+      "comment": "QAChurchMemberPhone variable",
+      "command": "store",
+      "target": "1231231235",
+      "targets": [],
+      "value": "QAChurchMemberPhone"
+    }, {
+      "id": "4553ff05-142a-404a-872b-a20ba8b7a25f",
+      "comment": "QAChurchMemberBarcode variable",
+      "command": "store",
+      "target": "12312312351235",
+      "targets": [],
+      "value": "QAChurchMemberBarcode"
+    }, {
+      "id": "daa16e6d-e370-4c69-85a5-c096acb4bab7",
+      "comment": "QABalanceAmount variable",
+      "command": "store",
+      "target": "0",
+      "targets": [],
+      "value": "QABalanceAmount"
+    }, {
+      "id": "0ce503be-04c8-41e2-948b-bdf557559dd0",
+      "comment": "QADepositAmount variable",
+      "command": "store",
+      "target": "10",
+      "targets": [],
+      "value": "QADepositAmount"
+    }, {
+      "id": "851a0b5e-a12d-4cc8-8ab6-2250090b2697",
+      "comment": "Open Login Page",
+      "command": "open",
+      "target": "http://moffer.newsongdallas.org/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "3358845b-b475-4790-a0b5-d9ad40e8c6b2",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1300x981",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "12470e93-ca24-4c31-98fe-453064692240",
+      "comment": "Click username",
+      "command": "click",
+      "target": "xpath=//input[@id='username']",
+      "targets": [
+        ["css=.cont-input", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "ca382b23-03aa-405c-b4e9-61b3d52944dd",
+      "comment": "Enter username",
+      "command": "type",
+      "target": "xpath=//input[@id='username']",
+      "targets": [
+        ["css=.cont-input", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "bsuh"
+    }, {
+      "id": "04dc5f40-69f7-40c2-9e79-1b8cd017023d",
+      "comment": "Click password",
+      "command": "click",
+      "target": "xpath=//input[@id='password']",
+      "targets": [
+        ["css=.cont-input", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "5190f062-f5e9-465d-91e4-7720b877640c",
+      "comment": "Enter password",
+      "command": "type",
+      "target": "xpath=//input[@id='password']",
+      "targets": [
+        ["css=.cont-input", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "123123"
+    }, {
+      "id": "7cc05223-3b2a-4b7b-8820-9e0bcad0e25a",
+      "comment": "Click login",
+      "command": "click",
+      "target": "xpath=//button",
+      "targets": [
+        ["css=.submit-btn", "css:finder"],
+        ["xpath=//div[@id='app']/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "71f46c95-2a87-49dc-a2ea-458a648adb4b",
+      "comment": "After login, land on Pay page",
+      "command": "assertElementPresent",
+      "target": "css=.pay-container",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "3d3a4bf9-dd41-4459-ae94-f0eabdbfb3ac",
+      "comment": "Click Pay Link",
+      "command": "click",
+      "target": "xpath=//a[@href='/pay']",
+      "targets": [
+        ["css=.submit-btn", "css:finder"],
+        ["xpath=//div[@id='app']/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "a2a51888-357c-4dcb-8c3d-1bb73dde3b83",
+      "comment": "Pause for page to load",
+      "command": "pause",
+      "target": "1000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "1d23524e-b5ff-482b-91ca-2896c8e10f7a",
+      "comment": "Enter Member Barcode",
+      "command": "type",
+      "target": "css=.cont-input",
+      "targets": [],
+      "value": "${QAChurchMemberBarcode}"
+    }, {
+      "id": "9dc89c46-0bb2-49b0-9d5a-f06446c5a1bf",
+      "comment": "Pay 1 Click Submit Button",
+      "command": "click",
+      "target": "css=.submit-btn",
+      "targets": [
+        ["css=.submit-btn", "css:finder"],
+        ["xpath=//div[@id='app']/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "26906466-e93c-472e-94f7-8a0e11aad84e",
+      "comment": "Pause for payment to process",
+      "command": "pause",
+      "target": "1000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "1d23524e-b5ff-482b-91ca-2896c8e10f7a",
+      "comment": "Enter Member Barcode",
+      "command": "type",
+      "target": "css=.cont-input",
+      "targets": [],
+      "value": "${QAChurchMemberBarcode}"
+    }, {
+      "id": "9dc89c46-0bb2-49b0-9d5a-f06446c5a1bf",
+      "comment": "Pay 2 Click Submit Button",
+      "command": "click",
+      "target": "css=.submit-btn",
+      "targets": [
+        ["css=.submit-btn", "css:finder"],
+        ["xpath=//div[@id='app']/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "26906466-e93c-472e-94f7-8a0e11aad84e",
+      "comment": "Pause for payment to process",
+      "command": "pause",
+      "target": "1000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "1d23524e-b5ff-482b-91ca-2896c8e10f7a",
+      "comment": "Enter Member Barcode",
+      "command": "type",
+      "target": "css=.cont-input",
+      "targets": [],
+      "value": "${QAChurchMemberBarcode}"
+    }, {
+      "id": "9dc89c46-0bb2-49b0-9d5a-f06446c5a1bf",
+      "comment": "Pay 3 Click Submit Button",
+      "command": "click",
+      "target": "css=.submit-btn",
+      "targets": [
+        ["css=.submit-btn", "css:finder"],
+        ["xpath=//div[@id='app']/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "26906466-e93c-472e-94f7-8a0e11aad84e",
+      "comment": "Pause for payment to process",
+      "command": "pause",
+      "target": "1000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "1d23524e-b5ff-482b-91ca-2896c8e10f7a",
+      "comment": "Enter Member Barcode",
+      "command": "type",
+      "target": "css=.cont-input",
+      "targets": [],
+      "value": "${QAChurchMemberBarcode}"
+    }, {
+      "id": "9dc89c46-0bb2-49b0-9d5a-f06446c5a1bf",
+      "comment": "Pay 4 Click Submit Button",
+      "command": "click",
+      "target": "css=.submit-btn",
+      "targets": [
+        ["css=.submit-btn", "css:finder"],
+        ["xpath=//div[@id='app']/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "26906466-e93c-472e-94f7-8a0e11aad84e",
+      "comment": "Pause for payment to process",
+      "command": "pause",
+      "target": "1000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "1d23524e-b5ff-482b-91ca-2896c8e10f7a",
+      "comment": "Enter Member Barcode",
+      "command": "type",
+      "target": "css=.cont-input",
+      "targets": [],
+      "value": "${QAChurchMemberBarcode}"
+    }, {
+      "id": "9dc89c46-0bb2-49b0-9d5a-f06446c5a1bf",
+      "comment": "Pay 5 Click Submit Button",
+      "command": "click",
+      "target": "css=.submit-btn",
+      "targets": [
+        ["css=.submit-btn", "css:finder"],
+        ["xpath=//div[@id='app']/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "26906466-e93c-472e-94f7-8a0e11aad84e",
+      "comment": "Pause for payment to process",
+      "command": "pause",
+      "target": "1000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "1d23524e-b5ff-482b-91ca-2896c8e10f7a",
+      "comment": "Enter Member Barcode",
+      "command": "type",
+      "target": "css=.cont-input",
+      "targets": [],
+      "value": "${QAChurchMemberBarcode}"
+    }, {
+      "id": "9dc89c46-0bb2-49b0-9d5a-f06446c5a1bf",
+      "comment": "Pay 6 Click Submit Button",
+      "command": "click",
+      "target": "css=.submit-btn",
+      "targets": [
+        ["css=.submit-btn", "css:finder"],
+        ["xpath=//div[@id='app']/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "26906466-e93c-472e-94f7-8a0e11aad84e",
+      "comment": "Pause for payment to process",
+      "command": "pause",
+      "target": "1000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "56244e25-3dc5-4652-b448-99d71fdc530c",
+      "comment": "Pay Low Balance Error Message HTML present",
+      "command": "assertElementPresent",
+      "target": "css=.validation-msg",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "b1185253-c3a1-41e6-9e33-70853b78a551",
+      "comment": "Pay Low Balance Error Message check",
+      "command": "assertText",
+      "target": "css=.validation-msg",
+      "targets": [
+        ["css=.balance-text", "css:finder"],
+        ["xpath=//div[@id='app']/div/p", "xpath:idRelative"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'잔액')]", "xpath:innerText"]
+      ],
+      "value": "잔액이 부족합니다. $-10"
+    }, {
+      "id": "56244e25-3dc5-4652-b448-99d71fdc530c",
+      "comment": "Deposit Link present",
+      "command": "assertElementPresent",
+      "target": "xpath=//a[@href='/deposit']",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "12704729-fd46-4fb2-bfcc-38bdfc253b44",
+      "comment": "Click Deposit Link",
+      "command": "click",
+      "target": "xpath=//a[@href='/deposit']",
+      "targets": [
+        ["css=.submit-btn", "css:finder"],
+        ["xpath=//div[@id='app']/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "2d44cff9-b5f1-4bf6-a042-efdc029e5cca",
+      "comment": "Pause for page to load",
+      "command": "pause",
+      "target": "1000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "11b73bec-d5f0-41ec-8670-fb2d3ac7d06a",
+      "comment": "Deposit Title HTML present",
+      "command": "assertElementPresent",
+      "target": "css=.deposit-container",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "580714b3-3295-4bdf-bb1d-76146c545d9c",
+      "comment": "Enter Member Phone",
+      "command": "type",
+      "target": "xpath=//input[@id='phoneNumber']",
+      "targets": [
+        ["css=.cont-input", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "${QAChurchMemberPhone}"
+    }, {
+      "id": "434b20f5-d781-4174-b9a3-a3be2a9a9cfc",
+      "comment": "Select Deposit Type",
+      "command": "select",
+      "target": "xpath=//select[@id='transType']",
+      "targets": [],
+      "value": "label=Check"
+    }, {
+      "id": "337b8608-bbed-4715-8445-8fbbb7806855",
+      "comment": "Click amount",
+      "command": "click",
+      "target": "xpath=//input[@id='amount']",
+      "targets": [
+        ["css=.cont-input", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "47258050-fc45-419d-a627-675dbbd25c07",
+      "comment": "Enter Correct Amount",
+      "command": "sendKeys",
+      "target": "xpath=//input[@id='amount']",
+      "targets": [],
+      "value": "${QADepositAmount}"
+    }, {
+      "id": "833a3fab-99c6-4655-8cdb-bdf8d776ebd8",
+      "comment": "Check OK on popup after next deposit button click",
+      "command": "chooseOkOnNextConfirmation",
+      "target": "",
+      "targets": [],
+      "value": "$100를 입금하시겠습니까?"
+    }, {
+      "id": "b392019f-f1bd-44aa-bf55-88fc849eb537",
+      "comment": "Click Deposit Button with correct amount",
+      "command": "click",
+      "target": "xpath=//button[@type='submit']",
+      "targets": [
+        ["css=.submit-btn", "css:finder"],
+        ["xpath=//div[@id='app']/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "17cd01a4-3ff8-4eef-bd79-a052d0086bca",
+      "comment": "Open Balance Page",
+      "command": "open",
+      "target": "http://moffer.newsongdallas.org:8082/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "38fc754d-bd15-472e-9b34-7e9ffb0bdb8f",
+      "comment": "Pause for page to load",
+      "command": "pause",
+      "target": "1000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "662fd97d-c963-425d-97a6-b531ff0833b4",
+      "comment": "Enter Member Barcode",
+      "command": "type",
+      "target": "css=.cont-input",
+      "targets": [
+        ["css=.cont-input", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "${QAChurchMemberBarcode}"
+    }, {
+      "id": "3f58c133-af66-432f-b9da-91a88204ba51",
+      "comment": "Click Submit Button",
+      "command": "click",
+      "target": "css=.submit-btn",
+      "targets": [
+        ["css=.submit-btn", "css:finder"],
+        ["xpath=//div[@id='app']/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "a43e3686-a25f-4e14-9913-f3716d6ebfcf",
+      "comment": "Test Balance Amount HTML present",
+      "command": "assertElementPresent",
+      "target": "css=.balance-text",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "547d6c2c-eec8-43a3-a3a7-446f6104dc26",
+      "comment": "Test Balance Amount value",
+      "command": "assertText",
+      "target": "css=.balance-text",
+      "targets": [
+        ["css=.balance-text", "css:finder"],
+        ["xpath=//div[@id='app']/div/p", "xpath:idRelative"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'남은 금액: $24')]", "xpath:innerText"]
+      ],
+      "value": "남은 금액: $${QABalanceAmount}"
+    }]
+  }, {
+    "id": "5ca8a078-2d98-4179-8f97-1126279a788a",
+    "name": "Deposit Bad value Test",
+    "commands": [{
+      "id": "a45584d0-14e9-464a-bf4c-ca88c4767803",
+      "comment": "QAChurchMemberPhone variable",
+      "command": "store",
+      "target": "1231231234",
+      "targets": [],
+      "value": "QAChurchMemberPhone"
+    }, {
+      "id": "0d15c53f-dde4-4bbe-b807-52ed5c28c62a",
+      "comment": "QAChurchMemberBarcode variable",
+      "command": "store",
+      "target": "12312312351235",
+      "targets": [],
+      "value": "QAChurchMemberBarcode"
+    }, {
+      "id": "bcfc157c-fd72-4423-8f4f-5a971b97f015",
+      "comment": "QABalanceAmount variable",
+      "command": "store",
+      "target": "0",
+      "targets": [],
+      "value": "QABalanceAmount"
+    }, {
+      "id": "01aa9bb8-94ac-443f-95e5-f8d5397239b7",
+      "comment": "QADepositAmount variable",
+      "command": "store",
+      "target": "4",
+      "targets": [],
+      "value": "QADepositAmount"
+    }, {
+      "id": "eefd58d3-abc8-4f50-b13e-8a3088338e3e",
+      "comment": "Open Login Page",
+      "command": "open",
+      "target": "http://moffer.newsongdallas.org/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "9f8aa7cb-beb4-4ef9-876a-4792038536ca",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1300x981",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "29475d46-3336-474e-88b1-af782ed241ae",
+      "comment": "Click username",
+      "command": "click",
+      "target": "xpath=//input[@id='username']",
+      "targets": [
+        ["css=.cont-input", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "4698a92e-e9b7-480e-97f3-95ac1049e492",
+      "comment": "Enter username",
+      "command": "type",
+      "target": "xpath=//input[@id='username']",
+      "targets": [
+        ["css=.cont-input", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "bsuh"
+    }, {
+      "id": "9fb06ca2-10d1-4a51-bfa0-e439172fd11c",
+      "comment": "Click password",
+      "command": "click",
+      "target": "xpath=//input[@id='password']",
+      "targets": [
+        ["css=.cont-input", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "d1a53013-ba30-4091-b663-a8a9add1430b",
+      "comment": "Enter password",
+      "command": "type",
+      "target": "xpath=//input[@id='password']",
+      "targets": [
+        ["css=.cont-input", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "123123"
+    }, {
+      "id": "29c57ec9-8fda-450c-8af7-43052393630a",
+      "comment": "Click login",
+      "command": "click",
+      "target": "xpath=//button",
+      "targets": [
+        ["css=.submit-btn", "css:finder"],
+        ["xpath=//div[@id='app']/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "56fb476c-0efa-4ccc-b639-1f17885d53cb",
+      "comment": "After login, land on Pay page",
+      "command": "assertElementPresent",
+      "target": "css=.pay-container",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "f3353d00-ddc2-4b35-ad15-ebd252e6d18e",
+      "comment": "Deposit Link present",
+      "command": "assertElementPresent",
+      "target": "xpath=//a[@href='/deposit']",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "32bb260f-dfe2-46bb-8a16-15a3966139f2",
+      "comment": "Click Deposit Link",
+      "command": "click",
+      "target": "xpath=//a[@href='/deposit']",
+      "targets": [
+        ["css=.submit-btn", "css:finder"],
+        ["xpath=//div[@id='app']/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "7057a54c-d327-405a-b57e-cb0af56541e5",
+      "comment": "Pause for page to load",
+      "command": "pause",
+      "target": "1000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "1ca0a1c6-94d2-4624-bc19-47ae710321ee",
+      "comment": "Deposit Title HTML present",
+      "command": "assertElementPresent",
+      "target": "css=.deposit-container",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "5e9dd4fa-6dcd-4823-abe9-a635aefc9a4a",
+      "comment": "Enter Phone Number",
+      "command": "type",
+      "target": "xpath=//input[@id='phoneNumber']",
+      "targets": [
+        ["css=.cont-input", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "${QAChurchMemberPhone}"
+    }, {
+      "id": "713f854d-29f8-47af-abd4-132c1a172d31",
+      "comment": "Click amount",
+      "command": "click",
+      "target": "xpath=//input[@id='amount']",
+      "targets": [
+        ["css=.cont-input", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "760c2971-36d9-4b28-b8d4-c413a1952c80",
+      "comment": "Enter Bad Amount",
+      "command": "sendKeys",
+      "target": "xpath=//input[@id='amount']",
+      "targets": [],
+      "value": "0"
+    }, {
+      "id": "7d3f7f61-44dd-4507-a498-d8fbda7de42c",
+      "comment": "Deposit Type HTML present",
+      "command": "assertElementPresent",
+      "target": "xpath=//select[@id='transType']",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "1d6615aa-a448-4e09-bda4-1d36835fd7b8",
+      "comment": "Select Deposit Type",
+      "command": "select",
+      "target": "xpath=//select[@id='transType']",
+      "targets": [],
+      "value": "label=Check"
+    }, {
+      "id": "1f16a7b5-0d45-43fc-bd8f-d048416a085b",
+      "comment": "Click Deposit Button",
+      "command": "click",
+      "target": "xpath=//button[@type='submit']",
+      "targets": [
+        ["css=.submit-btn", "css:finder"],
+        ["xpath=//div[@id='app']/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "88d2f605-e7d8-4cf7-87bc-01226bb004f5",
+      "comment": "Deposit Error Message HTML present",
+      "command": "assertElementPresent",
+      "target": "css=.validation-msg",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "20dfec57-e726-4eb6-af91-554e49627c34",
+      "comment": "Deposit Error Message check",
+      "command": "assertText",
+      "target": "css=.validation-msg",
+      "targets": [
+        ["css=.balance-text", "css:finder"],
+        ["xpath=//div[@id='app']/div/p", "xpath:idRelative"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'남은 금액: $24')]", "xpath:innerText"]
+      ],
+      "value": "최소 $1 이상 입력해주세요."
+    }, {
+      "id": "ea54736b-bce2-4564-ae0b-acd6792f5ca1",
+      "comment": "Enter Bad Phone Number",
+      "command": "type",
+      "target": "xpath=//input[@id='phoneNumber']",
+      "targets": [
+        ["css=.cont-input", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "90999999991"
+    }, {
+      "id": "7509c7b7-e30c-4262-af8e-798c9777f5f8",
+      "comment": "Enter Good Amount",
+      "command": "sendKeys",
+      "target": "xpath=//input[@id='amount']",
+      "targets": [],
+      "value": "1"
+    }, {
+      "id": "b2ae24c2-55d9-40a8-9e72-b515a3b6b88d",
+      "comment": "Check OK on popup after next deposit button click",
+      "command": "chooseOkOnNextConfirmation",
+      "target": "",
+      "targets": [],
+      "value": "$100를 입금하시겠습니까?"
+    }, {
+      "id": "bad46c0f-6505-4b89-8e7d-34cff2f9bfe6",
+      "comment": "Click Deposit Button",
+      "command": "click",
+      "target": "xpath=//button[@type='submit']",
+      "targets": [
+        ["css=.submit-btn", "css:finder"],
+        ["xpath=//div[@id='app']/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "c4832a70-c78b-4bc1-ba35-9e7628a35df3",
+      "comment": "Deposit Error Message HTML present",
+      "command": "assertElementPresent",
+      "target": "css=.validation-msg",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "b1185253-c3a1-41e6-9e33-70853b78a551",
+      "comment": "Deposit Error Message check",
+      "command": "assertText",
+      "target": "css=.validation-msg",
+      "targets": [
+        ["css=.balance-text", "css:finder"],
+        ["xpath=//div[@id='app']/div/p", "xpath:idRelative"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'남은 금액: $24')]", "xpath:innerText"]
+      ],
+      "value": "없는 전화번호입니다. 다시 시도해주세요."
+    }, {
+      "id": "8f06df53-0333-4fa7-91ec-7a4e3f603712",
+      "comment": "Open Balance Page",
+      "command": "open",
+      "target": "http://moffer.newsongdallas.org:8082/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "4dba4c02-6026-4fdc-b413-a9d90400da73",
+      "comment": "Pause for page to load",
+      "command": "pause",
+      "target": "1000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "38ff1912-d165-4d55-bb34-15c49a3c0e18",
+      "comment": "Enter Member Barcode",
+      "command": "type",
+      "target": "css=.cont-input",
+      "targets": [
+        ["css=.cont-input", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "${QAChurchMemberBarcode}"
+    }, {
+      "id": "52993f89-efb4-469c-9775-422b00a615f0",
+      "comment": "Click Submit Button",
+      "command": "click",
+      "target": "css=.submit-btn",
+      "targets": [
+        ["css=.submit-btn", "css:finder"],
+        ["xpath=//div[@id='app']/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "ae3eee34-b713-4927-9daf-84cf39831584",
+      "comment": "Test Balance Amount HTML present",
+      "command": "assertElementPresent",
+      "target": "css=.balance-text",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "842841cc-98a2-444c-a227-abe260a8a8d4",
+      "comment": "Test Balance Amount value",
+      "command": "assertText",
+      "target": "css=.balance-text",
+      "targets": [
+        ["css=.balance-text", "css:finder"],
+        ["xpath=//div[@id='app']/div/p", "xpath:idRelative"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'남은 금액: $24')]", "xpath:innerText"]
+      ],
+      "value": "남은 금액: $${QABalanceAmount}"
+    }]
+  }],
+  "suites": [{
+    "id": "d1db8773-1932-4a1c-bf9d-3d75e8fc19e8",
+    "name": "Balance ",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["dca18c62-d56e-41f8-a047-0f6861141d6c"]
+  }, {
+    "id": "01bf0e44-37d9-40c0-bd30-d15a847c2a0a",
+    "name": "Deposit and Pay",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["5ca8a078-2d98-4179-8f97-1126279a788a", "9029af8e-b3b3-4e07-a9bb-99f753a7be41", "f883322a-53a9-4547-aad2-fe455f02b4ae"]
+  }],
+  "urls": ["http://172.16.1.154:8082/", "http://172.16.1.154:8080/", "http://moffer.newsongdallas.org:8082/"],
+  "plugins": []
+}
