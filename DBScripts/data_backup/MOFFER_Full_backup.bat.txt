@@ -1,0 +1,1 @@
+sqlcmd -S .\SQLExpress -U moffer -P !Newsong7654 -i C:\SQL_Scripts\moffer_DB_Full_Backup.sql
