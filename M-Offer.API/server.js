@@ -9,18 +9,23 @@ app.use(bodyParser.json());
 // Enable CORS
 app.use(cors());
 
-let config = {
-  database: "moffer",
-  server: "DESKTOP-4SIT040\\SQLEXPRESS",
-  driver: "msnodesqlv8",
-  options: {
-    trustedConnection: true,
-  },
-};
+let config = require('./config.js');
 
-if (process.argv.length >= 3 && process.argv[2] === "--dev") {
-  config.database = "moffer_qa";
-}
+// let config = {
+//   database: "moffer",
+//   server: "DESKTOP-4SIT040\\SQLEXPRESS",
+//   driver: "msnodesqlv8",
+//   options: {
+//     trustedConnection: true,
+//   },
+// };
+
+// if (process.argv.length >= 3 && process.argv[2] === "--dev") {
+//   config.database = "moffer_qa";
+// }
+
+console.log("config env: " + config.NODE_ENV);
+console.log("config db: " + config.connectionString);
 
 sql
   .connect(config)
@@ -294,6 +299,31 @@ sql
       } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Can't make a deposit" });
+      }
+    });
+
+    app.get("/api/report/tx/dailytotal", async (req, res) => {
+      try {
+        console.log(req.query.date);
+        pool.query(
+          `select nc_transactions.TransType, sum(nc_transactions.transamount)
+          from nc_transactions 
+          where CONVERT(DATE, TransTime) = CONVERT(DATE, '${req.query.date}')
+          group by nc_transactions.TransType
+          order by nc_transactions.TransType desc`,
+          (err, recordset) => {
+            if (err) console.log(err);
+            else {
+              res.status(200).json({
+                message: "Transactions fetched successfully",
+                recordset,
+              });
+            }
+          }
+        );
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Can't fetch transactions" });
       }
     });
   })
