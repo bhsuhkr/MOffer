@@ -7,6 +7,20 @@
     "id": "dca18c62-d56e-41f8-a047-0f6861141d6c",
     "name": "Balance Inquiry",
     "commands": [{
+      "id": "7feb2a76-2b45-46a3-a129-769a62ec49da",
+      "comment": "Balance Check BaseURL Prod variable",
+      "command": "store",
+      "target": "http://moffer.newsongdallas.org:8082/",
+      "targets": [],
+      "value": "BalanceCheckBaseURLProd"
+    }, {
+      "id": "4d29c9d9-7063-4650-88a7-a973fb0bb11d",
+      "comment": "Balance Check BaseURL variable",
+      "command": "store",
+      "target": "http://localhost:8081/",
+      "targets": [],
+      "value": "BalanceCheckBaseURL"
+    }, {
       "id": "7feb2a76-2b45-46a3-a133-769a62ec49da",
       "comment": "QAChurchMemberPhone variable",
       "command": "store",
@@ -31,7 +45,7 @@
       "id": "654a4219-bcd1-4f4a-992f-732ba1f49000",
       "comment": "Open Balance Page",
       "command": "open",
-      "target": "http://moffer.newsongdallas.org:8082/",
+      "target": "${BalanceCheckBaseURL}",
       "targets": [],
       "value": ""
     }, {
@@ -101,6 +115,34 @@
     "id": "9029af8e-b3b3-4e07-a9bb-99f753a7be41",
     "name": "Deposit Good value - $4 Pay $2x2 Balance Test",
     "commands": [{
+      "id": "7feb2a76-2b45-46a3-a129-769a62ec49da",
+      "comment": "Balance Check BaseURL Prod variable",
+      "command": "store",
+      "target": "http://moffer.newsongdallas.org:8082/",
+      "targets": [],
+      "value": "BalanceCheckBaseURLProd"
+    }, {
+      "id": "4d29c9d9-7063-4650-88a7-a973fb0bb11d",
+      "comment": "Balance Check BaseURL variable",
+      "command": "store",
+      "target": "http://localhost:8081/",
+      "targets": [],
+      "value": "BalanceCheckBaseURL"
+    }, {
+      "id": "7feb2a76-0000-46a3-a129-769a62ec49da",
+      "comment": "Pay BaseURL Prod variable",
+      "command": "store",
+      "target": "http://moffer.newsongdallas.org/",
+      "targets": [],
+      "value": "PayBaseURLProd"
+    }, {
+      "id": "4d29c9d9-2222-4650-88a7-a973fb0bb11d",
+      "comment": "Pay BaseURL variable",
+      "command": "store",
+      "target": "http://localhost:8080/",
+      "targets": [],
+      "value": "PayBaseURL"
+    }, {
       "id": "ae73af5e-ba66-4802-b491-e7340505d34f",
       "comment": "QAChurchMemberPhone variable",
       "command": "store",
@@ -132,7 +174,7 @@
       "id": "f053b381-3e33-40bd-a0d8-7db4a7456d6e",
       "comment": "Open Login Page",
       "command": "open",
-      "target": "http://moffer.newsongdallas.org/",
+      "target": "${PayBaseURL}",
       "targets": [],
       "value": ""
     }, {
@@ -381,7 +423,7 @@
       "id": "746e756a-8d20-46e1-8199-823f38dc2710",
       "comment": "Open Balance Page",
       "command": "open",
-      "target": "http://moffer.newsongdallas.org:8082/",
+      "target": "${BalanceCheckBaseURL}",
       "targets": [],
       "value": ""
     }, {
@@ -439,6 +481,34 @@
     "id": "f883322a-53a9-4547-aad2-fe455f02b4ae",
     "name": "No Deposit Negative Balance Test",
     "commands": [{
+      "id": "7feb2a76-2b45-46a3-a129-769a62ec49da",
+      "comment": "Balance Check BaseURL Prod variable",
+      "command": "store",
+      "target": "http://moffer.newsongdallas.org:8082/",
+      "targets": [],
+      "value": "BalanceCheckBaseURLProd"
+    }, {
+      "id": "4d29c9d9-7063-4650-88a7-a973fb0bb11d",
+      "comment": "Balance Check BaseURL variable",
+      "command": "store",
+      "target": "http://localhost:8081/",
+      "targets": [],
+      "value": "BalanceCheckBaseURL"
+    }, {
+      "id": "7feb2a76-0000-46a3-a129-769a62ec49da",
+      "comment": "Pay BaseURL Prod variable",
+      "command": "store",
+      "target": "http://moffer.newsongdallas.org/",
+      "targets": [],
+      "value": "PayBaseURLProd"
+    }, {
+      "id": "4d29c9d9-2222-4650-88a7-a973fb0bb11d",
+      "comment": "Pay BaseURL variable",
+      "command": "store",
+      "target": "http://localhost:8080/",
+      "targets": [],
+      "value": "PayBaseURL"
+    }, {
       "id": "56f5a67a-a3b7-4a76-8fcd-e1642d066dc6",
       "comment": "QAChurchMemberPhone variable",
       "command": "store",
@@ -470,7 +540,7 @@
       "id": "851a0b5e-a12d-4cc8-8ab6-2250090b2697",
       "comment": "Open Login Page",
       "command": "open",
-      "target": "http://moffer.newsongdallas.org/",
+      "target": "${PayBaseURL}",
       "targets": [],
       "value": ""
     }, {
@@ -818,7 +888,7 @@
       "command": "chooseOkOnNextConfirmation",
       "target": "",
       "targets": [],
-      "value": "$100를 입금하시겠습니까?"
+      "value": "$10를 입금하시겠습니까?"
     }, {
       "id": "b392019f-f1bd-44aa-bf55-88fc849eb537",
       "comment": "Click Deposit Button with correct amount",
@@ -835,7 +905,7 @@
       "id": "17cd01a4-3ff8-4eef-bd79-a052d0086bca",
       "comment": "Open Balance Page",
       "command": "open",
-      "target": "http://moffer.newsongdallas.org:8082/",
+      "target": "${BalanceCheckBaseURL}",
       "targets": [],
       "value": ""
     }, {
@@ -893,6 +963,34 @@
     "id": "5ca8a078-2d98-4179-8f97-1126279a788a",
     "name": "Deposit Bad value Test",
     "commands": [{
+      "id": "7feb2a76-2b45-46a3-a129-769a62ec49da",
+      "comment": "Balance Check BaseURL Prod variable",
+      "command": "store",
+      "target": "http://moffer.newsongdallas.org:8082/",
+      "targets": [],
+      "value": "BalanceCheckBaseURLProd"
+    }, {
+      "id": "4d29c9d9-7063-4650-88a7-a973fb0bb11d",
+      "comment": "Balance Check BaseURL variable",
+      "command": "store",
+      "target": "http://localhost:8081/",
+      "targets": [],
+      "value": "BalanceCheckBaseURL"
+    }, {
+      "id": "7feb2a76-0000-46a3-a129-769a62ec49da",
+      "comment": "Pay BaseURL Prod variable",
+      "command": "store",
+      "target": "http://moffer.newsongdallas.org/",
+      "targets": [],
+      "value": "PayBaseURLProd"
+    }, {
+      "id": "4d29c9d9-2222-4650-88a7-a973fb0bb11d",
+      "comment": "Pay BaseURL variable",
+      "command": "store",
+      "target": "http://localhost:8080/",
+      "targets": [],
+      "value": "PayBaseURL"
+    }, {
       "id": "a45584d0-14e9-464a-bf4c-ca88c4767803",
       "comment": "QAChurchMemberPhone variable",
       "command": "store",
@@ -924,7 +1022,7 @@
       "id": "eefd58d3-abc8-4f50-b13e-8a3088338e3e",
       "comment": "Open Login Page",
       "command": "open",
-      "target": "http://moffer.newsongdallas.org/",
+      "target": "${PayBaseURL}",
       "targets": [],
       "value": ""
     }, {
@@ -1171,7 +1269,7 @@
       "id": "8f06df53-0333-4fa7-91ec-7a4e3f603712",
       "comment": "Open Balance Page",
       "command": "open",
-      "target": "http://moffer.newsongdallas.org:8082/",
+      "target": "${BalanceCheckBaseURL}",
       "targets": [],
       "value": ""
     }, {
