@@ -315,7 +315,7 @@ sql
             if (err) console.log(err);
             else {
               res.status(200).json({
-                message: "Transactions fetched successfully",
+                message: "Report fetched successfully",
                 recordset,
               });
             }
@@ -323,7 +323,7 @@ sql
         );
       } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "Can't fetch transactions" });
+        res.status(500).json({ error: "Can't fetch report" });
       }
     });
   })

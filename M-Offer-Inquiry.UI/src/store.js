@@ -11,7 +11,7 @@ export const useTransactionStore = defineStore('transaction', {
   }),
   actions: {
     async getMemberTransactions() {
-      await axios.get('http://172.16.1.154:3000/api/member/transactions', { params: { memberId: this.memberId} })
+      await axios.get(process.env.VUE_APP_API_URL + '/api/member/transactions', { params: { memberId: this.memberId} })
         .then(response => {
           this.memberTransactions = [];
           const transactions = response.data.recordset.recordset;
@@ -38,7 +38,7 @@ export const useTransactionStore = defineStore('transaction', {
       const firstFourEmailChar = barcodeInfo.substring(10, barcodeInfo.length);
 
       if (phoneNumber && firstFourEmailChar) {
-        await axios.get('http://172.16.1.154:3000/api/member/id', { params:{ phoneNumber: phoneNumber } })
+        await axios.get(process.env.VUE_APP_API_URL + '/api/member/id', { params:{ phoneNumber: phoneNumber } })
         .then(response => {
           this.memberId = response.data.memberId;
           
@@ -59,7 +59,7 @@ export const useTransactionStore = defineStore('transaction', {
     },
     // Validate first four email char
     async validateEmail(firstFourEmailChar) {
-      await axios.get('http://172.16.1.154:3000/api/email', { params:{ memberId: this.memberId } })
+      await axios.get(process.env.VUE_APP_API_URL + '/api/email', { params:{ memberId: this.memberId } })
         .then(response => {
           if (firstFourEmailChar.toLowerCase() === response.data.first_four_char_email.toLowerCase()) {
             this.isValidPhoneNumber = true;
@@ -76,7 +76,7 @@ export const useTransactionStore = defineStore('transaction', {
     async getBalance(barcodeInfo) {
       await this.validateBarcode(barcodeInfo);
       if (this.isValidPhoneNumber) {
-        await axios.get('http://172.16.1.154:3000/api/balance', { params: { memberId: this.memberId } })
+        await axios.get(process.env.VUE_APP_API_URL + '/api/balance', { params: { memberId: this.memberId } })
           .then(response => {
             this.balance = response.data.balance;
           })
