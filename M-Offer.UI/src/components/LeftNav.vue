@@ -38,12 +38,18 @@ export default {
     const authStore = useAuthStore();
     let isAuth = ref(false);
 
+    // this kicks in when the value changes
     watch(
       () => authStore.isAuthenticated,
       (newValue) => {
         isAuth.value = newValue;
       }
     );
+
+    // this kicks in on the first time load or browser refresh 
+    // we will check the previous login from local storage
+    if (authStore.isAuthenticated)
+      isAuth.value = authStore.isAuthenticated;
 
     return {
       isAuth,
