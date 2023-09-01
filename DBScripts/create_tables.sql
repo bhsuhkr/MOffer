@@ -300,3 +300,17 @@ GO
 
 
 
+--DROP TABLE [dbo].[NC_DailySummary];
+CREATE TABLE [dbo].[NC_DailySummary](
+	[DSID] [int] IDENTITY(1,1) NOT NULL,
+	[SummaryDate] [date] NOT NULL,
+	[DailyTotalDebitAmount] [float] NOT NULL,
+	[DailyTotalCreditAmount] [float] NOT NULL,
+	[DailyTotalRefundAmount] [float] NOT NULL,
+	[DailyBalance] [float] NOT NULL,
+	[DailyActiveMembers] [int] NOT NULL,
+	[GrandTotalTransBalance] [float] NOT NULL,
+	[GrandTotalMemberBalance] [float] NOT NULL,
+	[GrandTotalActiveMembers] [int] NOT NULL
+) ON [PRIMARY]
+GO
