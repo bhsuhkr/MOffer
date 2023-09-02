@@ -304,13 +304,27 @@ sql
 
     app.get("/api/report/tx/dailytotal", async (req, res) => {
       try {
-        console.log(req.query.date);
+        let whereClause = "";
+        if (req.query.date !== undefined)
+          whereClause = ` WHERE SummaryDate = CONVERT(DATE, '${req.query.date }') `;
+
+        let queryString = `SELECT [DSID]
+          ,[SummaryDate]
+          ,[DailyTotalDebitAmount]
+          ,[DailyTotalCreditAmount]
+          ,[DailyTotalRefundAmount]
+          ,[DailyBalance]
+          ,[DailyActiveMembers]
+          ,[GrandTotalTransBalance]
+          ,[GrandTotalMemberBalance]
+          ,[GrandTotalActiveMembers]
+          from [NC_DailySummary] 
+          ${whereClause} 
+          order by [SummaryDate] desc`;
+        //console.log (queryString);
+
         pool.query(
-          `select nc_transactions.TransType, sum(nc_transactions.transamount)
-          from nc_transactions 
-          where CONVERT(DATE, TransTime) = CONVERT(DATE, '${req.query.date}')
-          group by nc_transactions.TransType
-          order by nc_transactions.TransType desc`,
+          queryString,
           (err, recordset) => {
             if (err) console.log(err);
             else {
