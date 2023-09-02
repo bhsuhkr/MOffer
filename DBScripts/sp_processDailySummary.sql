@@ -77,7 +77,7 @@ BEGIN
 	END
 
 	-- query to get daily balance for a given day
-	SET @dailyBalance = (@creditTotalAmt - @debitTotalAmt - @refundTotalAmt)
+	SET @dailyBalance = (@creditTotalAmt - @debitTotalAmt + @refundTotalAmt)
 
 	IF @dailyBalance is null
 	BEGIN
@@ -144,7 +144,8 @@ BEGIN
 						  ,[DailyBalance] = @dailyBalance
 						  ,[DailyActiveMembers] = @dailyActiveMembers
 						  ,[GrandTotalTransBalance] = @totalTransBalance
-						  ,[GrandTotalMemberBalance] = @totalMemberBalance
+						  -- for update, don't update grand total member balance as it cannot be calculated based on date
+						  --,[GrandTotalMemberBalance] = @totalMemberBalance
 						  ,[GrandTotalActiveMembers] = @totalActiveMembers
 					WHERE [SummaryDate] = @summaryDate
 				END
