@@ -3,6 +3,7 @@ import { useAuthStore } from "@/store";
 import Login from './components/Login.vue';
 import Pay from './components/Pay.vue';
 import Deposit from './components/Deposit.vue';
+import DailySummary from './components/DailySummary.vue';
 // TODO: Phase 2
 // import MemberManagement from './components/MemberManagement.vue';
 // import UserManagement from './components/UserManagement.vue';
@@ -20,6 +21,11 @@ const routes = [
   {
     path: '/deposit',
     component: Deposit,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/dailysummary',
+    component: DailySummary,
     meta: { requiresAuth: true }
   },
   // TODO: Phase 2

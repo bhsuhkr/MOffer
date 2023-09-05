@@ -322,7 +322,7 @@ sql
           from [NC_DailySummary] 
           ${whereClause} 
           order by [SummaryDate] desc`;
-        console.log (queryString);
+        //console.log (queryString);
 
         pool.query(
           queryString,

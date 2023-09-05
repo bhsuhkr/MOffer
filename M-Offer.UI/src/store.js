@@ -288,3 +288,44 @@ export const useTransactionStore = defineStore('transaction', {
     }
   },
 });
+
+
+export const useSummaryStore = defineStore('dailySummary', {
+  state: () => ({
+    summaryData: [],
+  }),
+  actions: {
+  // Add the latest transaction in an array after pay, deposite, or refund
+  async getSummary(dateValue) {
+    await axios.get(process.env.VUE_APP_API_URL + '/api/report/tx/dailytotal', { params: { "date": dateValue } })
+      .then(response => {
+        const summaryRecordSet = response.data.recordset.recordset;
+        const formattedSummary = summaryRecordSet.map((summaryRecord) => {
+          const zonedTime = utcToZonedTime(summaryRecord.SummaryDate, 'UTC');
+          // Format the price above to USD using the locale, style, and currency.
+          const USDollar = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+          });
+          summaryRecord.SummaryDate = format(zonedTime, 'MM-dd-yyyy', { timeZone: 'UTC' });
+          summaryRecord.DailyTotalDebitAmount = USDollar.format(summaryRecord.DailyTotalDebitAmount);
+          summaryRecord.DailyTotalCreditAmount = USDollar.format(summaryRecord.DailyTotalCreditAmount);
+          summaryRecord.DailyTotalRefundAmount = USDollar.format(summaryRecord.DailyTotalRefundAmount);
+          summaryRecord.DailyBalance = USDollar.format(summaryRecord.DailyBalance);
+          summaryRecord.GrandTotalTransBalance = USDollar.format(summaryRecord.GrandTotalTransBalance);
+          summaryRecord.GrandTotalMemberBalance = USDollar.format(summaryRecord.GrandTotalMemberBalance);
+          return summaryRecord;
+        });
+
+        this.summaryData.unshift(...formattedSummary);
+      })
+      .catch(error => {
+        console.error("Failed to load daily summary", error);
+      })
+    },
+    clearSummary() {
+      this.summaryData = [];
+      this.dateValue = "";
+    },    
+  },
+});
