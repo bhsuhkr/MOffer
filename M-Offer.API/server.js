@@ -305,7 +305,7 @@ sql
     app.get("/api/report/tx/dailytotal", async (req, res) => {
       try {
         let whereClause = "";
-        if (req.query.date !== undefined)
+        if (req.query.date !== undefined && req.query.date !== "")
           whereClause = ` WHERE SummaryDate = CONVERT(DATE, '${req.query.date }') `;
 
         let queryString = `SELECT [DSID]
@@ -321,7 +321,7 @@ sql
           from [NC_DailySummary] 
           ${whereClause} 
           order by [SummaryDate] desc`;
-        //console.log (queryString);
+        console.log (queryString);
 
         pool.query(
           queryString,
