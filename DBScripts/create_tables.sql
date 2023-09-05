@@ -311,6 +311,7 @@ CREATE TABLE [dbo].[NC_DailySummary](
 	[DailyActiveMembers] [int] NOT NULL,
 	[GrandTotalTransBalance] [float] NOT NULL,
 	[GrandTotalMemberBalance] [float] NOT NULL,
-	[GrandTotalActiveMembers] [int] NOT NULL
+	[GrandTotalActiveMembers] [int] NOT NULL,
+	[DailyNewMembers] [int] NOT NULL
 ) ON [PRIMARY]
 GO

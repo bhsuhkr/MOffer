@@ -30,6 +30,7 @@ BEGIN
 	DECLARE @totalMemberBalance float
 	DECLARE @totalActiveMembers int
 	DECLARE @dailyActiveMembers int
+	DECLARE @dailyNewMembers int
 	DECLARE @dailyExists bit
 
 	SET @dailyExists = 0
@@ -126,9 +127,24 @@ BEGIN
 	select @dailyActiveMembers=count(distinct nc_transactions.MemberID) 
 	from nc_transactions 
 	where CONVERT(DATE, TransTime) = @summaryDate
+	
 	IF @dailyActiveMembers is null
 	BEGIN
 		SET @dailyActiveMembers = 0
+	END
+
+	-- query to get unique number of members who had transaction for a given day
+	select @dailyNewMembers=count(distinct nc_transactions.MemberID) 
+	from nc_transactions 
+	where CONVERT(DATE, TransTime) = @summaryDate
+	and nc_transactions.MemberID  NOT in 
+	(select distinct nc_transactions.MemberID
+		from nc_transactions 
+		where CONVERT(DATE, TransTime) < @summaryDate)
+
+	IF @dailyNewMembers is null
+	BEGIN
+		SET @dailyNewMembers = 0
 	END
 
 	BEGIN TRY
@@ -147,6 +163,7 @@ BEGIN
 						  -- for update, don't update grand total member balance as it cannot be calculated based on date
 						  --,[GrandTotalMemberBalance] = @totalMemberBalance
 						  ,[GrandTotalActiveMembers] = @totalActiveMembers
+						  ,[DailyNewMembers] = @dailyNewMembers
 					WHERE [SummaryDate] = @summaryDate
 				END
 			ELSE 
@@ -163,6 +180,7 @@ BEGIN
 					  ,[GrandTotalTransBalance]
 					  ,[GrandTotalMemberBalance]
 					  ,[GrandTotalActiveMembers]
+					  ,[DailyNewMembers]
 					)
 					values (
 						@summaryDate
@@ -174,6 +192,7 @@ BEGIN
 						,@totalTransBalance
 						,@totalMemberBalance
 						,@totalActiveMembers
+						,@dailyNewMembers
 					)
 			END
 		-- If everything is fine, commit the transaction
