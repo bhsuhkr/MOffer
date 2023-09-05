@@ -318,6 +318,7 @@ sql
           ,[GrandTotalTransBalance]
           ,[GrandTotalMemberBalance]
           ,[GrandTotalActiveMembers]
+          ,[DailyNewMembers]
           from [NC_DailySummary] 
           ${whereClause} 
           order by [SummaryDate] desc`;
