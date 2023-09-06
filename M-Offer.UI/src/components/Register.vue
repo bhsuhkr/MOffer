@@ -84,6 +84,11 @@ export default defineComponent({
       await registerStore.register(phoneNumber, engName, korName, email);
     };
 
+    const isRegisterd = computed({
+      get: () => registerStore.isRegisterd,
+      set: (newValue) => (registerStore.isRegisterd = newValue),
+    });
+
     const phoneNumberField = ref("");
     onMounted(() => {
       phoneNumberField.value.focus();
@@ -99,6 +104,7 @@ export default defineComponent({
       phoneNumberField,
       phoneNumber,
       register,
+      isRegisterd
     };
   },
   methods: {
@@ -107,17 +113,22 @@ export default defineComponent({
         this.showConfirmationMsg = false;
         this.validationMessage = "모든 정보를 입력해주세요.";
       } else {
+        this.validationMessage = "";
         await this.register(
           this.phoneNumber,
           this.engName,
           this.korName,
           this.email
         );
-        this.phoneNumber = "";
-        this.engName = "";
-        this.korName = "";
-        this.email = "";
-        this.$refs.phoneNumberField.focus();
+        if (this.isRegisterd) {
+          this.phoneNumber = "";
+          this.engName = "";
+          this.korName = "";
+          this.email = "";
+          this.$refs.phoneNumberField.focus();
+        } else {
+          this.validationMessage = "이미 사용중인 전화번호입니다.";
+        }
       }
     },
 

@@ -330,14 +330,19 @@ export const useSummaryStore = defineStore('dailySummary', {
 });
 
 export const useRegisterStore = defineStore('register', {
+  state: () => ({
+    isRegisterd: false,
+  }),
   actions: {
   async register(phoneNumber, engName, korName, email) {
     await axios.post(process.env.VUE_APP_API_URL + '/api/member/register', { phoneNumber, engName, korName, email })
       .then(response => {
           console.log("Successfully registered", response);
+          this.isRegisterd = true;
       })
       .catch(error => {
         console.error("Failed to register", error);
+        this.isRegisterd = false;
       })
     },
   },
