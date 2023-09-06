@@ -9,7 +9,7 @@ app.use(bodyParser.json());
 // Enable CORS
 app.use(cors());
 
-let config = require('./config.js');
+let config = require("./config.js");
 
 // let config = {
 //   database: "moffer",
@@ -209,6 +209,45 @@ sql
       }
     });
 
+    app.post("/api/member/register", async (req, res) => {
+      try {
+        pool.query(
+          `exec sp_createMember
+          '${req.body.phoneNumber}',
+          '${req.body.engName}',
+          null,
+          N'${req.body.korName}',
+          null,
+          null,
+          null,
+          '${req.body.phoneNumber}',
+          '${req.body.email}',
+          null
+          `,
+          (err, recordset) => {
+            if (err) console.log(err);
+            else if (
+              recordset &&
+              recordset.recordsets &&
+              recordset.recordsets[0] &&
+              recordset.recordsets[0][0]
+            ) {
+              if (recordset.recordsets[0][0].Result == "Registered") {
+                res.status(200).json({ message: "Successfully registered" });
+              } else {
+                res.status(400).json({
+                  error: "Can't register with this number. Already existed.",
+                });
+              }
+            }
+          }
+        );
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Can't register" });
+      }
+    });
+
     app.post("/api/member/pay", async (req, res) => {
       try {
         pool.query(
@@ -306,7 +345,7 @@ sql
       try {
         let whereClause = "";
         if (req.query.date !== undefined && req.query.date !== "")
-          whereClause = ` WHERE SummaryDate = CONVERT(DATE, '${req.query.date }') `;
+          whereClause = ` WHERE SummaryDate = CONVERT(DATE, '${req.query.date}') `;
 
         let queryString = `SELECT [DSID]
           ,[SummaryDate]
@@ -324,18 +363,15 @@ sql
           order by [SummaryDate] desc`;
         //console.log (queryString);
 
-        pool.query(
-          queryString,
-          (err, recordset) => {
-            if (err) console.log(err);
-            else {
-              res.status(200).json({
-                message: "Report fetched successfully",
-                recordset,
-              });
-            }
+        pool.query(queryString, (err, recordset) => {
+          if (err) console.log(err);
+          else {
+            res.status(200).json({
+              message: "Report fetched successfully",
+              recordset,
+            });
           }
-        );
+        });
       } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Can't fetch report" });

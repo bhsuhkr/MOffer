@@ -8,6 +8,9 @@
         <li class="leftnav-item">
           <router-link class="nav-link" to="/deposit">Deposit</router-link>
         </li>
+        <li class="leftnav-item">
+          <router-link class="nav-link" to="/register">Register</router-link>
+        </li>
         <!-- <li class="leftnav-item">
           <router-link class="nav-link" to="/dailysummary">Daily Summary</router-link>
         </li> -->
