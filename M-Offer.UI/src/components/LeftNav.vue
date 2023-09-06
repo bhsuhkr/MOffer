@@ -52,10 +52,9 @@ export default {
       }
     );
 
-    // this kicks in on the first time load or browser refresh 
+    // this kicks in on the first time load or browser refresh
     // we will check the previous login from local storage
-    if (authStore.isAuthenticated)
-      isAuth.value = authStore.isAuthenticated;
+    if (authStore.isAuthenticated) isAuth.value = authStore.isAuthenticated;
 
     return {
       isAuth,

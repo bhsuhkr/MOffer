@@ -289,7 +289,6 @@ export const useTransactionStore = defineStore('transaction', {
   },
 });
 
-
 export const useSummaryStore = defineStore('dailySummary', {
   state: () => ({
     summaryData: [],
@@ -327,5 +326,19 @@ export const useSummaryStore = defineStore('dailySummary', {
       this.summaryData = [];
       this.dateValue = "";
     },    
+  },
+});
+
+export const useRegisterStore = defineStore('register', {
+  actions: {
+  async register(phoneNumber, engName, korName, email) {
+    await axios.post(process.env.VUE_APP_API_URL + '/api/member/register', { phoneNumber, engName, korName, email })
+      .then(response => {
+          console.log("Successfully registered", response);
+      })
+      .catch(error => {
+        console.error("Failed to register", error);
+      })
+    },
   },
 });

@@ -16,13 +16,13 @@ export default defineComponent({
   },
 });
 
-/** 
+/**
  * we initially add a browser session history record with current URL
- * when browser back or forward button is clicked, it will force a forward/go.(1) which was just added 
-*/
+ * when browser back or forward button is clicked, it will force a forward/go.(1) which was just added
+ */
 history.pushState(null, null, location.href);
 window.onpopstate = function () {
-    history.go(1);
+  history.go(1);
 };
 </script>
 

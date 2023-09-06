@@ -13,7 +13,9 @@
           @keydown.enter="handleEnterKey"
           placeholder="여기에 날짜를 기입해주세요 (Optional)"
         />
-        <button id="submit" class="submit-btn" @click="handleEnterKey">Submit</button>
+        <button id="submit" class="submit-btn" @click="handleEnterKey">
+          Submit
+        </button>
       </div>
       <p id="validation-msg" class="validation-msg">{{ validationMessage }}</p>
 
@@ -49,12 +51,30 @@ export default defineComponent({
   name: "DailySummary",
   setup() {
     let validationMessage = ref("");
-    const titles = ["Summary Date", "Daily Total Debit", "Daily Total Credit", 
-      "Daily Total Refund", "Daily Balance", "Daily Active Members", "Daily New Members", 
-      "Grand Total Tx Balance", "Grand Total Member Balance", "Grand Total Active Members"];
-    const fields = ["SummaryDate", "DailyTotalDebitAmount", "DailyTotalCreditAmount", 
-      "DailyTotalRefundAmount", "DailyBalance", "DailyActiveMembers", "DailyNewMembers",
-      "GrandTotalTransBalance", "GrandTotalMemberBalance", "GrandTotalActiveMembers"];
+    const titles = [
+      "Summary Date",
+      "Daily Total Debit",
+      "Daily Total Credit",
+      "Daily Total Refund",
+      "Daily Balance",
+      "Daily Active Members",
+      "Daily New Members",
+      "Grand Total Tx Balance",
+      "Grand Total Member Balance",
+      "Grand Total Active Members",
+    ];
+    const fields = [
+      "SummaryDate",
+      "DailyTotalDebitAmount",
+      "DailyTotalCreditAmount",
+      "DailyTotalRefundAmount",
+      "DailyBalance",
+      "DailyActiveMembers",
+      "DailyNewMembers",
+      "GrandTotalTransBalance",
+      "GrandTotalMemberBalance",
+      "GrandTotalActiveMembers",
+    ];
     const summaryStore = useSummaryStore();
     const getSummary = async (dailyDate) => {
       //summaryStore.summaryData = [];
@@ -67,7 +87,7 @@ export default defineComponent({
       get: () => summaryStore.summaryData,
       set: (newValue) => (summaryStore.summaryData = newValue),
     });
-    
+
     const dailyDate = ref("");
     onMounted(() => {
       dailyDate.value.focus();
@@ -103,9 +123,9 @@ export default defineComponent({
       this.$refs.dailyDate.focus();
     },
     formatPrice(value) {
-        let val = (value/1).toFixed(2).replace('.', ',')
-        return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-    },    
+      let val = (value / 1).toFixed(2).replace(".", ",");
+      return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    },
   },
 });
 </script>
