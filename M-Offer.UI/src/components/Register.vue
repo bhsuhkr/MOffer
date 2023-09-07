@@ -49,6 +49,7 @@
       <button type="submit" :disabled="showConfirmationMsg">Register</button>
       <p class="validation-msg">{{ validationMessage }}</p>
     </form>
+    <canvas id="barcode" class="barcode-canvas"></canvas>
   </div>
 </template>
 
@@ -57,6 +58,7 @@ import { defineComponent, ref, computed, onMounted } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 import { useRegisterStore } from "@/store";
+import bwipjs from "bwip-js";
 
 export default defineComponent({
   name: "Register",
@@ -104,7 +106,7 @@ export default defineComponent({
       phoneNumberField,
       phoneNumber,
       register,
-      isRegisterd
+      isRegisterd,
     };
   },
   methods: {
@@ -115,13 +117,17 @@ export default defineComponent({
       } else {
         this.validationMessage = "";
         const rowNumber = this.phoneNumber.replace(/\D/g, "");
-        await this.register(
-          rowNumber,
-          this.engName,
-          this.korName,
-          this.email
-        );
+        await this.register(rowNumber, this.engName, this.korName, this.email);
         if (this.isRegisterd) {
+          const id = rowNumber + this.email.substring(0, 4);
+          bwipjs.toCanvas("barcode", {
+            bcid: "pdf417",
+            text: id,
+            scale: 3,
+            height: 10,
+            textxalign: "center",
+          });
+
           this.phoneNumber = "";
           this.engName = "";
           this.korName = "";
@@ -185,5 +191,8 @@ button {
 .validation-msg {
   color: red;
   margin-top: 15px;
+}
+.barcode-canvas {
+  margin-top: 50px;
 }
 </style>
