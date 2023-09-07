@@ -114,8 +114,9 @@ export default defineComponent({
         this.validationMessage = "모든 정보를 입력해주세요.";
       } else {
         this.validationMessage = "";
+        const rowNumber = this.phoneNumber.replace(/\D/g, "");
         await this.register(
-          this.phoneNumber,
+          rowNumber,
           this.engName,
           this.korName,
           this.email

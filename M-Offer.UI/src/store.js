@@ -260,7 +260,6 @@ export const useTransactionStore = defineStore('transaction', {
     // Add funds
     async deposit(barcodeInfo, amount, transType) {
       await this.validateBarcode(barcodeInfo, false);
-      console.log("deposit", this.isValidPhoneNumber);
       if (this.isValidPhoneNumber) {
         await axios.post(process.env.VUE_APP_API_URL + '/api/member/deposit', { memberId: this.memberId, amount: amount, transType: transType, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
           .then(() => {
