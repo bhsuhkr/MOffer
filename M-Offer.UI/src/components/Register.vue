@@ -49,7 +49,15 @@
       <button type="submit" :disabled="showConfirmationMsg">Register</button>
       <p class="validation-msg">{{ validationMessage }}</p>
     </form>
-    <canvas id="barcode" class="barcode-canvas"></canvas>
+    
+    <RegisterPopup
+      ref="register-popup"
+      v-if="showConfirmationMsg"
+      :phoneNumber="phoneNumber"
+      :korName="korName"
+      :email="email"
+      @close-register-popup="handlePopupClosed"
+    />
   </div>
 </template>
 
@@ -58,10 +66,13 @@ import { defineComponent, ref, computed, onMounted } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 import { useRegisterStore } from "@/store";
-import bwipjs from "bwip-js";
+import RegisterPopup from "./RegisterPopup.vue";
 
 export default defineComponent({
   name: "Register",
+  components: {
+    RegisterPopup,
+  },
   setup() {
     let showConfirmationMsg = ref(false);
     let phoneNumber = ref("");
@@ -119,26 +130,14 @@ export default defineComponent({
         const rowNumber = this.phoneNumber.replace(/\D/g, "");
         await this.register(rowNumber, this.engName, this.korName, this.email);
         if (this.isRegisterd) {
-          const id = rowNumber + this.email.substring(0, 4);
-          bwipjs.toCanvas("barcode", {
-            bcid: "pdf417",
-            text: id,
-            scale: 3,
-            height: 10,
-            textxalign: "center",
-          });
-
-          this.phoneNumber = "";
-          this.engName = "";
-          this.korName = "";
-          this.email = "";
-          this.$refs.phoneNumberField.focus();
+          this.showConfirmationMsg = true;
+          document.addEventListener("keydown", this.handleKeyPress);
+          this.validationMessage = "";
         } else {
           this.validationMessage = "이미 사용중인 전화번호입니다.";
         }
       }
     },
-
     onPhoneNumberInput(event) {
       this.phoneNumber = event.target.value.replace(/\D/g, "");
 
@@ -154,6 +153,20 @@ export default defineComponent({
           this.phoneNumber = `(${match[1]})-${match[2]}-${match[3]}`;
         }
       }
+    },
+    handleKeyPress(event) {
+      if (event.key === "Enter" || event.key === "Escape") {
+        this.handlePopupClosed();
+      }
+    },
+    handlePopupClosed() {
+      this.phoneNumber = "";
+      this.engName = "";
+      this.korName = "";
+      this.email = "";
+      this.$refs.phoneNumberField.focus();
+      document.removeEventListener("keydown", this.handleKeyPress);
+      this.showConfirmationMsg = false;
     },
   },
 });
@@ -191,8 +204,5 @@ button {
 .validation-msg {
   color: red;
   margin-top: 15px;
-}
-.barcode-canvas {
-  margin-top: 50px;
 }
 </style>
