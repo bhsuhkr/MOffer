@@ -11,9 +11,9 @@
         <li class="leftnav-item">
           <router-link class="nav-link" to="/register">Register</router-link>
         </li>
-        <!-- <li class="leftnav-item">
+        <li class="leftnav-item">
           <router-link class="nav-link" to="/dailysummary">Daily Summary</router-link>
-        </li> -->
+        </li>
         <!-- <li class="leftnav-item">
           <router-link class="nav-link" to="/member-management"
             >Member Management</router-link
