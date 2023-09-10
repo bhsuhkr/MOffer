@@ -9,8 +9,14 @@ GO
 -- Author:		Stanley Kim
 -- Create date: 6/10/2023
 -- Description:	Insert Xact and update current balance automatically
+-- Updated: 9/10/2023 to allow taking in refund transactions
 -- =============================================
-CREATE PROCEDURE [dbo].[sp_insertTransaction]
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND OBJECT_ID = OBJECT_ID('dbo.sp_insertTransaction'))
+   exec('CREATE PROCEDURE [dbo].[sp_insertTransaction] AS BEGIN SET NOCOUNT ON; END')
+GO
+
+
+ALTER PROCEDURE [dbo].[sp_insertTransaction]
 	-- Add the parameters for the stored procedure here
 	@memberID nvarchar(50),
 	@transType varchar(10),
@@ -46,9 +52,10 @@ BEGIN
 				select @transAmt=Price from NC_Items where ItemNumber=@transItem
 			END
 
-			IF LEFT(@transType,3)<>'CRE' and LEFT(@transType,3)<>'DEB'
+			-- validation: only accept credit, debit or refund
+			IF LEFT(@transType,3)<>'CRE' and LEFT(@transType,3)<>'DEB' AND LEFT(@transType, 3) <> 'REF'
 			BEGIN
-				RAISERROR('TransType should start with either CREDIT or DEBIT',16,1)
+				RAISERROR('TransType should start with either CREDIT or DEBIT or REFUND', 16, 1)
 			END
 			-- #### Insert Xact
 			Insert into NC_Transactions 
