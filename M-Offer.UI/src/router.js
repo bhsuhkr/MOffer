@@ -17,7 +17,7 @@ const routes = [
   {
     path: '/pay',
     component: Pay,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: false }
   },
   {
     path: '/deposit',
