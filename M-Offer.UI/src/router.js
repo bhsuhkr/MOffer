@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from "@/store";
 import Login from './components/Login.vue';
 import Pay from './components/Pay.vue';
+import Inquiry from './components/Inquiry.vue';
 import Deposit from './components/Deposit.vue';
 import Register from './components/Register.vue';
 import DailySummary from './components/DailySummary.vue';
@@ -17,6 +18,11 @@ const routes = [
   {
     path: '/pay',
     component: Pay,
+    meta: { requiresAuth: false }
+  },
+  {
+    path: '/inquiry',
+    component: Inquiry,
     meta: { requiresAuth: false }
   },
   {

@@ -137,6 +137,7 @@ export const useAuthStore = defineStore('auth', {
 export const useTransactionStore = defineStore('transaction', {
   state: () => ({
     transactions: [],
+    memberTransactions: [],
     memberId: "",
     balance: 0,
     isValidPhoneNumber: true,
@@ -185,8 +186,32 @@ export const useTransactionStore = defineStore('transaction', {
           });
       }
     },
+    // Get transactions for inquiry
+    async getMemberTransactions() {
+      await axios.get(process.env.VUE_APP_API_URL + '/api/member/transactions', { params: { memberId: this.memberId} })
+        .then(response => {
+          this.memberTransactions = [];
+          const transactions = response.data.recordset.recordset;
+          const formattedTransactions = transactions.map((transaction) => {
+            const zonedTime = utcToZonedTime(transaction.TransTime, 'UTC');
+            return {
+              ...transaction,
+              TransTime: format(zonedTime, 'yyyy-MM-dd HH:mm:ss a', { timeZone: 'UTC' })
+            };
+          });
+          this.memberTransactions.push(...formattedTransactions);
+        })
+        .catch(error => {
+          console.error("Failed to load member transactions", error);
+        });
+    },    
+    // Clear transactions in inquiry page
+    clearMemberTransactrions() {
+      this.memberTransactions = [];
+      this.balance = 0;
+    },
     // Validate barcode
-    async validateBarcode(barcodeInfo, validateEmail = true) {
+    async validateBarcode(barcodeInfo, validateEmail = true, isInquiry = false) {
       const phoneNumber = barcodeInfo.substring(0, 10);
       const firstFourEmailChar = barcodeInfo.substring(10, barcodeInfo.length);
 
@@ -198,7 +223,7 @@ export const useTransactionStore = defineStore('transaction', {
             if (this.memberId !== "NONE") {
               this.isValidPhoneNumber = true;
               if (validateEmail) {
-                this.validateEmail(firstFourEmailChar);
+                this.validateEmail(firstFourEmailChar, isInquiry);
               }
             } else {
               this.isValidPhoneNumber = false;
@@ -213,11 +238,14 @@ export const useTransactionStore = defineStore('transaction', {
       }
     },
     // Validate first four email char
-    async validateEmail(firstFourEmailChar) {
+    async validateEmail(firstFourEmailChar, isInquiry = false) {
       await axios.get(process.env.VUE_APP_API_URL + '/api/email', { params: { memberId: this.memberId } })
         .then(response => {
           if (firstFourEmailChar.toLowerCase() === response.data.first_four_char_email.toLowerCase()) {
             this.isValidPhoneNumber = true;
+            if(isInquiry) {
+              this.getMemberTransactions();
+            }
           } else {
             this.isValidPhoneNumber = false;
           }
@@ -228,8 +256,8 @@ export const useTransactionStore = defineStore('transaction', {
         });
     },
     // Get Balance 
-    async getBalance(barcodeInfo) {
-      await this.validateBarcode(barcodeInfo);
+    async getBalance(barcodeInfo, isInquiry = false) {
+      await this.validateBarcode(barcodeInfo, true, isInquiry);
       if (this.isValidPhoneNumber) {
         await axios.get(process.env.VUE_APP_API_URL + '/api/balance', { params: { memberId: this.memberId } })
           .then(response => {

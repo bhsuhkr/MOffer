@@ -49,7 +49,7 @@
       <button type="submit" :disabled="showConfirmationMsg">Register</button>
       <p class="validation-msg">{{ validationMessage }}</p>
     </form>
-    
+
     <RegisterPopup
       ref="register-popup"
       v-if="showConfirmationMsg"

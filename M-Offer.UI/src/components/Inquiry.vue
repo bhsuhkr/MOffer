@@ -51,8 +51,8 @@ export default defineComponent({
     const titles = ["Name", "Time", "Balance ($)"];
     const fields = ["KoreanName", "TransTime", "RunningBalance"];
     const transactionStore = useTransactionStore();
-    const getBalance = async (phoneNumber) => {
-      await transactionStore.getBalance(phoneNumber);
+    const getBalance = async (phoneNumber, isInquiry) => {
+      await transactionStore.getBalance(phoneNumber, isInquiry);
     };
     const clearMemberTransactrions = async () => {
       await transactionStore.clearMemberTransactrions();
@@ -87,9 +87,9 @@ export default defineComponent({
     };
   },
   methods: {
-    handleEnterKey() {
+    async handleEnterKey() {
       if (this.$refs["phoneNumberField"].value) {
-        this.getBalance(this.$refs["phoneNumberField"].value);
+        await this.getBalance(this.$refs["phoneNumberField"].value, true);
         this.$refs["phoneNumberField"].value = "";
       }
       this.$refs.phoneNumberField.focus();
@@ -101,13 +101,13 @@ export default defineComponent({
   },
 });
 
-/** 
+/**
  * we initially add a browser session history record with current URL
- * when browser back or forward button is clicked, it will force a forward/go.(1) which was just added 
-*/
+ * when browser back or forward button is clicked, it will force a forward/go.(1) which was just added
+ */
 history.pushState(null, null, location.href);
 window.onpopstate = function () {
-    history.go(1);
+  history.go(1);
 };
 </script>
 
@@ -155,8 +155,7 @@ window.onpopstate = function () {
   height: 30px;
   margin-top: 10px;
   margin-left: 10px;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding: 0 20px;
   max-width: 100px;
 }
 .table-text {
