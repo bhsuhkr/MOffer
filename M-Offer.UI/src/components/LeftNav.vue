@@ -6,13 +6,21 @@
           <router-link class="nav-link" to="/pay">Pay</router-link>
         </li>
         <li class="leftnav-item">
+          <router-link class="nav-link" to="/inquiry">Inquiry</router-link>
+        </li>
+        <li class="leftnav-item">
           <router-link class="nav-link" to="/deposit">Deposit</router-link>
         </li>
         <li class="leftnav-item">
           <router-link class="nav-link" to="/register">Register</router-link>
         </li>
         <li class="leftnav-item">
-          <router-link class="nav-link" to="/dailysummary">Daily Summary</router-link>
+          <router-link class="nav-link" to="/search">Search</router-link>
+        </li>
+        <li class="leftnav-item">
+          <router-link class="nav-link" to="/dailysummary"
+            >Daily Summary</router-link
+          >
         </li>
         <!-- <li class="leftnav-item">
           <router-link class="nav-link" to="/member-management"

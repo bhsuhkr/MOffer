@@ -1,7 +1,10 @@
 <template>
-  <div class="register-container">
-    <h3>Register</h3>
-    <form @submit.prevent="submitForm" class="register-form">
+  <div class="search-container">
+    <div class="search-header">
+      <h3>Search Barcode</h3>
+      <button @click="clearBarcode()" class="clear-btn">기록 지우기</button>
+    </div>
+    <form @submit.prevent="submitForm" class="search-form">
       <div>
         <label for="phoneNumber">전화번호:</label>
         <input
@@ -16,26 +19,6 @@
         />
       </div>
       <div>
-        <label for="korName">한글 이름:</label>
-        <input
-          type="text"
-          id="korName"
-          ref="korNameField"
-          v-model="korName"
-          required
-        />
-      </div>
-      <div>
-        <label for="engName">영문 이름:</label>
-        <input
-          type="text"
-          id="engName"
-          ref="engNameField"
-          v-model="engName"
-          required
-        />
-      </div>
-      <div>
         <label for="email">이메일:</label>
         <input
           type="email"
@@ -46,18 +29,11 @@
         />
       </div>
 
-      <button type="submit" :disabled="showConfirmationMsg">Register</button>
+      <button type="submit">Search</button>
       <p class="validation-msg">{{ validationMessage }}</p>
     </form>
 
-    <RegisterPopup
-      ref="register-popup"
-      v-if="showConfirmationMsg"
-      :phoneNumber="phoneNumber"
-      :korName="korName"
-      :email="email"
-      @close-register-popup="handlePopupClosed"
-    />
+    <canvas id="barcode" class="barcode-canvas"></canvas>
   </div>
 </template>
 
@@ -65,42 +41,22 @@
 import { defineComponent, ref, computed, onMounted } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
-import { useRegisterStore } from "@/store";
-import RegisterPopup from "./RegisterPopup.vue";
+import bwipjs from "bwip-js";
 
 export default defineComponent({
-  name: "Register",
-  components: {
-    RegisterPopup,
-  },
+  name: "Search",
   setup() {
-    let showConfirmationMsg = ref(false);
     let phoneNumber = ref("");
-    let engName = ref("");
-    let korName = ref("");
     let email = ref("");
     let validationMessage = ref("");
 
     const rules = {
       phoneNumber: { required },
-      engName: { required },
-      korName: { required },
       email: { required },
     };
 
-    let v$ = useVuelidate(rules, { phoneNumber, engName, korName, email });
+    let v$ = useVuelidate(rules, { phoneNumber, email });
     const formInvalid = computed(() => v$.value.$invalid);
-
-    const registerStore = useRegisterStore();
-
-    const register = async (phoneNumber, engName, korName, email) => {
-      await registerStore.register(phoneNumber, engName, korName, email);
-    };
-
-    const isRegisterd = computed({
-      get: () => registerStore.isRegisterd,
-      set: (newValue) => (registerStore.isRegisterd = newValue),
-    });
 
     const phoneNumberField = ref("");
     onMounted(() => {
@@ -108,16 +64,11 @@ export default defineComponent({
     });
 
     return {
-      showConfirmationMsg,
-      engName,
-      korName,
       email,
       validationMessage,
       formInvalid,
       phoneNumberField,
       phoneNumber,
-      register,
-      isRegisterd,
     };
   },
   methods: {
@@ -126,16 +77,15 @@ export default defineComponent({
         this.showConfirmationMsg = false;
         this.validationMessage = "모든 정보를 입력해주세요.";
       } else {
-        this.validationMessage = "";
-        const rowNumber = this.phoneNumber.replace(/\D/g, "");
-        await this.register(rowNumber, this.engName, this.korName, this.email);
-        if (this.isRegisterd) {
-          this.showConfirmationMsg = true;
-          document.addEventListener("keydown", this.handleKeyPress);
-          this.validationMessage = "";
-        } else {
-          this.validationMessage = "이미 사용중인 전화번호입니다.";
-        }
+        const id =
+          this.phoneNumber.replace(/\D/g, "") + this.email.substring(0, 4);
+        bwipjs.toCanvas("barcode", {
+          bcid: "pdf417",
+          text: id,
+          scale: 3,
+          height: 10,
+          textxalign: "center",
+        });
       }
     },
     onPhoneNumberInput(event) {
@@ -154,36 +104,29 @@ export default defineComponent({
         }
       }
     },
-    handleKeyPress(event) {
-      if (event.key === "Enter" || event.key === "Escape") {
-        this.handlePopupClosed();
-      }
-    },
-    handlePopupClosed() {
+    clearBarcode() {
       this.phoneNumber = "";
-      this.engName = "";
-      this.korName = "";
       this.email = "";
+      const canvas = document.getElementById("barcode");
+      const context = canvas.getContext("2d");
+      context.clearRect(0, 0, canvas.width, canvas.height);
       this.$refs.phoneNumberField.focus();
-      document.removeEventListener("keydown", this.handleKeyPress);
-      this.showConfirmationMsg = false;
     },
   },
 });
 </script>
 
 <style scoped>
-.register-container {
+.search-container {
   margin: 20px 40px;
   width: 100%;
 }
-.register-form {
+.search-form {
   margin-top: 20px;
   max-width: 400px;
 }
 input[type="tel"],
-input[type="email"],
-input[type="text"] {
+input[type="email"] {
   width: 100%;
   padding: 8px;
   border: 1px solid #ccc;
@@ -203,5 +146,20 @@ button {
 .validation-msg {
   color: red;
   margin-top: 15px;
+}
+.search-header {
+  display: flex;
+  justify-content: space-between;
+}
+.clear-btn {
+  background-color: red;
+  margin-top: 0px;
+  margin-bottom: 10px;
+  width: 200px;
+}
+.barcode-canvas {
+  margin-top: 30px;
+  max-width: 400px;
+  min-width: 330px;
 }
 </style>

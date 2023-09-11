@@ -1,7 +1,7 @@
 <template>
   <div class="dailysummary-container">
     <div class="dailysummary-header">
-      <h3 class="dailysummary-title">Transaction Summary Report</h3>
+      <h3>Transaction Summary Report</h3>
       <button @click="clearHistory()" class="clear-btn">기록 지우기</button>
     </div>
     <div class="transaction-container">

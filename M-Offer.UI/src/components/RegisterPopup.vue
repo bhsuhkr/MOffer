@@ -32,7 +32,6 @@ export default {
     },
   },
   mounted() {
-    console.log("test");
     const id = this.phoneNumber.replace(/\D/g, "") + this.email.substring(0, 4);
     bwipjs.toCanvas("barcode", {
       bcid: "pdf417",

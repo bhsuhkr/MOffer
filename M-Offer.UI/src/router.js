@@ -5,6 +5,7 @@ import Pay from './components/Pay.vue';
 import Inquiry from './components/Inquiry.vue';
 import Deposit from './components/Deposit.vue';
 import Register from './components/Register.vue';
+import Search from './components/Search.vue';
 import DailySummary from './components/DailySummary.vue';
 // TODO: Phase 2
 // import MemberManagement from './components/MemberManagement.vue';
@@ -33,6 +34,11 @@ const routes = [
   {
     path: '/register',
     component: Register,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/search',
+    component: Search,
     meta: { requiresAuth: true }
   },
   {

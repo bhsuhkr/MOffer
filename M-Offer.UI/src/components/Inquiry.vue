@@ -1,7 +1,7 @@
 <template>
   <div class="balance-inquiry-container">
     <div class="inquiry-header">
-      <h3 class="inquiry-title">Balance Inquiry</h3>
+      <h3>Balance Inquiry</h3>
       <button @click="clearHistory()" class="clear-btn">기록 지우기</button>
     </div>
     <div class="input-row">

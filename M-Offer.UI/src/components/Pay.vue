@@ -1,7 +1,7 @@
 <template>
   <div class="pay-container">
     <div class="pay-header">
-      <h3 class="pay-title">Pay</h3>
+      <h3>Pay</h3>
       <button @click="getRefund()" class="refund-btn">환불하기</button>
     </div>
     <div class="transaction-container">
