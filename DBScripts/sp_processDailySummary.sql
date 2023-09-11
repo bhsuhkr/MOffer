@@ -105,9 +105,9 @@ BEGIN
 	AND CONVERT(DATE, TransTime) <= @summaryDate
 
 	DECLARE @grandTotalCredit float
-	select @grandTotalCredit=sum(nc_transactions.transamount)
+	select @grandTotalCredit=sum(nc_transactions.transamount)huuu
 	from nc_transactions 
-	WHERE nc_transactions.TransType NOT in ('DEBIT', 'DEBIT_ADM', 'DEBIT_SYS')
+	WHERE nc_transactions.TransType NOT in ('DEBIT', 'DEBIT_ADM', 'DEBIT_SYS', 'REFUND')
 	AND CONVERT(DATE, TransTime) <= @summaryDate
 
 	SET @totalTransBalance = @grandTotalCredit- @grandTotalDebit
