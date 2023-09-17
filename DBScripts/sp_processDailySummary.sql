@@ -15,7 +15,9 @@ IF NOT EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND OBJECT_ID = OBJECT
    exec('CREATE PROCEDURE [dbo].[sp_processDailySummary] AS BEGIN SET NOCOUNT ON; END')
 GO
 
-ALTER PROCEDURE [dbo].[sp_processDailySummary] @summaryDate date 
+ALTER PROCEDURE [dbo].[sp_processDailySummary] 
+	@summaryDate date,
+	@endOfDayProcess bit
 AS
 BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from
@@ -37,6 +39,8 @@ BEGIN
 	SET @dailyExists = 0
 	IF NULLIF(@summaryDate, '') IS NULL
 		SET @summaryDate = getdate();
+	IF NULLIF(@endOfDayProcess, '') IS NULL
+		SET @endOfDayProcess = 0;
 
 	--PRINT @summaryDate
 	--SELECT @summaryDate AS 'Date';
@@ -105,7 +109,7 @@ BEGIN
 	AND CONVERT(DATE, TransTime) <= @summaryDate
 
 	DECLARE @grandTotalCredit float
-	select @grandTotalCredit=sum(nc_transactions.transamount)huuu
+	select @grandTotalCredit=sum(nc_transactions.transamount)
 	from nc_transactions 
 	WHERE nc_transactions.TransType NOT in ('DEBIT', 'DEBIT_ADM', 'DEBIT_SYS', 'REFUND')
 	AND CONVERT(DATE, TransTime) <= @summaryDate
@@ -165,19 +169,36 @@ BEGIN
 			
 			IF @dailyExists = 1 
 				BEGIN
-					UPDATE  [NC_DailySummary] 
-					SET [DailyTotalDebitAmount] = @debitTotalAmt
-						  ,[DailyTotalCreditAmount] = @creditTotalAmt
-						  ,[DailyTotalRefundAmount] = @mealRefundTotalAmt + @depositRefundTotalAmt 
-						  ,[DailyBalance] = @dailyBalance
-						  ,[DailyActiveMembers] = @dailyActiveMembers
-						  ,[GrandTotalTransBalance] = @totalTransBalance
-						  -- for update, don't update grand total member balance as it cannot be calculated based on date
-						  --,[GrandTotalMemberBalance] = @totalMemberBalance
-						  ,[GrandTotalActiveMembers] = @totalActiveMembers
-						  ,[DailyNewMembers] = @dailyNewMembers
-					WHERE [SummaryDate] = @summaryDate
-				END
+					-- for end of day process, update grand total member balance 
+					IF @endOfDayProcess = 1 
+						BEGIN
+							UPDATE  [NC_DailySummary] 
+							SET [DailyTotalDebitAmount] = @debitTotalAmt
+								  ,[DailyTotalCreditAmount] = @creditTotalAmt
+								  ,[DailyTotalRefundAmount] = @mealRefundTotalAmt + @depositRefundTotalAmt 
+								  ,[DailyBalance] = @dailyBalance
+								  ,[DailyActiveMembers] = @dailyActiveMembers
+								  ,[GrandTotalTransBalance] = @totalTransBalance
+								  ,[GrandTotalMemberBalance] = @totalMemberBalance
+								  ,[GrandTotalActiveMembers] = @totalActiveMembers
+								  ,[DailyNewMembers] = @dailyNewMembers
+							WHERE [SummaryDate] = @summaryDate
+						END
+					-- for non-end-of-day process, do not update grand total member balance as it cannot be calculated based on date
+					ELSE
+						BEGIN
+							UPDATE  [NC_DailySummary] 
+							SET [DailyTotalDebitAmount] = @debitTotalAmt
+								  ,[DailyTotalCreditAmount] = @creditTotalAmt
+								  ,[DailyTotalRefundAmount] = @mealRefundTotalAmt + @depositRefundTotalAmt 
+								  ,[DailyBalance] = @dailyBalance
+								  ,[DailyActiveMembers] = @dailyActiveMembers
+								  ,[GrandTotalTransBalance] = @totalTransBalance
+								  ,[GrandTotalActiveMembers] = @totalActiveMembers
+								  ,[DailyNewMembers] = @dailyNewMembers
+							WHERE [SummaryDate] = @summaryDate
+						END
+				END				
 			ELSE 
 				BEGIN
 					-- #### Insert 
