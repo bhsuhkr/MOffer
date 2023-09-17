@@ -6,10 +6,12 @@
     </div>
     <div class="input-row">
       <input
+        id="phoneNumber"
         class="cont-input"
         ref="phoneNumberField"
         type="text"
         @keydown.enter="handleEnterKey"
+        v-on:blur="handleBlur"
         placeholder="여기를 먼저 누른 후 바코드를 스캔하세요."
       />
       <button class="submit-btn" @click="handleEnterKey">Submit</button>
@@ -97,6 +99,14 @@ export default defineComponent({
     clearHistory() {
       this.clearMemberTransactrions();
       this.$refs.phoneNumberField.focus();
+    },
+    async handleBlur(e) {
+      e.target.placeholder;
+      //console.log('blocking blur', e);
+      let inputField = this.$refs["phoneNumberField"];
+      if (inputField != null) {
+        inputField.focus();
+      }
     },
   },
 });
