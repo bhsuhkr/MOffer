@@ -100,9 +100,7 @@ export default defineComponent({
       this.clearMemberTransactrions();
       this.$refs.phoneNumberField.focus();
     },
-    async handleBlur(e) {
-      e.target.placeholder;
-      //console.log('blocking blur', e);
+    async handleBlur() {
       let inputField = this.$refs["phoneNumberField"];
       if (inputField != null) {
         inputField.focus();

@@ -2,7 +2,7 @@
   <div class="search-container">
     <div class="search-header">
       <h3>Search Barcode</h3>
-      <button @click="clearBarcode()" class="clear-btn">기록 지우기</button>
+      <button @click="clearBarcode(true)" class="clear-btn">기록 지우기</button>
     </div>
     <form @submit.prevent="submitForm" class="search-form">
       <div>
@@ -41,6 +41,7 @@
 import { defineComponent, ref, computed, onMounted } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
+import { useTransactionStore } from "@/store";
 import bwipjs from "bwip-js";
 
 export default defineComponent({
@@ -49,6 +50,16 @@ export default defineComponent({
     let phoneNumber = ref("");
     let email = ref("");
     let validationMessage = ref("");
+    const transactionStore = useTransactionStore();
+
+    const validateBarcode = async (barcodeInfo) => {
+      await transactionStore.validateBarcode(barcodeInfo, false);
+    };
+
+    const isValidPhoneNumber = computed({
+      get: () => transactionStore.isValidPhoneNumber,
+      set: (newValue) => (transactionStore.isValidPhoneNumber = newValue),
+    });
 
     const rules = {
       phoneNumber: { required },
@@ -64,6 +75,8 @@ export default defineComponent({
     });
 
     return {
+      validateBarcode,
+      isValidPhoneNumber,
       email,
       validationMessage,
       formInvalid,
@@ -77,15 +90,23 @@ export default defineComponent({
         this.showConfirmationMsg = false;
         this.validationMessage = "모든 정보를 입력해주세요.";
       } else {
-        const id =
-          this.phoneNumber.replace(/\D/g, "") + this.email.substring(0, 4);
-        bwipjs.toCanvas("barcode", {
-          bcid: "pdf417",
-          text: id,
-          scale: 3,
-          height: 10,
-          textxalign: "center",
-        });
+        this.clearBarcode(false);
+        const rowNumber = this.phoneNumber.replace(/\D/g, "");
+        await this.validateBarcode(rowNumber);
+
+        if (this.isValidPhoneNumber) {
+          const id =
+            this.phoneNumber.replace(/\D/g, "") + this.email.substring(0, 4);
+          bwipjs.toCanvas("barcode", {
+            bcid: "pdf417",
+            text: id,
+            scale: 3,
+            height: 10,
+            textxalign: "center",
+          });
+        } else {
+          this.validationMessage = "가입되지 않은 정보입니다.";
+        }
       }
     },
     onPhoneNumberInput(event) {
@@ -104,13 +125,16 @@ export default defineComponent({
         }
       }
     },
-    clearBarcode() {
-      this.phoneNumber = "";
-      this.email = "";
+    clearBarcode(clearFields) {
       const canvas = document.getElementById("barcode");
       const context = canvas.getContext("2d");
       context.clearRect(0, 0, canvas.width, canvas.height);
-      this.$refs.phoneNumberField.focus();
+      this.validationMessage = "";
+      if (clearFields) {
+        this.phoneNumber = "";
+        this.email = "";
+        this.$refs.phoneNumberField.focus();
+      }
     },
   },
 });
