@@ -29,11 +29,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="item in transactionData"
-            :key="item"
-            :class="getRowColor(item.TransType)"
-          >
+          <tr v-for="item in transactionData" :key="item" :class="getRowColor(item.TransType)">
             <td v-for="field in fields" :key="field">{{ item[field] }}</td>
           </tr>
         </tbody>
@@ -150,13 +146,9 @@ export default defineComponent({
     },
     isSuccessValidation(change) {
       if (change) {
-        document
-          .getElementById("validation-msg")
-          .classList.add("validation-msg-success");
+        document.getElementById("validation-msg").classList.add("validation-msg-success");
       } else {
-        document
-          .getElementById("validation-msg")
-          .classList.remove("validation-msg-success");
+        document.getElementById("validation-msg").classList.remove("validation-msg-success");
       }
     },
   },

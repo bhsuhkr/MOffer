@@ -17,22 +17,11 @@
       </div>
       <div>
         <label for="amount">금액 ($):</label>
-        <input
-          type="number"
-          id="amount"
-          ref="amountField"
-          v-model.number.trim="amount"
-          required
-        />
+        <input type="number" id="amount" ref="amountField" v-model.number.trim="amount" required />
       </div>
       <div>
         <label for="transType">지불 방법:</label>
-        <select
-          id="transType"
-          v-model="transType"
-          ref="transTypeField"
-          required
-        >
+        <select id="transType" v-model="transType" ref="transTypeField" required>
           <option value="CASH">Cash</option>
           <option value="CHECK">Check</option>
         </select>

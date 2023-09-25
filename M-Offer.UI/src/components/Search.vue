@@ -20,13 +20,7 @@
       </div>
       <div>
         <label for="email">이메일:</label>
-        <input
-          type="email"
-          id="email"
-          ref="emailField"
-          v-model="email"
-          required
-        />
+        <input type="email" id="email" ref="emailField" v-model="email" required />
       </div>
 
       <button type="submit">Search</button>
@@ -95,8 +89,7 @@ export default defineComponent({
         await this.validateBarcode(rowNumber);
 
         if (this.isValidPhoneNumber) {
-          const id =
-            this.phoneNumber.replace(/\D/g, "") + this.email.substring(0, 4);
+          const id = this.phoneNumber.replace(/\D/g, "") + this.email.substring(0, 4);
           bwipjs.toCanvas("barcode", {
             bcid: "pdf417",
             text: id,

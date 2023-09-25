@@ -10,9 +10,7 @@
         <label for="password">Password</label>
         <input type="password" id="password" v-model="password" />
       </div>
-      <p class="validation" v-if="showValidationMessage">
-        아이디와 비밀번호가 일치하지 않습니다.
-      </p>
+      <p class="validation" v-if="showValidationMessage">아이디와 비밀번호가 일치하지 않습니다.</p>
       <button @click="login(this.username, this.password)">Login</button>
     </div>
   </div>

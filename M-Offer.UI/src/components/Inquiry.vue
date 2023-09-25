@@ -16,12 +16,8 @@
       />
       <button class="submit-btn" @click="handleEnterKey">Submit</button>
     </div>
-    <p class="balance-text" v-if="isValidPhoneNumber">
-      남은 금액: ${{ balance }}
-    </p>
-    <p class="balance-validation" v-if="!isValidPhoneNumber">
-      잘못된 아이디입니다. 다시 시도해 주세요.
-    </p>
+    <p class="balance-text" v-if="isValidPhoneNumber">남은 금액: ${{ balance }}</p>
+    <p class="balance-validation" v-if="!isValidPhoneNumber">잘못된 아이디입니다. 다시 시도해 주세요.</p>
 
     <h4>Transaction History</h4>
     <table class="table table-bordered table-striped table-text">

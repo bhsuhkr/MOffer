@@ -18,9 +18,7 @@
           <router-link class="nav-link" to="/search">Search</router-link>
         </li>
         <li class="leftnav-item">
-          <router-link class="nav-link" to="/dailysummary"
-            >Daily Summary</router-link
-          >
+          <router-link class="nav-link" to="/dailysummary">Daily Summary</router-link>
         </li>
         <!-- <li class="leftnav-item">
           <router-link class="nav-link" to="/member-management"
@@ -33,9 +31,7 @@
           >
         </li> -->
         <li class="leftnav-item">
-          <router-link class="nav-link" to="/" @click="logout"
-            >Log out</router-link
-          >
+          <router-link class="nav-link" to="/" @click="logout">Log out</router-link>
         </li>
       </ul>
     </div>

@@ -13,9 +13,7 @@
           @keydown.enter="handleEnterKey"
           placeholder="여기에 날짜를 기입해주세요 (Optional)"
         />
-        <button id="submit" class="submit-btn" @click="handleEnterKey">
-          Submit
-        </button>
+        <button id="submit" class="submit-btn" @click="handleEnterKey">Submit</button>
       </div>
       <p id="validation-msg" class="validation-msg">{{ validationMessage }}</p>
 
@@ -29,11 +27,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="(item, index) in dailySummary"
-            :key="item"
-            :class="getRowColor(index)"
-          >
+          <tr v-for="(item, index) in dailySummary" :key="item" :class="getRowColor(index)">
             <td v-for="field in fields" :key="field">{{ item[field] }}</td>
           </tr>
         </tbody>

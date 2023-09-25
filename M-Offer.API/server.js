@@ -11,19 +11,6 @@ app.use(cors());
 
 let config = require("./config.js");
 
-// let config = {
-//   database: "moffer",
-//   server: "DESKTOP-4SIT040\\SQLEXPRESS",
-//   driver: "msnodesqlv8",
-//   options: {
-//     trustedConnection: true,
-//   },
-// };
-
-// if (process.argv.length >= 3 && process.argv[2] === "--dev") {
-//   config.database = "moffer_qa";
-// }
-
 console.log("config env: " + config.NODE_ENV);
 console.log("config db: " + config.connectionString);
 
@@ -35,11 +22,7 @@ sql
     const authenticateUser = async (req, res, next) => {
       const { username, password } = req.body;
       const user = await pool.query(
-        "select * from nc_users where userid = '" +
-          username +
-          "' and password ='" +
-          password +
-          "'"
+        "select * from nc_users where userid = '" + username + "' and password ='" + password + "'"
       );
       // console.log("user", user.recordset[0]);
 
@@ -165,10 +148,7 @@ sql
               if (recordset && recordset.recordset && recordset.recordset[0]) {
                 res.status(200).json({
                   message: "Email fetched successfully",
-                  first_four_char_email: recordset.recordset[0].Email.substring(
-                    0,
-                    4
-                  ),
+                  first_four_char_email: recordset.recordset[0].Email.substring(0, 4),
                 });
               } else {
                 res.status(200).json({
@@ -226,12 +206,7 @@ sql
           `,
           (err, recordset) => {
             if (err) console.log(err);
-            else if (
-              recordset &&
-              recordset.recordsets &&
-              recordset.recordsets[0] &&
-              recordset.recordsets[0][0]
-            ) {
+            else if (recordset && recordset.recordsets && recordset.recordsets[0] && recordset.recordsets[0][0]) {
               if (recordset.recordsets[0][0].Result == "Registered") {
                 res.status(200).json({ message: "Successfully registered" });
               } else {

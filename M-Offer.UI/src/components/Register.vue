@@ -17,33 +17,15 @@
       </div>
       <div>
         <label for="korName">한글 이름:</label>
-        <input
-          type="text"
-          id="korName"
-          ref="korNameField"
-          v-model="korName"
-          required
-        />
+        <input type="text" id="korName" ref="korNameField" v-model="korName" required />
       </div>
       <div>
         <label for="engName">영문 이름:</label>
-        <input
-          type="text"
-          id="engName"
-          ref="engNameField"
-          v-model="engName"
-          required
-        />
+        <input type="text" id="engName" ref="engNameField" v-model="engName" required />
       </div>
       <div>
         <label for="email">이메일:</label>
-        <input
-          type="email"
-          id="email"
-          ref="emailField"
-          v-model="email"
-          required
-        />
+        <input type="email" id="email" ref="emailField" v-model="email" required />
       </div>
 
       <button type="submit" :disabled="showConfirmationMsg">Register</button>
