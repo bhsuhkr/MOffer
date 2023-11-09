@@ -49,7 +49,7 @@ BEGIN
 	from [NC_DailySummary] 
 	WHERE [SummaryDate] = @summaryDate
 
-	-- query to get all debits for a given day
+	-- query to get all debits / meals sold using member balance for a given day
 	select @debitTotalAmt=sum(nc_transactions.transamount)
 	from nc_transactions 
 	where CONVERT(DATE, TransTime) = @summaryDate
@@ -60,7 +60,7 @@ BEGIN
 		SET @debitTotalAmt = 0
 	END
 
-	-- query to get all credits for a given day
+	-- query to get all credits / deposits came into church for a given day
 	select @creditTotalAmt=sum(nc_transactions.transamount)
 	from nc_transactions 
 	where CONVERT(DATE, TransTime) = @summaryDate
@@ -82,7 +82,7 @@ BEGIN
 		SET @mealRefundTotalAmt = 0
 	END
 
-	-- query to get all deposit refunds for a given day
+	-- query to get all deposit refunds / reservals for a given day
 	select @depositRefundTotalAmt=sum(nc_transactions.transamount)
 	from nc_transactions 
 	where CONVERT(DATE, TransTime) = @summaryDate
@@ -93,8 +93,12 @@ BEGIN
 		SET @depositRefundTotalAmt = 0
 	END
 
+	-- total credit $ came into church as deposit minus any deposit refunded 
+	-- this is the reversal for deposit
+	SET @creditTotalAmt = @creditTotalAmt - @depositRefundTotalAmt
+
 	-- query to get daily balance for a given day
-	SET @dailyBalance = (@creditTotalAmt - @debitTotalAmt - @depositRefundTotalAmt + @mealRefundTotalAmt)
+	SET @dailyBalance = (@creditTotalAmt - @debitTotalAmt + @mealRefundTotalAmt)
 
 	IF @dailyBalance is null
 	BEGIN
@@ -175,7 +179,7 @@ BEGIN
 							UPDATE  [NC_DailySummary] 
 							SET [DailyTotalDebitAmount] = @debitTotalAmt
 								  ,[DailyTotalCreditAmount] = @creditTotalAmt
-								  ,[DailyTotalRefundAmount] = @mealRefundTotalAmt + @depositRefundTotalAmt 
+								  ,[DailyTotalRefundAmount] = @mealRefundTotalAmt 
 								  ,[DailyBalance] = @dailyBalance
 								  ,[DailyActiveMembers] = @dailyActiveMembers
 								  ,[GrandTotalTransBalance] = @totalTransBalance
@@ -190,7 +194,7 @@ BEGIN
 							UPDATE  [NC_DailySummary] 
 							SET [DailyTotalDebitAmount] = @debitTotalAmt
 								  ,[DailyTotalCreditAmount] = @creditTotalAmt
-								  ,[DailyTotalRefundAmount] = @mealRefundTotalAmt + @depositRefundTotalAmt 
+								  ,[DailyTotalRefundAmount] = @mealRefundTotalAmt 
 								  ,[DailyBalance] = @dailyBalance
 								  ,[DailyActiveMembers] = @dailyActiveMembers
 								  ,[GrandTotalTransBalance] = @totalTransBalance
@@ -219,7 +223,7 @@ BEGIN
 						@summaryDate
 						,@debitTotalAmt
 						,@creditTotalAmt
-						,@mealRefundTotalAmt + @depositRefundTotalAmt 
+						,@mealRefundTotalAmt 
 						,@dailyBalance
 						,@dailyActiveMembers
 						,@totalTransBalance
