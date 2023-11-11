@@ -12,6 +12,7 @@
           id="phoneNumber"
           ref="phoneNumberField"
           v-model="phoneNumber"
+          @keyup.enter="handleEnterKey"
           required
         />
       </div>
@@ -79,6 +80,7 @@ export default defineComponent({
       set: (newValue) => (transactionStore.isValidPhoneNumber = newValue),
     });
 
+    const amountField = ref("");
     const phoneNumberField = ref("");
     onMounted(() => {
       phoneNumberField.value.focus();
@@ -92,6 +94,7 @@ export default defineComponent({
       deposit,
       formInvalid,
       isValidPhoneNumber,
+      amountField,
       phoneNumberField,
       phoneNumber,
     };
@@ -142,6 +145,10 @@ export default defineComponent({
           this.phoneNumber = `(${match[1]})-${match[2]}-${match[3]}`;
         }
       }
+    },
+    handleEnterKey() {
+      this.$refs.amountField.focus();
+      this.amount = '';
     },
   },
 });
