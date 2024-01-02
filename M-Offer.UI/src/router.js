@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from "@/store";
+import Cafe from './components/Cafe.vue';
 import Login from './components/Login.vue';
 import Pay from './components/Pay.vue';
 import Inquiry from './components/Inquiry.vue';
@@ -29,6 +30,11 @@ const routes = [
   {
     path: '/deposit',
     component: Deposit,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/cafe',
+    component: Cafe,
     meta: { requiresAuth: true }
   },
   {

@@ -5,6 +5,9 @@
         <li class="leftnav-item">
           <router-link class="nav-link" to="/pay">Pay</router-link>
         </li>
+        <!-- <li class="leftnav-item">
+          <router-link class="nav-link" to="/cafe">Cafe</router-link>
+        </li> -->
         <li class="leftnav-item">
           <router-link class="nav-link" to="/inquiry">Inquiry</router-link>
         </li>
