@@ -16,7 +16,7 @@
       </div>
       <p class="validation-msg">{{ validationMessage }}</p>
 
-      <h4>Total: ${{ total }}.00</h4>
+      <h4>{{ items.length }} Itmes | Total: ${{ total }}.00</h4>
       <button class="pay-btn" @click="pay">Pay</button>
       <table class="table table-bordered table-text">
         <thead>
