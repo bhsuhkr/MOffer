@@ -13,10 +13,9 @@
       <p class="validation" v-if="showValidationMessage">아이디와 비밀번호가 일치하지 않습니다.</p>
       <button @click="login(this.username, this.password)">Login</button>
       <div class="form-group">
-        <br/><br/>
+        <br /><br />
         <label>Quick Links</label>
-        <br/><a href="/pay">Pay App</a>
-        <br/><a href="/inquiry">Balance App</a>
+        <br /><a href="/pay">Pay App</a> <br /><a href="/inquiry">Balance App</a>
       </div>
     </div>
   </div>

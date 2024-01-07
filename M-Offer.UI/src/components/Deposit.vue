@@ -148,7 +148,7 @@ export default defineComponent({
     },
     handleEnterKey() {
       this.$refs.amountField.focus();
-      this.amount = '';
+      this.amount = "";
     },
   },
 });
