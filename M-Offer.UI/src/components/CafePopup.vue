@@ -1,9 +1,11 @@
 <template>
   <div class="cafe-popup">
     <div class="cafe-popup-content">
-      <h4 class="cafe-popup-header">지불에 사용할 바코드를 스캔해 주세요.</h4>
+      <h4 class="cafe-popup-header" v-if="!makePayment">지불에 사용할 바코드를 스캔해 주세요.</h4>
+      <h4 class="cafe-popup-header" v-else>결제완료 되었습니다.</h4>
       <p>Total: ${{ total }}.00</p>
-      <button @click="closePopup">취소</button>
+      <button @click="closePopup" v-if="!makePayment">취소</button>
+      <button @click="closePopup" v-else>확인</button>
     </div>
   </div>
 </template>
@@ -13,6 +15,10 @@ export default {
   props: {
     total: {
       type: Number,
+      required: true,
+    },
+    makePayment: {
+      type: Boolean,
       required: true,
     },
   },

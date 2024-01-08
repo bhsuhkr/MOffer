@@ -36,13 +36,20 @@
       </table>
     </div>
 
-    <CafePopup ref="cafe-popup" v-if="showPopup" :total="total" @close-cafe-popup="handlePopupClosed" />
+    <CafePopup
+      ref="cafe-popup"
+      v-if="showPopup"
+      :total="total"
+      :makePayment="makePayment"
+      @close-cafe-popup="handlePopupClosed"
+    />
   </div>
 </template>
 
 <script>
 import "bootstrap/dist/css/bootstrap.min.css";
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref, onMounted, computed } from "vue";
+import { useTransactionStore } from "@/store";
 import CafePopup from "./CafePopup.vue";
 
 export default defineComponent({
@@ -51,17 +58,29 @@ export default defineComponent({
     CafePopup,
   },
   setup() {
+    const transactionStore = useTransactionStore();
     const titles = ["Product", "Price ($)"];
     let items = ref([]);
     let total = ref(0);
     let barcodeField = ref("");
     let validationMessage = ref("");
     let showPopup = ref(false);
+    let scanUserBarcode = ref(false);
+    let makePayment = ref(false);
 
     const deleteRow = (index) => {
       const deletedPrice = parseFloat(items.value[index].price.replace("$", ""));
       items.value.splice(index, 1);
       total.value -= deletedPrice;
+    };
+
+    const isValidPhoneNumber = computed({
+      get: () => transactionStore.isValidPhoneNumber,
+      set: (newValue) => (transactionStore.isValidPhoneNumber = newValue),
+    });
+
+    const getBalance = async (phoneNumber) => {
+      await transactionStore.getBalance(phoneNumber);
     };
 
     onMounted(() => {
@@ -75,6 +94,10 @@ export default defineComponent({
       barcodeField,
       validationMessage,
       showPopup,
+      scanUserBarcode,
+      makePayment,
+      isValidPhoneNumber,
+      getBalance,
       deleteRow,
     };
   },
@@ -82,14 +105,32 @@ export default defineComponent({
     async handleEnterKey() {
       const barcode = this.$refs["barcodeField"].value;
       if (barcode) {
-        const itemAndPrice = this.barcodeField.value.split("$");
-        if (itemAndPrice[0] && itemAndPrice[1]) {
-          this.total += parseFloat(itemAndPrice[1]);
-          this.items.unshift({ product: itemAndPrice[0], price: "$" + itemAndPrice[1] });
-          this.validationMessage = "";
+        // accept a barcode for products
+        if (!this.scanUserBarcode) {
+          const itemAndPrice = this.barcodeField.value.split("$");
+          if (itemAndPrice[0] && itemAndPrice[1]) {
+            this.total += parseFloat(itemAndPrice[1]);
+            this.items.unshift({ product: itemAndPrice[0], price: "$" + itemAndPrice[1] });
+            this.validationMessage = "";
+          } else {
+            this.validationMessage = "잘못된 바코드입니다. 다시 시도해 주세요. 1";
+            this.showPopup = false;
+          }
+          // accept a barcode for personal barcode
         } else {
-          this.validationMessage = "잘못된 바코드입니다. 다시 시도해 주세요.";
-          this.showPopup = false;
+          const phoneNumber = this.$refs["barcodeField"].value;
+          if (phoneNumber) {
+            await this.getBalance(phoneNumber);
+            if (!this.isValidPhoneNumber) {
+              this.validationMessage = "잘못된 바코드입니다. 다시 시도해 주세요. 2";
+            } else if (this.balance <= -10) {
+              this.validationMessage = "잔액이 부족합니다. $" + this.balance;
+            } else {
+              // this.pay(phoneNumber);
+              this.validationMessage = "";
+              this.makePayment = true;
+            }
+          }
         }
       }
       this.$refs["barcodeField"].value = "";
@@ -105,6 +146,7 @@ export default defineComponent({
       if (this.total) {
         this.validationMessage = "";
         this.showPopup = true;
+        this.scanUserBarcode = true;
       } else {
         this.validationMessage = "지불할 아이템이 없습니다.";
       }
@@ -113,6 +155,8 @@ export default defineComponent({
       this.total = 0;
       this.items = [];
       this.showPopup = false;
+      this.scanUserBarcode = false;
+      this.makePayment = false;
     },
   },
 });
