@@ -35,21 +35,28 @@
         </tbody>
       </table>
     </div>
+
+    <CafePopup ref="cafe-popup" v-if="showPopup" :total="total" @close-cafe-popup="handlePopupClosed" />
   </div>
 </template>
 
 <script>
 import "bootstrap/dist/css/bootstrap.min.css";
 import { defineComponent, ref, onMounted } from "vue";
+import CafePopup from "./CafePopup.vue";
 
 export default defineComponent({
   name: "Cafe",
+  components: {
+    CafePopup,
+  },
   setup() {
     const titles = ["Product", "Price ($)"];
     let items = ref([]);
     let total = ref(0);
     let barcodeField = ref("");
     let validationMessage = ref("");
+    let showPopup = ref(false);
 
     const deleteRow = (index) => {
       const deletedPrice = parseFloat(items.value[index].price.replace("$", ""));
@@ -67,6 +74,7 @@ export default defineComponent({
       total,
       barcodeField,
       validationMessage,
+      showPopup,
       deleteRow,
     };
   },
@@ -81,6 +89,7 @@ export default defineComponent({
           this.validationMessage = "";
         } else {
           this.validationMessage = "잘못된 바코드입니다. 다시 시도해 주세요.";
+          this.showPopup = false;
         }
       }
       this.$refs["barcodeField"].value = "";
@@ -93,7 +102,17 @@ export default defineComponent({
       }
     },
     async pay() {
-      console.log("pay");
+      if (this.total) {
+        this.validationMessage = "";
+        this.showPopup = true;
+      } else {
+        this.validationMessage = "지불할 아이템이 없습니다.";
+      }
+    },
+    handlePopupClosed() {
+      this.total = 0;
+      this.items = [];
+      this.showPopup = false;
     },
   },
 });
@@ -106,7 +125,6 @@ export default defineComponent({
 }
 .input-row {
   display: flex;
-  margin-bottom: 20px;
 }
 .barcode-input {
   width: 100%;
