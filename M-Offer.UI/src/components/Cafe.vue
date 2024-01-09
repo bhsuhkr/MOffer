@@ -10,14 +10,13 @@
           type="text"
           @keydown.enter="handleEnterKey"
           v-on:blur="handleBlur"
-          placeholder="여기를 먼저 누른 후 바코드를 스캔하세요."
         />
-        <button class="submit-btn" @click="handleEnterKey">Submit</button>
       </div>
-      <p class="validation-msg">{{ validationMessage }}</p>
 
       <h4>{{ items.length }} Itmes | Total: ${{ total }}.00</h4>
       <button class="pay-btn" @click="pay">Pay</button>
+      <p class="validation-msg">{{ validationMessage }}</p>
+
       <table class="table table-bordered table-text">
         <thead>
           <tr>
@@ -169,24 +168,26 @@ export default defineComponent({
 }
 .input-row {
   display: flex;
+  margin-bottom: 10px;
+  height: 1px;
 }
 .barcode-input {
   width: 100%;
   margin-top: 10px;
   margin-bottom: 10px;
-}
-.submit-btn {
-  border-radius: 3px;
-  height: 30px;
-  margin-top: 10px;
-  margin-left: 10px;
-  padding: 0 20px;
-  max-width: 100px;
+  border: none;
+  outline: none;
+  caret-color: transparent;
+  color: #fff;
 }
 .validation-msg {
   color: red;
 }
 .pay-btn {
   margin-bottom: 10px;
+}
+.table-text {
+  font-size: 25px;
+  font-weight: 500;
 }
 </style>
