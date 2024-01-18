@@ -122,9 +122,6 @@ window.onpopstate = function () {
   padding: 20px;
 }
 .cont-input {
-  width: 100%;
-  margin-top: 10px;
-  margin-bottom: 10px;
   border: none;
   outline: none;
   caret-color: transparent;
