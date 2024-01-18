@@ -174,6 +174,7 @@ CREATE TABLE [dbo].[NC_Members](
 	[DOB] [date] NULL,
 	[Barcode1] [image] NULL,
 	[Barcode2] [image] NULL,
+	[LibraryCardNumber] [VARCHAR] (20) NULL,
 	[Active] [int] NULL,
 	[CurrentBalance] [float] NULL,
 	[LastBalUpdate] [datetime] NULL,
