@@ -5,13 +5,18 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND OBJECT_ID = OBJECT_ID('dbo.sp_getMemberId'))
+   exec('CREATE PROCEDURE [dbo].[sp_getMemberId] AS BEGIN SET NOCOUNT ON; END')
+GO
+
+
+ALTER PROCEDURE  [dbo].[sp_getMemberId] @ContId nvarchar(50) 
 -- =============================================
--- Author:		<Author,,Name>
--- Create date: <Create Date,,>
--- Description:	<Description,,>
+-- Author:		Jung Yang
+-- Create date: 1/10/2024
+-- Description:	Stored procedure for identifying member id based on CondId (phone number) or Library card number
 -- =============================================
-CREATE PROCEDURE [dbo].[sp_getMemberId] @ContId nvarchar(50) 
-	-- Add the parameters for the stored procedure here
 	
 AS
 BEGIN
@@ -21,8 +26,8 @@ BEGIN
 
 	DECLARE @MemberID nvarchar(50)
     -- Insert statements for procedure here
-	IF EXISTS (select MemberID from [dbo].[NC_Members] where ContID=@ContId)
-		SELECT @MemberID=MemberID from [dbo].[NC_Members] where ContID=@ContId
+	IF EXISTS (select MemberID from [dbo].[NC_Members] where ContID=@ContId OR LibraryCardNumber=@ContId)
+		SELECT @MemberID=MemberID from [dbo].[NC_Members] where ContID=@ContId OR LibraryCardNumber=@ContId
 	ELSE
 		SELECT @MemberID='NONE'
 
