@@ -45,7 +45,7 @@
 <script>
 import { defineComponent, ref, computed, onMounted } from "vue";
 import { useVuelidate } from "@vuelidate/core";
-import { required, minValue } from "@vuelidate/validators";
+import { required, minValue, maxValue } from "@vuelidate/validators";
 import { useTransactionStore } from "@/store";
 import DepositPopup from "./DepositPopup.vue";
 
@@ -63,7 +63,7 @@ export default defineComponent({
 
     const rules = {
       phoneNumber: { required },
-      amount: { required, minValue: minValue(1) },
+      amount: { required, minValue: minValue(1), maxValue: maxValue(500) },
       transType: { required },
     };
 
@@ -103,7 +103,7 @@ export default defineComponent({
     async submitForm() {
       if (this.formInvalid) {
         this.showConfirmationMsg = false;
-        this.validationMessage = "최소 $1 이상 입력해주세요.";
+        this.validationMessage = "한번에 최대 $500까지 입금 가능합니다";
       } else if (window.confirm("$" + this.amount + "을 입금하시겠습니까?")) {
         const rowNumber = this.phoneNumber.replace(/\D/g, "");
         await this.deposit(rowNumber, this.amount, this.transType);

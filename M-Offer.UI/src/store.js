@@ -145,7 +145,7 @@ export const useTransactionStore = defineStore('transaction', {
     isGetTodayTransactionsCalled: false // call getTodayTransactions() only once
   }),
   actions: {
-    // Add the latest transaction in an array after pay, deposite, or refund
+    // Add the latest transaction in an array after pay, deposit, or refund
     async getTransaction(memberId) {
       await axios.get(process.env.VUE_APP_API_URL + '/api/transaction', { params: { memberId } })
         .then(response => {
@@ -269,7 +269,7 @@ export const useTransactionStore = defineStore('transaction', {
           });
       }
     },
-    // Make a payment
+    // Make a payment ($2 Meal)
     async pay(barcodeInfo) {
       await this.validateBarcode(barcodeInfo);
       if (this.isValidPhoneNumber) {
@@ -288,7 +288,7 @@ export const useTransactionStore = defineStore('transaction', {
     // Add funds
     async deposit(barcodeInfo, amount, transType) {
       await this.validateBarcode(barcodeInfo, false);
-      if (this.isValidPhoneNumber) {
+      if (this.isValidPhoneNumber && amount <= 500) {
         await axios.post(process.env.VUE_APP_API_URL + '/api/member/deposit', { memberId: this.memberId, amount: amount, transType: transType, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
           .then(() => {
             console.log("Deposit for member ", this.memberId);
@@ -321,7 +321,7 @@ export const useSummaryStore = defineStore('dailySummary', {
     summaryData: [],
   }),
   actions: {
-  // Add the latest transaction in an array after pay, deposite, or refund
+  // Add the latest transaction in an array after pay, deposit, or refund
   async getSummary(dateValue) {
     await axios.get(process.env.VUE_APP_API_URL + '/api/report/tx/dailytotal', { params: { "date": dateValue } })
       .then(response => {
