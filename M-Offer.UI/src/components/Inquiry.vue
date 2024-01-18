@@ -4,6 +4,7 @@
       <h3>Balance Inquiry</h3>
       <button @click="clearHistory()" class="clear-btn">기록 지우기</button>
     </div>
+
     <div class="input-row">
       <input
         id="phoneNumber"
@@ -12,12 +13,11 @@
         type="text"
         @keydown.enter="handleEnterKey"
         v-on:blur="handleBlur"
-        placeholder="여기를 먼저 누른 후 바코드를 스캔하세요."
       />
-      <button class="submit-btn" @click="handleEnterKey">Submit</button>
     </div>
+
     <p class="balance-text" v-if="isValidPhoneNumber">남은 금액: ${{ balance }}</p>
-    <p class="balance-validation" v-if="!isValidPhoneNumber">잘못된 아이디입니다. 다시 시도해 주세요.</p>
+    <p class="balance-validation" v-if="!isValidPhoneNumber">잘못된 바코드입니다. 다시 시도해 주세요.</p>
 
     <h4>Transaction History</h4>
     <table class="table table-bordered table-striped table-text">
@@ -123,7 +123,10 @@ window.onpopstate = function () {
 .cont-input {
   width: 100%;
   margin-top: 10px;
-  margin-bottom: 20px;
+  border: none;
+  outline: none;
+  caret-color: transparent;
+  color: #fff;
 }
 .balance-text {
   font-weight: 600;
@@ -149,6 +152,8 @@ window.onpopstate = function () {
 }
 .input-row {
   display: flex;
+  margin-bottom: 10px;
+  height: 1px;
 }
 .submit-btn {
   background-color: #4caf50;
