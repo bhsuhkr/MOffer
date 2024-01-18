@@ -95,6 +95,7 @@ export default defineComponent({
     clearHistory() {
       this.clearMemberTransactrions();
       this.$refs.phoneNumberField.focus();
+      this.$refs["phoneNumberField"].value = "";
     },
     async handleBlur() {
       let inputField = this.$refs["phoneNumberField"];
@@ -123,6 +124,7 @@ window.onpopstate = function () {
 .cont-input {
   width: 100%;
   margin-top: 10px;
+  margin-bottom: 10px;
   border: none;
   outline: none;
   caret-color: transparent;

@@ -4,6 +4,7 @@
       <h3>Pay</h3>
       <button @click="getRefund()" class="refund-btn">환불하기</button>
     </div>
+
     <div class="transaction-container">
       <div class="input-row">
         <input
@@ -13,10 +14,9 @@
           type="text"
           @keydown.enter="handleEnterKey"
           v-on:blur="handleBlur"
-          placeholder="여기를 먼저 누른 후 바코드를 스캔하세요."
         />
-        <button class="submit-btn" @click="handleEnterKey">Submit</button>
       </div>
+
       <p id="validation-msg" class="validation-msg">{{ validationMessage }}</p>
 
       <table class="table table-bordered table-text">
@@ -164,6 +164,10 @@ export default defineComponent({
   width: 100%;
   margin-top: 10px;
   margin-bottom: 10px;
+  border: none;
+  outline: none;
+  caret-color: transparent;
+  color: #fff;
 }
 .balance-validation {
   color: red;
@@ -183,6 +187,8 @@ export default defineComponent({
 }
 .input-row {
   display: flex;
+  margin-bottom: 10px;
+  height: 1px;
 }
 .submit-btn {
   border-radius: 3px;
