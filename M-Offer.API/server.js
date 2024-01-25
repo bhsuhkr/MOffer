@@ -254,6 +254,37 @@ sql
       }
     });
 
+    app.post("/api/member/pay-cafe", async (req, res) => {
+      try {
+        pool.query(
+          `exec sp_insertTransaction 
+        '${req.body.memberId}',
+        'DEBIT',
+        '${req.body.item}',
+        0,
+        '${req.body.paymentMethod}',
+        '${req.body.ipAddress}',
+        'LAPTOP21',
+        '${req.body.browserName}',
+        '${req.body.username}', 
+        'BOOKCAFE'
+        `,
+          (err, recordset) => {
+            if (err) console.log(err);
+            else {
+              res.status(200).json({
+                message: "Paid successfully",
+                data: recordset,
+              });
+            }
+          }
+        );
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Can't make a payment" });
+      }
+    });
+
     app.post("/api/member/deposit", async (req, res) => {
       try {
         pool.query(
