@@ -48,6 +48,10 @@ INSERT [dbo].[NC_TransTypes] ([TransType], [TransDesc]) VALUES (N'DEBIT_SYS', N'
 GO
 INSERT [dbo].[NC_TransTypes] ([TransType], [TransDesc]) VALUES (N'REFUND', N'Refund')
 GO
+INSERT [dbo].[NC_TransTypes] ([TransType], [TransDesc]) VALUES (N'PAY_REFUND', N'Refund for Payments and Purchases')
+GO
+INSERT [dbo].[NC_TransTypes] ([TransType], [TransDesc]) VALUES (N'DEP_REFUND', N'Refund for Deposits')
+GO
 INSERT [dbo].[NC_UserRoles] ([Role], [RoleDesc]) VALUES (N'ADMIN', N'Administrators')
 GO
 INSERT [dbo].[NC_UserRoles] ([Role], [RoleDesc]) VALUES (N'MANAGER', N'Managers')
