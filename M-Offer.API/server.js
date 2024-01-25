@@ -164,6 +164,29 @@ sql
       }
     });
 
+    app.get("/api/prices", async (req, res) => {
+      try {
+        pool.query(`select nc_items.price, nc_items.itemNumber from nc_items`, (err, recordset) => {
+          if (err) console.log(err);
+          else {
+            if (recordset && recordset.recordset) {
+              res.status(200).json({
+                message: "Prices fetched successfully",
+                data: recordset.recordset,
+              });
+            } else {
+              res.status(200).json({
+                message: "No item found",
+              });
+            }
+          }
+        });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Can't fetch transactions" });
+      }
+    });
+
     app.get("/api/member/id", async (req, res) => {
       try {
         pool.query(
@@ -237,6 +260,37 @@ sql
         '${req.body.browserName}',
         '${req.body.username}', 
         'MAINCAFE'
+        `,
+          (err, recordset) => {
+            if (err) console.log(err);
+            else {
+              res.status(200).json({
+                message: "Paid successfully",
+                data: recordset,
+              });
+            }
+          }
+        );
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Can't make a payment" });
+      }
+    });
+
+    app.post("/api/member/pay-cafe", async (req, res) => {
+      try {
+        pool.query(
+          `exec sp_insertTransaction 
+        '${req.body.memberId}',
+        'DEBIT',
+        '${req.body.item}',
+        0,
+        '${req.body.paymentMethod}',
+        '${req.body.ipAddress}',
+        'LAPTOP21',
+        '${req.body.browserName}',
+        '${req.body.username}', 
+        'BOOKCAFE'
         `,
           (err, recordset) => {
             if (err) console.log(err);
