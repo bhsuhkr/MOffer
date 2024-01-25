@@ -313,6 +313,11 @@ CREATE TABLE [dbo].[NC_DailySummary](
 	[GrandTotalTransBalance] [float] NOT NULL,
 	[GrandTotalMemberBalance] [float] NOT NULL,
 	[GrandTotalActiveMembers] [int] NOT NULL,
-	[DailyNewMembers] [int] NOT NULL
+	[DailyNewMembers] [int] NOT NULL,
+	[TransPoint] [VARCHAR](10) NULL
 ) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[NC_DailySummary]  WITH CHECK ADD  CONSTRAINT [FK_NC_DailySummary_NC_TransPoint] FOREIGN KEY([TransPoint])
+REFERENCES [dbo].[NC_TransPoints] ([TransPoint])
 GO

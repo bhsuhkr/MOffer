@@ -14,3 +14,10 @@ GO
  
 ALTER TABLE [dbo].[NC_Members]
 ADD LibraryCardNumber VARCHAR(20) NULL ;
+
+ALTER TABLE [dbo].[NC_DailySummary]
+ADD TransPoint VARCHAR(10) NULL ;
+
+ALTER TABLE [dbo].[NC_DailySummary]  WITH CHECK ADD  CONSTRAINT [FK_NC_DailySummary_NC_TransPoint] FOREIGN KEY([TransPoint])
+REFERENCES [dbo].[NC_TransPoints] ([TransPoint])
+GO
