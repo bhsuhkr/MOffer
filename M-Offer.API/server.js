@@ -267,7 +267,7 @@ sql
         'LAPTOP21',
         '${req.body.browserName}',
         '${req.body.username}', 
-        'ACCT_OFFC'
+        'MAINCAFE'
         `,
           (err, recordset) => {
             if (err) console.log(err);
@@ -298,7 +298,7 @@ sql
         'LAPTOP21',
         '${req.body.browserName}',
         '${req.body.username}', 
-        'ACCT_OFFC'
+        'MAINCAFE'
         `,
           (err, recordset) => {
             if (err) console.log(err);
