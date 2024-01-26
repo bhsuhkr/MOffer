@@ -98,7 +98,8 @@ BEGIN
 			from nc_transactions 
 			where CONVERT(DATE, TransTime) = @summaryDate
 			AND TransPoint = @oneLocation
-			and (nc_transactions.TransType in ('CREDIT', 'CREDIT_ADM', 'CREDIT_SYS') and TransAmount < 3)
+			and ((nc_transactions.TransType in ('PAY_REFUND')) 
+			  OR (nc_transactions.TransType in ('CREDIT', 'CREDIT_ADM', 'CREDIT_SYS') and TransAmount < 3))
 
 			IF @mealRefundTotalAmt is null
 			BEGIN
@@ -110,7 +111,7 @@ BEGIN
 			from nc_transactions 
 			where CONVERT(DATE, TransTime) = @summaryDate
 			AND TransPoint = @oneLocation
-			and  nc_transactions.TransType in ('REFUND')
+			and  nc_transactions.TransType in ('DEP_REFUND')
 
 			IF @depositRefundTotalAmt is null
 			BEGIN

@@ -53,10 +53,22 @@ BEGIN
 			END
 
 			-- validation: only accept credit, debit or refund
-			IF LEFT(@transType,3)<>'CRE' and LEFT(@transType,3)<>'DEB' AND LEFT(@transType, 3) <> 'REF'
+			IF LEFT(@transType,3)<>'CRE' and LEFT(@transType,3)<>'DEB' AND LEFT(@transType, 7) <> 'PAY_REF' AND LEFT(@transType, 7) <> 'DEP_REF'
 			BEGIN
 				RAISERROR('TransType should start with either CREDIT or DEBIT or REFUND', 16, 1)
 			END
+
+			IF (LEFT(@transType, 7) = 'PAY_REF')
+				SET @currBal = @currBal+@transAmt
+			ELSE IF (left(@transType,3) = 'CRE')
+				SET @currBal = @currBal+@transAmt
+			ELSE IF (left(@transType,3) = 'DEB')
+				SET @currBal = @currBal-@transAmt
+			ELSE IF (left(@transType,7) = 'DEP_REF')
+				SET @currBal = @currBal-@transAmt
+			ELSE 
+				SET @currBal = @currBal-@transAmt 
+			
 			-- #### Insert Xact
 			Insert into NC_Transactions 
 			(
@@ -85,11 +97,11 @@ BEGIN
 				,@transBrowser
 				,@transUserId
 				,@transPoint
-				,case left(@transType,3) when 'CRE' then @currBal+@transAmt when 'DEB' then @currBal-@transAmt else @currBal-@transAmt end
+				,@currBal
 			)
 
 			-- update current balance
-			update NC_Members set CurrentBalance=case left(@transType,3) when 'CRE' then @currBal+@transAmt when 'DEB' then @currBal-@transAmt else @currBal-@transAmt end 
+			update NC_Members set CurrentBalance=@currBal
 			where MemberId=@memberID
 		-- ...
 
