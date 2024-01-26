@@ -151,7 +151,6 @@ export default defineComponent({
             } else {
               // TODO: add commit/rollback function
               for (const scannedItem of this.scannedItems) {
-                console.log(scannedItem);
                 await this.payCafe(phoneNumber, scannedItem.itemNumber, "SCAN");
               }
 

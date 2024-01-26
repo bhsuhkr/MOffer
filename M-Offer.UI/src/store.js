@@ -314,12 +314,19 @@ export const useTransactionStore = defineStore('transaction', {
       //   // add commit, rollback for two transactions
       //   await axios.post(process.env.VUE_APP_API_URL + '/api/member/pay-cafe', { memberId: "11111111", item: item, paymentMethod: paymentMethod, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
       //     .then(() => {
-      //       console.log("Paid for member ", this.memberId);
+      //       console.log("Credit added for ", paymentMethod);
       //     })
       //     .catch(error => {
       //       console.error("Failed to make a payment", error);
       //     });
-      }
+      //   await axios.post(process.env.VUE_APP_API_URL + '/api/member/pay-cafe', { memberId: "11111111", item: item, paymentMethod: paymentMethod, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
+      //     .then(() => {
+      //       console.log("Credit paied for ", paymentMethod);
+      //     })
+      //     .catch(error => {
+      //       console.error("Failed to make a payment", error);
+      //     });
+      // }
     },
     // Add funds
     async deposit(barcodeInfo, amount, transType) {
