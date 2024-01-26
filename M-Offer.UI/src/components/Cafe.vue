@@ -13,8 +13,11 @@
         />
       </div>
 
-      <h4>{{ items.length }} Itmes | Total: ${{ total }}.00</h4>
-      <button class="pay-btn" @click="pay">Pay</button>
+      <h4>{{ scannedItems.length }} Itmes | Total: ${{ total }}.00</h4>
+      <button class="pay-btn" @click="pay">Pay with Barcode</button>
+      <!-- <button class="pay-btn" @click="pay">Paid by Cash</button>
+      <button class="pay-btn" @click="pay">Pay by Credit Card</button> -->
+
       <p class="validation-msg">{{ validationMessage }}</p>
 
       <table class="table table-bordered table-text">
@@ -27,7 +30,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(field, index) in items" :key="index" @click="deleteRow(index)">
+          <tr v-for="(field, index) in scannedItems" :key="index" @click="deleteRow(index)">
             <td>{{ field.product }}</td>
             <td>{{ field.price }}</td>
           </tr>
@@ -59,7 +62,7 @@ export default defineComponent({
   setup() {
     const transactionStore = useTransactionStore();
     const titles = ["Product", "Price ($)"];
-    let items = ref([]);
+    let scannedItems = ref([]);
     let total = ref(0);
     let barcodeField = ref("");
     let validationMessage = ref("");
@@ -68,8 +71,8 @@ export default defineComponent({
     let makePayment = ref(false);
 
     const deleteRow = (index) => {
-      const deletedPrice = parseFloat(items.value[index].price.replace("$", ""));
-      items.value.splice(index, 1);
+      const deletedPrice = parseFloat(scannedItems.value[index].price);
+      scannedItems.value.splice(index, 1);
       total.value -= deletedPrice;
     };
 
@@ -82,13 +85,27 @@ export default defineComponent({
       await transactionStore.getBalance(phoneNumber);
     };
 
+    const getAllItemsAndPrices = async () => {
+      await transactionStore.getAllItemsAndPrices();
+    };
+
+    const payCafe = async (barcodeInfo, item, paymentMethod) => {
+      await transactionStore.payCafe(barcodeInfo, item, paymentMethod);
+    };
+
+    const itemList = computed({
+      get: () => transactionStore.items,
+      set: (newValue) => (transactionStore.items = newValue),
+    });
+
     onMounted(() => {
       barcodeField.value.focus();
+      getAllItemsAndPrices();
     });
 
     return {
       titles,
-      items,
+      scannedItems,
       total,
       barcodeField,
       validationMessage,
@@ -96,26 +113,33 @@ export default defineComponent({
       scanUserBarcode,
       makePayment,
       isValidPhoneNumber,
+      itemList,
       getBalance,
       deleteRow,
+      payCafe,
     };
   },
   methods: {
     async handleEnterKey() {
       const barcode = this.$refs["barcodeField"].value;
+
       if (barcode) {
         // accept a barcode for products
         if (!this.scanUserBarcode) {
-          const itemAndPrice = this.barcodeField.value.split("$");
-          if (itemAndPrice[0] && itemAndPrice[1]) {
-            this.total += parseFloat(itemAndPrice[1]);
-            this.items.unshift({ product: itemAndPrice[0], price: "$" + itemAndPrice[1] });
+          // check if the product barcode is valid
+          if (this.itemList.some((item) => item.itemNumber === barcode)) {
+            const description = this.itemList.find((item) => item.itemNumber === barcode).itemDesc;
+            const price = this.itemList.find((item) => item.itemNumber === barcode).price;
+            const itemNumber = this.itemList.find((item) => item.itemNumber === barcode).itemNumber;
+
+            this.scannedItems.push({ product: description, price, itemNumber });
+            this.total += price;
             this.validationMessage = "";
           } else {
             this.validationMessage = "잘못된 바코드입니다. 다시 시도해 주세요. 1";
             this.showPopup = false;
           }
-          // accept a barcode for personal barcode
+          // accept a personal barcode for pay
         } else {
           const phoneNumber = this.$refs["barcodeField"].value;
           if (phoneNumber) {
@@ -125,7 +149,12 @@ export default defineComponent({
             } else if (this.balance <= -10) {
               this.validationMessage = "잔액이 부족합니다. $" + this.balance;
             } else {
-              // this.pay(phoneNumber);
+              // TODO: add commit/rollback function
+              for (const scannedItem of this.scannedItems) {
+                console.log(scannedItem);
+                await this.payCafe(phoneNumber, scannedItem.itemNumber, "SCAN");
+              }
+
               this.validationMessage = "";
               this.makePayment = true;
             }
@@ -142,7 +171,7 @@ export default defineComponent({
       }
     },
     async pay() {
-      if (this.total) {
+      if (this.total && this.scannedItems.length) {
         this.validationMessage = "";
         this.showPopup = true;
         this.scanUserBarcode = true;
@@ -152,7 +181,7 @@ export default defineComponent({
     },
     handlePopupClosed() {
       this.total = 0;
-      this.items = [];
+      this.scannedItems = [];
       this.showPopup = false;
       this.scanUserBarcode = false;
       this.makePayment = false;

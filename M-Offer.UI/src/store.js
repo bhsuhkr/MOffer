@@ -138,6 +138,7 @@ export const useTransactionStore = defineStore('transaction', {
   state: () => ({
     transactions: [],
     memberTransactions: [],
+    items: [],
     memberId: "",
     balance: 0,
     isValidPhoneNumber: true,
@@ -283,6 +284,41 @@ export const useTransactionStore = defineStore('transaction', {
             console.error("Failed to make a payment", error);
             this.didPay = false;
           });
+      }
+    },
+    async getAllItemsAndPrices() {
+      await axios.get(process.env.VUE_APP_API_URL + '/api/item-prices')
+        .then(response => {
+          if (response && response.data) {
+            this.items = response.data.items;
+          }
+        })
+        .catch(error => {
+          console.error("Failed to fetch items", error);
+        });
+    },
+    // Make a payment (Cafe)
+    async payCafe(barcodeInfo, item, paymentMethod) {
+      if (paymentMethod === "SCAN") {
+        await this.validateBarcode(barcodeInfo);
+        if (this.isValidPhoneNumber) {
+          await axios.post(process.env.VUE_APP_API_URL + '/api/member/pay-cafe', { memberId: this.memberId, item: item, paymentMethod: "SCAN", username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
+          .then(() => {
+            console.log("Paid for member ", this.memberId);
+          })
+          .catch(error => {
+            console.error("Failed to make a payment:", paymentMethod, error);
+          });
+        }
+      // } else if (paymentMethod === "CC" || paymentMethod === "CASH") {
+      //   // add commit, rollback for two transactions
+      //   await axios.post(process.env.VUE_APP_API_URL + '/api/member/pay-cafe', { memberId: "11111111", item: item, paymentMethod: paymentMethod, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
+      //     .then(() => {
+      //       console.log("Paid for member ", this.memberId);
+      //     })
+      //     .catch(error => {
+      //       console.error("Failed to make a payment", error);
+      //     });
       }
     },
     // Add funds

@@ -164,7 +164,7 @@ sql
       }
     });
 
-    app.get("/api/prices", async (req, res) => {
+    app.get("/api/item-prices", async (req, res) => {
       try {
         pool.query(`select nc_items.price, nc_items.itemDesc, nc_items.itemNumber from nc_items`, (err, recordset) => {
           if (err) console.log(err);
