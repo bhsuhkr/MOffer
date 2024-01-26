@@ -124,7 +124,7 @@ export default defineComponent({
       const barcode = this.$refs["barcodeField"].value;
 
       if (barcode) {
-        // accept a barcode for products
+        // scan a barcode for products
         if (!this.scanUserBarcode) {
           // check if the product barcode is valid
           if (this.itemList.some((item) => item.itemNumber === barcode)) {
@@ -139,7 +139,7 @@ export default defineComponent({
             this.validationMessage = "잘못된 바코드입니다. 다시 시도해 주세요.";
             this.showPopup = false;
           }
-          // accept a personal barcode for pay
+          // scan a personal barcode for pay
         } else {
           const phoneNumber = this.$refs["barcodeField"].value;
           if (phoneNumber) {
