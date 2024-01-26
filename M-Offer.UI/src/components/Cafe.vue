@@ -136,7 +136,7 @@ export default defineComponent({
             this.total += price;
             this.validationMessage = "";
           } else {
-            this.validationMessage = "잘못된 바코드입니다. 다시 시도해 주세요. 1";
+            this.validationMessage = "잘못된 바코드입니다. 다시 시도해 주세요.";
             this.showPopup = false;
           }
           // accept a personal barcode for pay
@@ -145,7 +145,7 @@ export default defineComponent({
           if (phoneNumber) {
             await this.getBalance(phoneNumber);
             if (!this.isValidPhoneNumber) {
-              this.validationMessage = "잘못된 바코드입니다. 다시 시도해 주세요. 2";
+              this.validationMessage = "잘못된 바코드입니다. 다시 시도해 주세요.";
             } else if (this.balance <= -10) {
               this.validationMessage = "잔액이 부족합니다. $" + this.balance;
             } else {
