@@ -302,7 +302,7 @@ export const useTransactionStore = defineStore('transaction', {
       if (paymentMethod === "SCAN") {
         await this.validateBarcode(barcodeInfo);
         if (this.isValidPhoneNumber) {
-          await axios.post(process.env.VUE_APP_API_URL + '/api/member/pay-cafe', { memberId: this.memberId, item: item, paymentMethod: "SCAN", username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
+          await axios.post(process.env.VUE_APP_API_URL + '/api/member/pay-cafe', { memberId: this.memberId, transType: "DEBIT", item: item, paymentMethod: "SCAN", username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
           .then(() => {
             console.log("Paid for member ", this.memberId);
           })
@@ -312,21 +312,21 @@ export const useTransactionStore = defineStore('transaction', {
         }
       // } else if (paymentMethod === "CC" || paymentMethod === "CASH") {
       //   // add commit, rollback for two transactions
-      //   await axios.post(process.env.VUE_APP_API_URL + '/api/member/pay-cafe', { memberId: "11111111", item: item, paymentMethod: paymentMethod, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
+      //   await axios.post(process.env.VUE_APP_API_URL + '/api/member/pay-cafe', { memberId: "11111111", transType: "CREDIT", item: item, paymentMethod: paymentMethod, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
       //     .then(() => {
       //       console.log("Credit added for ", paymentMethod);
       //     })
       //     .catch(error => {
       //       console.error("Failed to make a payment", error);
       //     });
-      //   await axios.post(process.env.VUE_APP_API_URL + '/api/member/pay-cafe', { memberId: "11111111", item: item, paymentMethod: paymentMethod, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
+      //   await axios.post(process.env.VUE_APP_API_URL + '/api/member/pay-cafe', { memberId: "11111111", transType: "DEBIT", item: item, paymentMethod: paymentMethod, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
       //     .then(() => {
       //       console.log("Credit paied for ", paymentMethod);
       //     })
       //     .catch(error => {
       //       console.error("Failed to make a payment", error);
       //     });
-      // }
+      }
     },
     // Add funds
     async deposit(barcodeInfo, amount, transType) {

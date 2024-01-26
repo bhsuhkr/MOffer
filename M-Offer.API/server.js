@@ -282,7 +282,7 @@ sql
         pool.query(
           `exec sp_insertTransaction 
         '${req.body.memberId}',
-        'DEBIT',
+        '${req.body.transType}',
         '${req.body.item}',
         0,
         '${req.body.paymentMethod}',
