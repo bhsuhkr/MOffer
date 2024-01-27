@@ -13,7 +13,7 @@
         />
       </div>
 
-      <h4>{{ scannedItems.length }} Itmes | Total: ${{ total }}.00</h4>
+      <h4>{{ scannedItems.length }} Items | Total: ${{ total }}.00</h4>
       <button class="pay-btn" @click="pay">Pay with Barcode</button>
       <!-- <button class="pay-btn" @click="pay">Paid by Cash</button>
       <button class="pay-btn" @click="pay">Pay by Credit Card</button> -->
@@ -60,6 +60,7 @@ export default defineComponent({
     CafePopup,
   },
   setup() {
+    // State variables
     const transactionStore = useTransactionStore();
     const titles = ["Product", "Price ($)"];
     let scannedItems = ref([]);
@@ -128,10 +129,12 @@ export default defineComponent({
         if (!this.scanUserBarcode) {
           // check if the product barcode is valid
           if (this.itemList.some((item) => item.itemNumber === barcode)) {
+            // Extract item details
             const description = this.itemList.find((item) => item.itemNumber === barcode).itemDesc;
             const price = this.itemList.find((item) => item.itemNumber === barcode).price;
             const itemNumber = this.itemList.find((item) => item.itemNumber === barcode).itemNumber;
 
+            // Add scanned item to the list
             this.scannedItems.push({ product: description, price, itemNumber });
             this.total += price;
             this.validationMessage = "";
