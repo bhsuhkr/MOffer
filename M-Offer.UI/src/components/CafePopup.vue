@@ -1,11 +1,28 @@
 <template>
   <div class="cafe-popup">
     <div class="cafe-popup-content">
-      <h4 class="cafe-popup-header" v-if="!makePayment">지불에 사용할 바코드를 스캔해 주세요.</h4>
-      <h4 class="cafe-popup-header" v-else>결제완료 되었습니다.</h4>
-      <p>Total: ${{ total }}.00</p>
-      <button @click="closePopup" v-if="!makePayment">취소</button>
-      <button @click="closePopup" v-else>확인</button>
+      <h3 class="cafe-popup-total">Total: ${{ total.toFixed(2) }}</h3>
+
+      <!-- Header for barcode payment -->
+      <div v-if="paymentType === 'BARCODE'">
+        <h4 class="cafe-popup-header" v-if="!isPaid">지불에 사용할 바코드를 스캔해 주세요.</h4>
+        <h4 class="cafe-popup-header" v-else>결제완료 되었습니다.</h4>
+
+        <button @click="closePopup" v-if="!isPaid">취소</button>
+        <button @click="closePopup" v-else>확인</button>
+      </div>
+
+      <!-- Header for Non-barcode payment -->
+      <div v-else>
+        <h4 class="cafe-popup-header" v-if="!isPaid">결제가 완료되었습니까?</h4>
+        <h4 class="cafe-popup-header" v-else>시스템에 기록되었습니다.</h4>
+
+        <div class="cafe-popup-button-container" v-if="!isPaid">
+          <button @click="makePayment">확인</button>
+          <button @click="closePopup">취소</button>
+        </div>
+        <button @click="closePopup" v-else>확인</button>
+      </div>
     </div>
   </div>
 </template>
@@ -17,14 +34,21 @@ export default {
       type: Number,
       required: true,
     },
-    makePayment: {
+    isPaid: {
       type: Boolean,
+      required: true,
+    },
+    paymentType: {
+      type: String,
       required: true,
     },
   },
   methods: {
     closePopup() {
       this.$emit("close-cafe-popup");
+    },
+    makePayment() {
+      this.$emit("make-payment");
     },
   },
 };
@@ -51,6 +75,15 @@ export default {
   background-color: #fff;
   padding: 20px;
   border-radius: 4px;
+}
+
+.cafe-popup-total {
+  margin-bottom: 15px;
+}
+
+.cafe-popup-button-container {
+  display: flex;
+  gap: 10px;
 }
 
 button {

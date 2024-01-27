@@ -310,22 +310,22 @@ export const useTransactionStore = defineStore('transaction', {
             console.error("Failed to make a payment:", paymentMethod, error);
           });
         }
-      // } else if (paymentMethod === "CC" || paymentMethod === "CASH") {
-      //   // add commit, rollback for two transactions
-      //   await axios.post(process.env.VUE_APP_API_URL + '/api/member/pay-cafe', { memberId: "11111111", transType: "CREDIT", item: item, paymentMethod: paymentMethod, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
-      //     .then(() => {
-      //       console.log("Credit added for ", paymentMethod);
-      //     })
-      //     .catch(error => {
-      //       console.error("Failed to make a payment", error);
-      //     });
-      //   await axios.post(process.env.VUE_APP_API_URL + '/api/member/pay-cafe', { memberId: "11111111", transType: "DEBIT", item: item, paymentMethod: paymentMethod, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
-      //     .then(() => {
-      //       console.log("Credit paied for ", paymentMethod);
-      //     })
-      //     .catch(error => {
-      //       console.error("Failed to make a payment", error);
-      //     });
+      } else if (paymentMethod === "CC" || paymentMethod === "CASH") {
+        // add commit, rollback for two transactions
+        await axios.post(process.env.VUE_APP_API_URL + '/api/member/pay-cafe', { memberId: "11111111", transType: "CREDIT", item: item, paymentMethod: paymentMethod, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
+          .then(() => {
+            console.log("Credit added for", paymentMethod);
+          })
+          .catch(error => {
+            console.error("Failed to make a payment", error);
+          });
+        await axios.post(process.env.VUE_APP_API_URL + '/api/member/pay-cafe', { memberId: "11111111", transType: "DEBIT", item: item, paymentMethod: paymentMethod, username: useAuthStore().username, ipAddress: useAuthStore().ipAddress, browserName: useAuthStore().browserName })
+          .then(() => {
+            console.log("Credit paid for", paymentMethod);
+          })
+          .catch(error => {
+            console.error("Failed to make a payment", error);
+          });
       }
     },
     // Add funds

@@ -13,10 +13,10 @@
         />
       </div>
 
-      <h4>{{ scannedItems.length }} Items | Total: ${{ total }}.00</h4>
-      <button class="pay-btn" @click="pay">Pay with Barcode</button>
-      <!-- <button class="pay-btn" @click="pay">Paid by Cash</button>
-      <button class="pay-btn" @click="pay">Pay by Credit Card</button> -->
+      <h4>{{ scannedItems.length }} Items | Total: ${{ total.toFixed(2) }}</h4>
+      <button class="pay-btn" @click="pay('BARCODE')">Pay with Barcode</button>
+      <button class="pay-btn" @click="pay('CASH')">Paid by Cash</button>
+      <button class="pay-btn" @click="pay('CC')">Paid by Credit Card</button>
 
       <p class="validation-msg">{{ validationMessage }}</p>
 
@@ -42,8 +42,10 @@
       ref="cafe-popup"
       v-if="showPopup"
       :total="total"
-      :makePayment="makePayment"
+      :isPaid="isPaid"
+      :paymentType="paymentType"
       @close-cafe-popup="handlePopupClosed"
+      @make-payment="makeCashOrCCPayment"
     />
   </div>
 </template>
@@ -69,7 +71,8 @@ export default defineComponent({
     let validationMessage = ref("");
     let showPopup = ref(false);
     let scanUserBarcode = ref(false);
-    let makePayment = ref(false);
+    let isPaid = ref(false);
+    let paymentType = ref("BARCODE");
 
     const deleteRow = (index) => {
       const deletedPrice = parseFloat(scannedItems.value[index].price);
@@ -82,8 +85,8 @@ export default defineComponent({
       set: (newValue) => (transactionStore.isValidPhoneNumber = newValue),
     });
 
-    const getBalance = async (phoneNumber) => {
-      await transactionStore.getBalance(phoneNumber);
+    const getBalance = async (personalBarcode) => {
+      await transactionStore.getBalance(personalBarcode);
     };
 
     const getAllItemsAndPrices = async () => {
@@ -111,8 +114,9 @@ export default defineComponent({
       barcodeField,
       validationMessage,
       showPopup,
+      paymentType,
       scanUserBarcode,
-      makePayment,
+      isPaid,
       isValidPhoneNumber,
       itemList,
       getBalance,
@@ -144,9 +148,9 @@ export default defineComponent({
           }
           // scan a personal barcode for pay
         } else {
-          const phoneNumber = this.$refs["barcodeField"].value;
-          if (phoneNumber) {
-            await this.getBalance(phoneNumber);
+          const personalBarcode = this.$refs["barcodeField"].value;
+          if (personalBarcode) {
+            await this.getBalance(personalBarcode);
             if (!this.isValidPhoneNumber) {
               this.validationMessage = "잘못된 바코드입니다. 다시 시도해 주세요.";
             } else if (this.balance <= -10) {
@@ -154,11 +158,11 @@ export default defineComponent({
             } else {
               // TODO: add commit/rollback function
               for (const scannedItem of this.scannedItems) {
-                await this.payCafe(phoneNumber, scannedItem.itemNumber, "SCAN");
+                await this.payCafe(personalBarcode, scannedItem.itemNumber, "SCAN");
               }
 
               this.validationMessage = "";
-              this.makePayment = true;
+              this.isPaid = true;
             }
           }
         }
@@ -172,21 +176,51 @@ export default defineComponent({
         inputField.focus();
       }
     },
-    async pay() {
+    async pay(paymentType) {
       if (this.total && this.scannedItems.length) {
         this.validationMessage = "";
         this.showPopup = true;
-        this.scanUserBarcode = true;
+
+        switch (paymentType) {
+          case "BARCODE":
+            this.scanUserBarcode = true;
+            this.paymentType = "BARCODE";
+            break;
+          case "CASH":
+            this.scanUserBarcode = false;
+            this.paymentType = "CASH";
+            break;
+          case "CC":
+            this.scanUserBarcode = false;
+            this.paymentType = "CC";
+            break;
+        }
       } else {
         this.validationMessage = "지불할 아이템이 없습니다.";
       }
     },
     handlePopupClosed() {
-      this.total = 0;
-      this.scannedItems = [];
-      this.showPopup = false;
-      this.scanUserBarcode = false;
-      this.makePayment = false;
+      // paid and reset fields
+      if (this.isPaid) {
+        this.total = 0;
+        this.scannedItems = [];
+        this.showPopup = false;
+        this.scanUserBarcode = false;
+        this.isPaid = false;
+        // not paid, close popup and switch input field to scan product barcode
+      } else {
+        this.showPopup = false;
+        this.scanUserBarcode = false;
+      }
+    },
+    async makeCashOrCCPayment() {
+      // make cash or credit card tranactions
+      for (const scannedItem of this.scannedItems) {
+        await this.payCafe(0, scannedItem.itemNumber, this.paymentType);
+      }
+
+      this.validationMessage = "";
+      this.isPaid = true;
     },
   },
 });
