@@ -114,13 +114,14 @@ sql
       }
     });
 
+    // transactions made today from MAINCAFE
     app.get("/api/transactions", async (req, res) => {
       try {
         pool.query(
           `select nc_transactions.MemberID, nc_transactions.TransType, nc_transactions.TransTime, nc_transactions.RunningBalance, nc_members.KoreanName, nc_members.ContId
             from nc_transactions 
             left join nc_members on nc_transactions.memberid = nc_members.memberid
-            where CONVERT(DATE, TransTime) = CONVERT(DATE, GETDATE())
+            where CONVERT(DATE, TransTime) = CONVERT(DATE, GETDATE()) AND nc_transactions.TransPoint='MAINCAFE'
             order by TransTime desc`,
           (err, recordset) => {
             if (err) console.log(err);
