@@ -3,20 +3,15 @@
     <div class="cafe-popup-content">
       <h3 class="cafe-popup-total">Total: ${{ total.toFixed(2) }}</h3>
 
-      <!-- Header for barcode payment -->
       <div v-if="paymentType === 'BARCODE'">
-        <h4 class="cafe-popup-header" v-if="!isPaid">지불에 사용할 바코드를 스캔해 주세요.</h4>
-        <h4 class="cafe-popup-header" v-else>결제완료 되었습니다.</h4>
-
-        <button @click="closePopup" v-if="!isPaid">취소</button>
-        <button @click="closePopup" v-else>확인</button>
+        <h4 class="cafe-popup-header">
+          {{ !isPaid ? "지불에 사용할 바코드를 스캔해 주세요." : "결제완료 되었습니다." }}
+        </h4>
+        <button @click="closePopup">{{ isPaid ? "확인" : "취소" }}</button>
       </div>
 
-      <!-- Header for Non-barcode payment -->
       <div v-else>
-        <h4 class="cafe-popup-header" v-if="!isPaid">결제가 완료되었습니까?</h4>
-        <h4 class="cafe-popup-header" v-else>시스템에 기록되었습니다.</h4>
-
+        <h4 class="cafe-popup-header">{{ !isPaid ? "결제가 완료되었습니까?" : "시스템에 기록되었습니다." }}</h4>
         <div class="cafe-popup-button-container" v-if="!isPaid">
           <button @click="makePayment">확인</button>
           <button @click="closePopup">취소</button>
