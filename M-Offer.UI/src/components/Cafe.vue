@@ -56,6 +56,12 @@ import { defineComponent, ref, onMounted, computed } from "vue";
 import { useTransactionStore } from "@/store";
 import CafePopup from "./CafePopup.vue";
 
+const PAYMENT_TYPES = {
+  BARCODE: "BARCODE",
+  CASH: "CASH",
+  CC: "CC",
+};
+
 export default defineComponent({
   name: "Cafe",
   components: {
@@ -65,14 +71,14 @@ export default defineComponent({
     // State variables
     const transactionStore = useTransactionStore();
     const titles = ["Product", "Price ($)"];
-    let scannedItems = ref([]);
-    let total = ref(0);
-    let barcodeField = ref("");
-    let validationMessage = ref("");
-    let showPopup = ref(false);
-    let scanUserBarcode = ref(false);
-    let isPaid = ref(false);
-    let paymentType = ref("BARCODE");
+    const scannedItems = ref([]);
+    const total = ref(0);
+    const barcodeField = ref("");
+    const validationMessage = ref("");
+    const showPopup = ref(false);
+    const scanUserBarcode = ref(false);
+    const isPaid = ref(false);
+    const paymentType = ref(PAYMENT_TYPES.BARCODE);
 
     const deleteRow = (index) => {
       const deletedPrice = parseFloat(scannedItems.value[index].price);
@@ -182,17 +188,14 @@ export default defineComponent({
         this.showPopup = true;
 
         switch (paymentType) {
-          case "BARCODE":
+          case PAYMENT_TYPES.BARCODE:
             this.scanUserBarcode = true;
-            this.paymentType = "BARCODE";
+            this.paymentType = PAYMENT_TYPES.BARCODE;
             break;
-          case "CASH":
+          case PAYMENT_TYPES.CASH:
+          case PAYMENT_TYPES.CC:
             this.scanUserBarcode = false;
-            this.paymentType = "CASH";
-            break;
-          case "CC":
-            this.scanUserBarcode = false;
-            this.paymentType = "CC";
+            this.paymentType = paymentType;
             break;
         }
       } else {
