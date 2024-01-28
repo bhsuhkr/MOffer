@@ -5,6 +5,7 @@
 
       <div class="input-row">
         <input
+          id="barcodeInput"
           class="barcode-input"
           ref="barcodeField"
           type="text"
@@ -14,11 +15,11 @@
       </div>
 
       <h4>{{ scannedItems.length }} Items | Total: ${{ total.toFixed(2) }}</h4>
-      <button class="pay-btn" @click="pay('BARCODE')">Pay with Barcode</button>
-      <button class="pay-btn" @click="pay('CASH')">Paid by Cash</button>
-      <button class="pay-btn" @click="pay('CC')">Paid by Credit Card</button>
+      <button id="barcodeButton" class="pay-btn" @click="pay('BARCODE')">Pay with Barcode</button>
+      <button id="cashButton" class="pay-btn" @click="pay('CASH')">Paid by Cash</button>
+      <button id="cardButton" class="pay-btn" @click="pay('CC')">Paid by Credit Card</button>
 
-      <p class="validation-msg">{{ validationMessage }}</p>
+      <p id="validationMsg" class="validation-msg">{{ validationMessage }}</p>
 
       <table class="table table-bordered table-text">
         <thead>
@@ -30,7 +31,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(field, index) in scannedItems" :key="index" @click="deleteRow(index)">
+          <tr v-for="(field, index) in scannedItems" :key="index" @click="deleteRow(index)" :id="('item' + index)">
             <td>{{ field.product }}</td>
             <td>{{ field.price }}</td>
           </tr>
