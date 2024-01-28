@@ -345,7 +345,7 @@ sql
         pool.query(
           `exec sp_insertTransaction 
         '${req.body.memberId}',
-        'CREDIT',
+        'PAY_REFUND',
         'XACT',
         '2',
         'CASH',
@@ -388,6 +388,7 @@ sql
           ,[GrandTotalMemberBalance]
           ,[GrandTotalActiveMembers]
           ,[DailyNewMembers]
+          ,[TransPoint]
           from [NC_DailySummary] 
           ${whereClause} 
           order by [SummaryDate] desc`;
