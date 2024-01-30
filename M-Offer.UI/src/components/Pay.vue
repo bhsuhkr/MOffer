@@ -140,8 +140,8 @@ export default defineComponent({
     },
     getRowColor(transType) {
       return {
-        "green-row": transType !== "CREDIT",
-        "red-row": transType === "CREDIT",
+        "green-row": transType === "DEBIT",
+        "red-row": transType !== "DEBIT",
       };
     },
     isSuccessValidation(change) {
