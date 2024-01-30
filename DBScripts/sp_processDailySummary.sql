@@ -86,7 +86,7 @@ BEGIN
 			from nc_transactions 
 			where CONVERT(DATE, TransTime) = @summaryDate
 			AND TransPoint = @oneLocation
-			and nc_transactions.TransType in ('CREDIT', 'CREDIT_ADM', 'CREDIT_SYS') and TransAmount > 3
+			and nc_transactions.TransType in ('CREDIT', 'CREDIT_ADM', 'CREDIT_SYS')
 
 			IF @creditTotalAmt is null
 			BEGIN
@@ -98,8 +98,7 @@ BEGIN
 			from nc_transactions 
 			where CONVERT(DATE, TransTime) = @summaryDate
 			AND TransPoint = @oneLocation
-			and ((nc_transactions.TransType in ('PAY_REFUND')) 
-			  OR (nc_transactions.TransType in ('CREDIT', 'CREDIT_ADM', 'CREDIT_SYS') and TransAmount < 3))
+			and nc_transactions.TransType in ('PAY_REFUND')
 
 			IF @mealRefundTotalAmt is null
 			BEGIN
@@ -134,14 +133,14 @@ BEGIN
 			DECLARE @grandTotalDebit float
 			select @grandTotalDebit=sum(nc_transactions.transamount)
 			from nc_transactions 
-			WHERE nc_transactions.TransType in ('DEBIT', 'DEBIT_ADM', 'DEBIT_SYS', 'REFUND')
+			WHERE nc_transactions.TransType in ('DEBIT', 'DEBIT_ADM', 'DEBIT_SYS', 'DEP_REFUND')
 			AND CONVERT(DATE, TransTime) <= @summaryDate
 			AND TransPoint = @oneLocation
 
 			DECLARE @grandTotalCredit float
 			select @grandTotalCredit=sum(nc_transactions.transamount)
 			from nc_transactions 
-			WHERE nc_transactions.TransType NOT in ('DEBIT', 'DEBIT_ADM', 'DEBIT_SYS', 'REFUND')
+			WHERE nc_transactions.TransType in ('CREDIT', 'CREDIT_ADM', 'CREDIT_SYS', 'PAY_REFUND')
 			AND CONVERT(DATE, TransTime) <= @summaryDate
 			AND TransPoint = @oneLocation
 
