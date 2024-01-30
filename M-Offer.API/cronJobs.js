@@ -55,8 +55,8 @@ function runDailySummary() {
 function runDailyEmailRecon() {
     let summaryDate = new Date().toLocaleDateString();
     let htmlContent = new String();
-    if (config.NODE_ENV === "dev")
-        summaryDate = '1/14/2024';
+    // if (config.NODE_ENV === "dev")
+    //     summaryDate = '1/14/2024';
     console.log('Cron job runDailyEmailRecon starting...', new Date().toLocaleString());
     sql
         .connect(config)
@@ -91,17 +91,18 @@ function runDailyEmailRecon() {
                                     if (index === 0) {
                                         htmlContent = "<p>This email is for <b>New Song POS Reconciliation</b>."
                                             + "<p><b>Here is Today's (" + summaryDate + ") Summary:</b><br>"
-                                            + "<table><tr>" 
-                                            + "<th>Location</th><th>Debit</th><th>Credit</th><th>Meal<br>Refund</th>" 
-                                            + "<th>Balance</th><th>Active<br>Members</th><th>New<br>Members</th>"
-                                            + "<th>Total<br>Members</th><th>Member<br>Balance</th><th>Transaction<br>Balance</th>" 
+                                            + "<table style='border: 1px solid black; border-collapse: collapse; cell-padding:30;'>"
+                                            + "<tr style='border: 1px solid black; border-collapse: collapse; vertical-align:bottom;'>"
+                                            + "<th>Location</th><th>Daily<br>Credit</th><th>Daily<br>Debit</th><th>Meal<br>Refund</th>"
+                                            + "<th>Daily<br>Balance</th><th>Members<br>Active</th><th>Members<br>New</th>"
+                                            + "<th>Members<br>Total</th><th>Members<br>Balance</th><th>Transaction<br>Balance</th>"
                                             + "</tr>";
                                     }
                                     htmlContent = htmlContent
-                                        + "<tr>"
+                                        + "<tr style='border: 1px solid black; border-collapse: collapse;'>"
                                         + "<td align=center><font color='blue'><b>" + recordset.recordsets[0][index].TransPoint + "</b></font>"
-                                        + "<td align=right><font color='blue'><b>" + USDollar.format(recordset.recordsets[0][index].DailyTotalDebitAmount) + "</b></font>"
                                         + "<td align=right><font color='blue'><b>" + USDollar.format(recordset.recordsets[0][index].DailyTotalCreditAmount) + "</b></font>"
+                                        + "<td align=right><font color='blue'><b>" + USDollar.format(recordset.recordsets[0][index].DailyTotalDebitAmount) + "</b></font>"
                                         + "<td align=right><font color='blue'><b>" + USDollar.format(recordset.recordsets[0][index].DailyTotalRefundAmount) + "</b></font>"
                                         + "<td align=right><font color='blue'><b>" + USDollar.format(recordset.recordsets[0][index].DailyBalance) + "</b></font>"
                                         + "<td align=center><font color='blue'><b>" + recordset.recordsets[0][index].DailyActiveMembers + "</b></font>"
@@ -112,17 +113,17 @@ function runDailyEmailRecon() {
                                         + "</tr>"
                                     if (index === recordset.recordsets[0].length - 1) {
                                         htmlContent = htmlContent + "</table>"
-                                        + "<p style='font-size:10px; color:black;'>Legend: "
-                                        + "<br>Debit = Daily Total Meal Purchases"
-                                        + "<br>Credit = Daily Total Meal Deposits"
-                                        + "<br>Meal Refund = Daily Total Meal Purchase Refund"
-                                        + "<br>Balance = Credit - Debit + Refunds"
-                                        + "<br>Active Members = Members with Purchases"
-                                        + "<br>Active Members = Members with at least One Purchase"
-                                        + "<br>New Members = First Time Members for Today"
-                                        + "<br>Member Balance = Total Active Member Balance calculated using Member Balances"
-                                        + "<br>Transaction Balance = Total Transaction Balance calculated using Transactions"
-                                        + "<p style='font-size:12px; color:black;'>--- End of the daily summary email ---";
+                                            + "<p style='font-size:10px; color:black;'>Legend: "
+                                            + "<br>Credit = Daily Total Deposits"
+                                            + "<br>Debit = Daily Total Purchases"
+                                            + "<br>Meal Refund = Daily Total Purchase Refund"
+                                            + "<br>Daily Balance = Credit - Debit + Refunds"
+                                            + "<br>Members Active = Members with at least One Purchase"
+                                            + "<br>Members New = First-time Members for Today"
+                                            + "<br>Members Total = Total Members with at least One Purchase"
+                                            + "<br>Member Balance = Total Balance calculated using Member Balances"
+                                            + "<br>Transaction Balance = Total Balance calculated using Transactions"
+                                            + "<p style='font-size:12px; color:black;'>--- End of the daily summary email ---";
                                     }
                                 }
 
@@ -137,12 +138,12 @@ function runDailyEmailRecon() {
                                         html: htmlContent // plain text body
                                     }).then(info => {
                                         //console.log({ info });
-                                        console.log('Cron job runDailyEmailRecon sent email to', config.cronDailyEmailReconToAddress);
+                                        console.log('Cron job runDailyEmailRecon sent email to', config.cronDailyEmailReconToAddress, 'at', new Date().toLocaleString());
                                     }).catch(console.error);
                                 }
                             } else {
                                 // when there is no record for today
-                                console.log("Cron job runDailyEmailRecon did not have any records to send.");
+                                console.log("Cron job runDailyEmailRecon did not have any records to send at", new Date().toLocaleString());
                             }
                         }
                     }
