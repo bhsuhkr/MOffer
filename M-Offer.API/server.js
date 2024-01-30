@@ -14,6 +14,8 @@ let config = require("./config.js");
 console.log("config env: " + config.NODE_ENV);
 console.log("config db: " + config.connectionString);
 
+let cronJobs = require("./cronJobs.js");
+
 sql
   .connect(config)
   .then(async (pool) => {
