@@ -45,7 +45,7 @@ BEGIN
 				RAISERROR('Invalid Member ID',16,1)
 			END
 			-- #### Retrieving current balance
-			select @currBal=CurrentBalance from NC_Members where MemberID=@memberID
+			select @currBal=CurrentBalance from NC_Members WITH (XLOCK) where MemberID=@memberID
 
 			IF @transItem!='XACT' 
 			BEGIN
