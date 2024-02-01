@@ -414,12 +414,7 @@ sql
   .catch((err) => console.log("Database Connection Failed", err));
 
 // Start the server
-if (config.database === "moffer") {
-  app.listen(3000, () => {
-    console.log("Server is running on http://172.16.1.154:3000");
-  });
-} else {
-  app.listen(3001, () => {
-    console.log("Dev Mode: server is running on http://172.16.1.154:3001");
-  });
-}
+app.listen(config.apiPort, () => {
+  console.log("Server is running on http://localhost:" + config.apiPort);
+});
+

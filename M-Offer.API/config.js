@@ -7,7 +7,7 @@ dotenv.config({
 
 module.exports = {
   NODE_ENV: process.env.NODE_ENV || "prod",
-  database: process.env.DB_NAME || "moffer",
+  apiPort: process.env.API_PORT || "3001",
   connectionString: process.env.DB_CONN_STRING || "",
   emailHost: process.env.EMAIL_HOST || "",
   emailPort: process.env.EMAIL_PORT || "",
