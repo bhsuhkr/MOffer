@@ -32,7 +32,7 @@ function runDailySummary() {
         .then(async (pool) => {
             //console.log("Connected to Database");
             try {
-                pool.query(`exec sp_processDailySummary '` + summaryDate + `', 0`,
+                pool.query(`exec sp_processDailySummary '` + summaryDate + `', 1`,
                     (err, recordset) => {
                         if (err) console.log(err);
                         else {
