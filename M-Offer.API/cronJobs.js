@@ -12,10 +12,14 @@ let USDollar = new Intl.NumberFormat('en-US', {
 const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
     host: config.emailHost,
-    port: config.emailHost,
+    port: config.emailPort,
+    secure: false, // setting for SSL
     auth: {
         user: config.emailFromAddress,
         pass: config.emailFromAddressPwd
+    },
+    tls: {
+        rejectUnauthorized: false // setting for certificate check 
     },
 });
 
@@ -82,12 +86,12 @@ function runDailyEmailRecon() {
                         if (err) console.log(err);
                         else {
                             if (recordset && recordset.recordsets && recordset.recordsets[0] && recordset.recordsets[0][0]) {
-                                console.log("find daily summary records: " + recordset.recordsets[0].length);
+                                console.log("find daily summary records:", recordset.recordsets[0].length, " for date --", summaryDate);
 
                                 // for each summary record, compile the html content
                                 for (index = 0; index < recordset.recordsets[0].length; index++) {
 
-                                    console.log("daily summary record ID: " + recordset.recordsets[0][index].DSID);
+                                    console.log("daily summary record ID: ", recordset.recordsets[0][index].DSID, " for date --", summaryDate);
                                     if (index === 0) {
                                         htmlContent = "<p>This email is for <b>New Song POS Reconciliation</b>."
                                             + "<p><b>Here is Today's (" + summaryDate + ") Summary:</b><br>"
@@ -128,8 +132,9 @@ function runDailyEmailRecon() {
                                 }
 
                                 if (htmlContent.length > 0) {
+                                    //console.log('Cron job runDailyEmailRecon about to send email', htmlContent);
                                     transporter.verify()
-                                        .then(console.log("Email host", config.emailHost, "connected using", config.emailFromAddress))
+                                        .then(console.log("Right before sending, email host verified", config.emailHost, "connected using", config.emailFromAddress))
                                         .catch(console.error);
                                     transporter.sendMail({
                                         from: config.emailFromAddress, // sender address
