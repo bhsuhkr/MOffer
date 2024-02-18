@@ -4,7 +4,9 @@ INSERT [dbo].[NC_Items] ([ItemNumber], [ItemDesc], [Price], [CreatedDate]) VALUE
 GO
 INSERT [dbo].[NC_Items] ([ItemNumber], [ItemDesc], [Price], [CreatedDate]) VALUES (N'COFFEE', N'Coffee', 1.5, CAST(N'2023-06-08T22:24:51.890' AS DateTime))
 GO
-INSERT [dbo].[NC_Items] ([ItemNumber], [ItemDesc], [Price], [CreatedDate]) VALUES (N'ICEAMER', N'Ice Americano', 1, CAST(N'2023-06-08T22:24:06.140' AS DateTime))
+INSERT [dbo].[NC_Items] ([ItemNumber], [ItemDesc], [Price], [CreatedDate]) VALUES (N'ICEAMER', N'Ice Americano', 2, CAST(N'2023-06-08T22:24:06.140' AS DateTime))
+GO
+INSERT [dbo].[NC_Items] ([ItemNumber], [ItemDesc], [Price], [CreatedDate]) VALUES (N'HOTAMER', N'Hot Americano', 2, getdate())
 GO
 INSERT [dbo].[NC_Items] ([ItemNumber], [ItemDesc], [Price], [CreatedDate]) VALUES (N'MAINMEAL', N'Meals in Main Cafeteria', 2, CAST(N'2023-06-08T22:23:46.990' AS DateTime))
 GO
@@ -12,6 +14,13 @@ INSERT [dbo].[NC_Items] ([ItemNumber], [ItemDesc], [Price], [CreatedDate]) VALUE
 GO
 INSERT [dbo].[NC_Items] ([ItemNumber], [ItemDesc], [Price], [CreatedDate]) VALUES (N'XACT', N'Transactions', 0, CAST(N'2023-06-10T23:39:18.030' AS DateTime))
 GO
+INSERT [dbo].[NC_Items] ([ItemNumber], [ItemDesc], [Price], [CreatedDate]) VALUES (N'PASTRY', N'Patry', 2, getdate())
+GO
+INSERT [dbo].[NC_Items] ([ItemNumber], [ItemDesc], [Price], [CreatedDate]) VALUES (N'OTHERF', N'Other Food', 2, getdate())
+GO
+
+
+
 INSERT [dbo].[NC_TransPmntMethods] ([TransPmntMethod], [TransPmntMethodDesc]) VALUES (N'CASH', N'Cash')
 GO
 INSERT [dbo].[NC_TransPmntMethods] ([TransPmntMethod], [TransPmntMethodDesc]) VALUES (N'CC', N'Credit Card')
