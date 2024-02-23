@@ -56,6 +56,7 @@ export default defineComponent({
       "Grand Total Tx Balance",
       "Grand Total Member Balance",
       "Grand Total Active Members",
+      "Location",
     ];
     const fields = [
       "SummaryDate",
@@ -68,6 +69,7 @@ export default defineComponent({
       "GrandTotalTransBalance",
       "GrandTotalMemberBalance",
       "GrandTotalActiveMembers",
+      "TransPoint",
     ];
     const summaryStore = useSummaryStore();
     const getSummary = async (dailyDate) => {
