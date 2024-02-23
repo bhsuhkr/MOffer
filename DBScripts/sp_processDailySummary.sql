@@ -1,5 +1,3 @@
-use Moffer
-go
 
 /****** Object:  StoredProcedure [dbo].[sp_insertTransaction]    Script Date: 8/8/2023 8:07:23 PM ******/
 SET ANSI_NULLS ON
@@ -29,12 +27,15 @@ BEGIN
 	DECLARE @mealRefundTotalAmt float
 	DECLARE @depositRefundTotalAmt float
 	DECLARE @dailyBalance float
-	DECLARE @totalTransBalance float
-	DECLARE @totalMemberBalance float
-	DECLARE @totalActiveMembers int
 	DECLARE @dailyActiveMembers int
 	DECLARE @dailyNewMembers int
 	DECLARE @dailyExists bit
+
+	DECLARE @grandTotalDebitAmt float
+	DECLARE @grandTotatCreditAmt float
+	DECLARE @grandTotalTransBalance float
+	DECLARE @grandTotalMemberBalance float
+	DECLARE @grandTotalActiveMembers int
 	DECLARE @oneLocation varchar(10)
 
 	SET @dailyExists = 0
@@ -48,12 +49,86 @@ BEGIN
 
 	DECLARE TransactionLocations CURSOR FAST_FORWARD READ_ONLY
 	FOR
-		SELECT  [TransPoint]
-		FROM    [NC_TransPoints]
+		SELECT Totals.TransPoint, Totals.DebitAmount, Totals.CreditAmount, 
+		Totals.MealRefAmount, Totals.DepositRefAmount, 
+		(Totals.CreditAmount - Totals.DepositRefAmount) - (Totals.DebitAmount - Totals.MealRefAmount) as TotalBalance,
+		DailyActiveMembers, DailyNewMembers, GrandTotalActiveMembers, 
+		GrandTotalDebitAmount, GrandTotalCreditAmount, 
+		(GrandTotalCreditAmount - GrandTotalDebitAmount) as GrandTotalTransBalance, GrandTotalMemberBalance
+		From 
+		(SELECT TP.TransPoint, @summaryDate as TransDate, 
+		ISNULL((
+			select sum(nc_transactions.transamount)  
+			from nc_transactions 
+			where CONVERT(DATE, TransTime) = @summaryDate
+			and nc_transactions.TransType in ('DEBIT', 'DEBIT_ADM', 'DEBIT_SYS')
+			AND nc_transactions.TransPoint = TP.TransPoint), 0) as DebitAmount,
+		ISNULL((
+			select  sum(nc_transactions.transamount)
+			from nc_transactions 
+			where CONVERT(DATE, TransTime) = @summaryDate
+			and nc_transactions.TransType in ('CREDIT', 'CREDIT_ADM', 'CREDIT_SYS')
+			and nc_transactions.TransPoint = TP.TransPoint), 0) as CreditAmount,
+		ISNULL((
+			select sum(nc_transactions.transamount)
+			from nc_transactions 
+			where CONVERT(DATE, TransTime) = @summaryDate
+			and nc_transactions.TransType in ('PAY_REFUND')
+			and nc_transactions.TransPoint = TP.TransPoint), 0) as MealRefAmount,
+		ISNULL((
+			select sum(nc_transactions.transamount)
+			from nc_transactions 
+			where CONVERT(DATE, TransTime) = @summaryDate
+			and nc_transactions.TransType in ('DEP_REFUND')
+			and nc_transactions.TransPoint = TP.TransPoint), 0) as DepositRefAmount,
+		ISNULL((
+			select count(distinct nc_transactions.MemberID) 
+			from nc_transactions 
+			where CONVERT(DATE, TransTime) = @summaryDate
+			and nc_transactions.TransPoint = TP.TransPoint), 0) as DailyActiveMembers,
+		ISNULL((
+			select count(distinct t2.MemberID) 
+			from nc_transactions t2
+			where CONVERT(DATE, t2.TransTime) = @summaryDate
+			AND t2.TransPoint = TP.TransPoint
+			and t2.MemberID  NOT in 
+			(select distinct t3.MemberID
+				from nc_transactions t3
+				where CONVERT(DATE, t3.TransTime) < @summaryDate
+				AND t3.TransPoint = TP.TransPoint)), 0) as DailyNewMembers, 
+		ISNULL((
+			select count(distinct nc_transactions.MemberID) 
+			from nc_transactions 
+			where CONVERT(DATE, TransTime) <= @summaryDate
+			and nc_transactions.TransPoint = TP.TransPoint), 0) as GrandTotalActiveMembers,
+		ISNULL((
+		-- query to get grand totals from the beginning of time!
+			select sum(nc_transactions.transamount)
+			from nc_transactions 
+			WHERE nc_transactions.TransType in ('DEBIT', 'DEBIT_ADM', 'DEBIT_SYS', 'DEP_REFUND')
+			AND CONVERT(DATE, TransTime) <= @summaryDate
+			and nc_transactions.TransPoint = TP.TransPoint), 0) as GrandTotalDebitAmount,
+		ISNULL((
+		-- query to get grand totals from the beginning of time!
+			select sum(nc_transactions.transamount)
+			from nc_transactions 
+			WHERE nc_transactions.TransType in ('CREDIT', 'CREDIT_ADM', 'CREDIT_SYS', 'PAY_REFUND')
+			AND CONVERT(DATE, TransTime) <= @summaryDate
+			and nc_transactions.TransPoint = TP.TransPoint), 0) as GrandTotalCreditAmount,
+		ISNULL((
+		select sum(nc_members.CurrentBalance)
+			from nc_members), 0) as GrandTotalMemberBalance
+		FROM NC_TransPoints TP ) AS Totals
+		WHERE (Totals.DebitAmount + Totals.CreditAmount) > 0
 
 	OPEN TransactionLocations
 
-	FETCH NEXT FROM TransactionLocations INTO @oneLocation
+	FETCH NEXT FROM TransactionLocations INTO @oneLocation, @debitTotalAmt, @creditTotalAmt, 
+		@mealRefundTotalAmt, @depositRefundTotalAmt, 
+		@dailyBalance, 
+		@dailyActiveMembers, @dailyNewMembers, @grandTotalActiveMembers, 
+		@grandTotalDebitAmt, @grandTotatCreditAmt, 
+		@grandTotalTransBalance, @grandTotalMemberBalance
 
 	-- iterate over each location from reference/lookup table and run summary logic
 	-- if main caferia and book cafe are configured, then this will summarize based on each location
@@ -69,134 +144,6 @@ BEGIN
 			PRINT @oneLocation
 			PRINT @dailyExists
 
-			-- query to get all debits / meals sold using member balance for a given day
-			select @debitTotalAmt=sum(nc_transactions.transamount)
-			from nc_transactions 
-			where CONVERT(DATE, TransTime) = @summaryDate
-			AND TransPoint = @oneLocation
-			and nc_transactions.TransType in ('DEBIT', 'DEBIT_ADM', 'DEBIT_SYS')
-
-			IF @debitTotalAmt is null
-			BEGIN
-				SET @debitTotalAmt = 0
-			END
-
-			-- query to get all credits / deposits came into church for a given day
-			select @creditTotalAmt=sum(nc_transactions.transamount)
-			from nc_transactions 
-			where CONVERT(DATE, TransTime) = @summaryDate
-			AND TransPoint = @oneLocation
-			and nc_transactions.TransType in ('CREDIT', 'CREDIT_ADM', 'CREDIT_SYS')
-
-			IF @creditTotalAmt is null
-			BEGIN
-				SET @creditTotalAmt = 0
-			END
-
-			-- query to get all meal refunds for a given day
-			select @mealRefundTotalAmt=sum(nc_transactions.transamount)
-			from nc_transactions 
-			where CONVERT(DATE, TransTime) = @summaryDate
-			AND TransPoint = @oneLocation
-			and nc_transactions.TransType in ('PAY_REFUND')
-
-			IF @mealRefundTotalAmt is null
-			BEGIN
-				SET @mealRefundTotalAmt = 0
-			END
-
-			-- query to get all deposit refunds / reservals for a given day
-			select @depositRefundTotalAmt=sum(nc_transactions.transamount)
-			from nc_transactions 
-			where CONVERT(DATE, TransTime) = @summaryDate
-			AND TransPoint = @oneLocation
-			and  nc_transactions.TransType in ('DEP_REFUND')
-
-			IF @depositRefundTotalAmt is null
-			BEGIN
-				SET @depositRefundTotalAmt = 0
-			END
-
-			-- total credit $ came into church as deposit minus any deposit refunded 
-			-- this is the reversal for deposit
-			SET @creditTotalAmt = @creditTotalAmt - @depositRefundTotalAmt
-
-			-- query to get daily balance for a given day
-			SET @dailyBalance = (@creditTotalAmt - @debitTotalAmt + @mealRefundTotalAmt)
-
-			IF @dailyBalance is null
-			BEGIN
-				SET @dailyBalance = 0
-			END
-
-			-- query to get grand totals from the beginning of time!
-			DECLARE @grandTotalDebit float
-			select @grandTotalDebit=sum(nc_transactions.transamount)
-			from nc_transactions 
-			WHERE nc_transactions.TransType in ('DEBIT', 'DEBIT_ADM', 'DEBIT_SYS', 'DEP_REFUND')
-			AND CONVERT(DATE, TransTime) <= @summaryDate
-			AND TransPoint = @oneLocation
-
-			DECLARE @grandTotalCredit float
-			select @grandTotalCredit=sum(nc_transactions.transamount)
-			from nc_transactions 
-			WHERE nc_transactions.TransType in ('CREDIT', 'CREDIT_ADM', 'CREDIT_SYS', 'PAY_REFUND')
-			AND CONVERT(DATE, TransTime) <= @summaryDate
-			AND TransPoint = @oneLocation
-
-			SET @totalTransBalance = @grandTotalCredit- @grandTotalDebit
-			IF @totalTransBalance is null
-			BEGIN
-				SET @totalTransBalance = 0
-			END
-
-			select @totalMemberBalance=sum(nc_members.CurrentBalance)
-			from nc_members 
-
-			IF @totalMemberBalance is null
-			BEGIN
-				SET @totalMemberBalance = 0
-			END
-			
-
-			-- query to get total number of members 
-			select @totalActiveMembers=count(distinct nc_transactions.MemberID) 
-			from nc_transactions 
-			where CONVERT(DATE, TransTime) <= @summaryDate
-			AND TransPoint = @oneLocation
-
-			IF @totalActiveMembers is null
-			BEGIN
-				SET @totalActiveMembers = 0
-			END
-
-			-- query to get unique number of members who had transaction for a given day
-			select @dailyActiveMembers=count(distinct nc_transactions.MemberID) 
-			from nc_transactions 
-			where CONVERT(DATE, TransTime) = @summaryDate
-			AND TransPoint = @oneLocation
-			
-			IF @dailyActiveMembers is null
-			BEGIN
-				SET @dailyActiveMembers = 0
-			END
-
-			-- query to get unique number of members who had transaction for a given day
-			select @dailyNewMembers=count(distinct nc_transactions.MemberID) 
-			from nc_transactions 
-			where CONVERT(DATE, TransTime) = @summaryDate
-			AND TransPoint = @oneLocation
-			and nc_transactions.MemberID  NOT in 
-			(select distinct nc_transactions.MemberID
-				from nc_transactions 
-				where CONVERT(DATE, TransTime) < @summaryDate
-				AND TransPoint = @oneLocation
-			)
-
-			IF @dailyNewMembers is null
-			BEGIN
-				SET @dailyNewMembers = 0
-			END
 
 			BEGIN TRY
 				-- Start a new transaction
@@ -211,12 +158,15 @@ BEGIN
 										SET [DailyTotalDebitAmount] = @debitTotalAmt
 											,[DailyTotalCreditAmount] = @creditTotalAmt
 											,[DailyTotalRefundAmount] = @mealRefundTotalAmt 
+											,[DailyTotalDepositRefAmount] = @depositRefundTotalAmt 
 											,[DailyBalance] = @dailyBalance
 											,[DailyActiveMembers] = @dailyActiveMembers
-											,[GrandTotalTransBalance] = @totalTransBalance
-											,[GrandTotalMemberBalance] = @totalMemberBalance
-											,[GrandTotalActiveMembers] = @totalActiveMembers
 											,[DailyNewMembers] = @dailyNewMembers
+											,[GrandTotalDebitAmount] = @grandTotalDebitAmt
+											,[GrandTotalCreditAmount] = @grandTotatCreditAmt
+											,[GrandTotalTransBalance] = @grandTotalTransBalance
+											,[GrandTotalMemberBalance] = @grandTotalMemberBalance
+											,[GrandTotalActiveMembers] = @grandTotalActiveMembers
 										WHERE [SummaryDate] = @summaryDate
 										AND TransPoint = @oneLocation
 									END
@@ -227,11 +177,14 @@ BEGIN
 										SET [DailyTotalDebitAmount] = @debitTotalAmt
 											,[DailyTotalCreditAmount] = @creditTotalAmt
 											,[DailyTotalRefundAmount] = @mealRefundTotalAmt 
+											,[DailyTotalDepositRefAmount] = @depositRefundTotalAmt
 											,[DailyBalance] = @dailyBalance
 											,[DailyActiveMembers] = @dailyActiveMembers
-											,[GrandTotalTransBalance] = @totalTransBalance
-											,[GrandTotalActiveMembers] = @totalActiveMembers
 											,[DailyNewMembers] = @dailyNewMembers
+											,[GrandTotalDebitAmount] = @grandTotalDebitAmt
+											,[GrandTotalCreditAmount] = @grandTotatCreditAmt
+											,[GrandTotalTransBalance] = @grandTotalTransBalance
+											,[GrandTotalActiveMembers] = @grandTotalActiveMembers
 										WHERE [SummaryDate] = @summaryDate
 										AND TransPoint = @oneLocation
 									END
@@ -243,29 +196,35 @@ BEGIN
 								Insert into [NC_DailySummary] 
 								(
 								[SummaryDate]
+								,[TransPoint]
 								,[DailyTotalDebitAmount]
 								,[DailyTotalCreditAmount]
 								,[DailyTotalRefundAmount]
+								,[DailyTotalDepositRefAmount]
 								,[DailyBalance]
 								,[DailyActiveMembers]
+								,[DailyNewMembers]
 								,[GrandTotalTransBalance]
+								,[GrandTotalDebitAmount]
+								,[GrandTotalCreditAmount] 
 								,[GrandTotalMemberBalance]
 								,[GrandTotalActiveMembers]
-								,[DailyNewMembers]
-								,[TransPoint]
 								)
 								values (
 									@summaryDate
+									,@oneLocation
 									,@debitTotalAmt
 									,@creditTotalAmt
 									,@mealRefundTotalAmt 
+									,@depositRefundTotalAmt
 									,@dailyBalance
 									,@dailyActiveMembers
-									,@totalTransBalance
-									,@totalMemberBalance
-									,@totalActiveMembers
 									,@dailyNewMembers
-									,@oneLocation
+									,@grandTotalTransBalance
+									,@grandTotalDebitAmt
+									,@grandTotatCreditAmt
+									,@grandTotalMemberBalance
+									,@grandTotalActiveMembers
 								)
 						END
 				-- If everything is fine, commit the transaction
@@ -285,7 +244,12 @@ BEGIN
 			END CATCH
 
 			-- get next location
-			FETCH NEXT FROM TransactionLocations INTO @oneLocation
+			FETCH NEXT FROM TransactionLocations INTO @oneLocation, @debitTotalAmt, @creditTotalAmt, 
+				@mealRefundTotalAmt, @depositRefundTotalAmt, 
+				@dailyBalance, 
+				@dailyActiveMembers, @dailyNewMembers, @grandTotalActiveMembers, 
+				@grandTotalDebitAmt, @grandTotatCreditAmt, 
+				@grandTotalTransBalance, @grandTotalMemberBalance
 
 		END
 
