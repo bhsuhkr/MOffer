@@ -27,7 +27,8 @@ ALTER PROCEDURE [dbo].[sp_insertTransaction]
 	@transBrowser varchar(250),
 	@transHostname varchar(250),
 	@transUserId nvarchar(20),
-	@transPoint varchar(10)
+	@transPoint varchar(10),
+	@orderNumber varchar(50) = NULL
 
 AS
 BEGIN
@@ -84,6 +85,7 @@ BEGIN
 			  ,[TransUserId]
 			  ,[TransPoint]
 			  ,[RunningBalance]
+			  ,[OrderNumber]
 			)
 			values (
 				@memberID
@@ -98,6 +100,7 @@ BEGIN
 				,@transUserId
 				,@transPoint
 				,@currBal
+				,@orderNumber
 			)
 
 			-- update current balance
