@@ -15,9 +15,17 @@
       </div>
 
       <h4>{{ scannedItems.length }} Items | Total: ${{ total.toFixed(2) }}</h4>
-      <button id="barcodeButton" class="pay-btn" @click="pay('BARCODE')">Pay with Barcode</button>
-      <button id="cashButton" class="pay-btn" @click="pay('CASH')">Paid by Cash</button>
-      <button id="cardButton" class="pay-btn" @click="pay('CC')">Paid by Credit Card</button>
+      <div class="button-container">
+        <button id="barcodeButton" class="pay-btn" @click="pay('BARCODE')">
+          Pay with Barcode <img src="../../img/barcode.svg" class="btn-icon" />
+        </button>
+        <button id="cashButton" class="pay-btn btn-margin" @click="pay('CASH')">
+          Paid by Cash <img src="../../img/cash.svg" class="btn-icon" />
+        </button>
+        <button id="cardButton" class="pay-btn" @click="pay('CC')">
+          Paid by Credit Card <img src="../../img/credit.svg" class="btn-icon" />
+        </button>
+      </div>
 
       <p id="validationMsg" class="validation-msg">{{ validationMessage }}</p>
 
@@ -31,7 +39,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(field, index) in scannedItems" :key="index" @click="deleteRow(index)" :id="('item' + index)">
+          <tr v-for="(field, index) in scannedItems" :key="index" @click="deleteRow(index)" :id="'item' + index">
             <td>{{ field.product }}</td>
             <td>{{ field.price }}</td>
           </tr>
@@ -258,5 +266,23 @@ export default defineComponent({
 .table-text {
   font-size: 25px;
   font-weight: 500;
+}
+.button-container {
+  display: flex;
+  margin-bottom: 30px;
+  .pay-btn {
+    min-height: 60px;
+    font-weight: 500;
+    font-size: 18px;
+  }
+  .btn-margin {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+  .btn-icon {
+    width: 30px;
+    padding-bottom: 3px;
+    margin-left: 5px;
+  }
 }
 </style>

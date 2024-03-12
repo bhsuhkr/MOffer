@@ -293,7 +293,8 @@ sql
         'LAPTOP21',
         '${req.body.browserName}',
         '${req.body.username}', 
-        'BOOKCAFE'
+        'BOOKCAFE',
+        '${req.body.orderNumber}'
         `,
           (err, recordset) => {
             if (err) console.log(err);
