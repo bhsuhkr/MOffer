@@ -23,22 +23,6 @@
         </div>
         <button id="paidConfirmation" @click="closePopup" v-else>확인</button>
       </div>
-
-      <!-- <div v-if="paymentType === 'BARCODE'">
-        <h4 class="cafe-popup-header">
-          {{ !isPaid ? "지불에 사용할 바코드를 스캔해 주세요." : "결제완료 되었습니다." }}
-        </h4>
-        <button @click="closePopup">{{ isPaid ? "확인" : "취소" }}</button>
-      </div> -->
-
-      <!-- <div v-else>
-        <h4 class="cafe-popup-header">{{ !isPaid ? "결제가 완료되었습니까?" : "시스템에 기록되었습니다." }}</h4>
-        <div class="cafe-popup-button-container" v-if="!isPaid">
-          <button id="makePayment" @click="makePayment">확인</button>
-          <button id="closePopup" @click="closePopup">취소</button>
-        </div>
-        <button id="paidConfirmation" @click="closePopup" v-else>확인</button>
-      </div> -->
     </div>
   </div>
 </template>
