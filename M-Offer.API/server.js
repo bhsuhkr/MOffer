@@ -312,7 +312,7 @@ sql
         );
 
         // Skip one order for a duplicate transaction (11111111 with Credit and 11111111 with Debit)
-        if (req.body.memberId !== "11111111" && req.body.transType !== "CREDIT") {
+        if (req.body.transType !== "CREDIT") {
           const message = JSON.stringify({
             orderNumber: req.body.orderNumber,
             item: req.body.item,
@@ -435,4 +435,3 @@ sql
 server.listen(config.apiPort, () => {
   console.log("Server is running on http://localhost:" + config.apiPort);
 });
-

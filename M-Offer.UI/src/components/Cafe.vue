@@ -40,7 +40,7 @@
         </thead>
         <tbody>
           <tr v-for="(field, index) in scannedItems" :key="index" @click="deleteRow(index)" :id="'item' + index">
-            <td>{{ field.product }}</td>
+            <td>{{ field.item }}</td>
             <td>{{ field.price }}</td>
           </tr>
         </tbody>
@@ -75,14 +75,14 @@ export default defineComponent({
   setup() {
     // State variables
     const transactionStore = useTransactionStore();
-    const titles = ["Product", "Price ($)"];
+    const titles = ["Item", "Price ($)"];
     const scannedItems = ref([]);
     const total = ref(0);
     const orderNumber = ref(0);
     const barcodeField = ref("");
     const validationMessage = ref("");
     const showPopup = ref(false);
-    const barcodeType = ref(BARCODE_TYPES.PRODUCT);
+    const barcodeType = ref(BARCODE_TYPES.ITEM);
     const isPaid = ref(false);
     const paymentType = ref(PAYMENT_TYPES.BARCODE);
 
@@ -144,8 +144,8 @@ export default defineComponent({
     };
   },
   methods: {
-    scanProductBarcode(barcode) {
-      // check if the product barcode is valid
+    scanItemBarcode(barcode) {
+      // check if the item barcode is valid
       if (this.itemList.some((item) => item.itemNumber === barcode)) {
         // Extract item details
         const description = this.itemList.find((item) => item.itemNumber === barcode).itemDesc;
@@ -153,7 +153,7 @@ export default defineComponent({
         const itemNumber = this.itemList.find((item) => item.itemNumber === barcode).itemNumber;
 
         // Add scanned item to the list
-        this.scannedItems.push({ product: description, price, itemNumber });
+        this.scannedItems.push({ item: description, price, itemNumber });
         this.total += price;
         this.validationMessage = "";
       } else {
@@ -166,8 +166,8 @@ export default defineComponent({
       // A single input field takes item barcode, user barcode, and order number barcode.
       const barcode = this.$refs["barcodeField"].value;
 
-      if (barcode && this.barcodeType === BARCODE_TYPES.PRODUCT) {
-        this.scanProductBarcode(barcode);
+      if (barcode && this.barcodeType === BARCODE_TYPES.ITEM) {
+        this.scanItemBarcode(barcode);
       } else if (barcode && this.barcodeType === BARCODE_TYPES.ORDER_NUMBER) {
         // Validate order number
         if (barcode >= 1 && barcode <= 30) {
@@ -230,11 +230,11 @@ export default defineComponent({
         this.scannedItems = [];
         this.showPopup = false;
         this.isPaid = false;
-        // not paid, close popup and switch input field to scan product barcode
+        // not paid, close popup and switch input field to scan item barcode
       } else {
         this.showPopup = false;
       }
-      this.barcodeType = BARCODE_TYPES.PRODUCT;
+      this.barcodeType = BARCODE_TYPES.ITEM;
       this.paymentType = PAYMENT_TYPES.BARCODE;
     },
     async makeCashOrCCPayment() {

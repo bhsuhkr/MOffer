@@ -5,7 +5,7 @@ export const PAYMENT_TYPES = {
 };
   
 export const BARCODE_TYPES = {
-    PRODUCT: "PRODUCT",
+    ITEM: "ITEM",
     ORDER_NUMBER: "ORDER_NUMBER",
     USER: "USER",
     DISABLED: "DISABLED",

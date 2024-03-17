@@ -63,8 +63,8 @@ export default defineComponent({
     // Event listener for WebSocket messages received
     this.websocket.onmessage = (event) => {
       const order = JSON.parse(event.data);
-      console.log("Message received from server:", order);
-      this.scannedItems.push();
+      console.log("Order received from server:", order);
+      this.scannedItems.push(order);
     };
 
     // Event listener for WebSocket connection closed
