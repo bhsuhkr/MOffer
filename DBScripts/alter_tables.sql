@@ -33,3 +33,6 @@ ADD GrandTotalCreditAmount float NULL ;
 
 ALTER TABLE [dbo].[NC_Transactions]
 ADD OrderNumber [varchar](50)  NULL ;
+
+ALTER TABLE [dbo].[NC_Transactions]
+ADD OrderStatusCode [varchar](50)  NULL ;
