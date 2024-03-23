@@ -1,5 +1,5 @@
-USE [MOFFER]
-GO
+--USE [MOFFER]
+--GO
 /****** Object:  StoredProcedure [dbo].[sp_insertTransaction]    Script Date: 8/8/2023 8:07:23 PM ******/
 SET ANSI_NULLS ON
 GO
@@ -36,6 +36,7 @@ BEGIN
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
+    DECLARE @returnValue INT; 
 	DECLARE @currBal float
 	BEGIN TRY
 		-- Start a new transaction
@@ -110,6 +111,7 @@ BEGIN
 
 		-- If everything is fine, commit the transaction
 		COMMIT TRANSACTION;
+		SET @returnValue = SCOPE_IDENTITY();
 	END TRY
 	BEGIN CATCH
 		-- In case of error, roll back the transaction
@@ -122,6 +124,7 @@ BEGIN
 		DECLARE @ErrorState INT = ERROR_STATE();
 
 		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
+		SET @returnValue = -1;
 	END CATCH
-
+	RETURN @returnValue;
 END
