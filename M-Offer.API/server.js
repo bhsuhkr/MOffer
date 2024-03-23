@@ -2,12 +2,16 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const sql = require("mssql/msnodesqlv8");
+const http = require("http");
+const WebSocket = require("ws");
 
 const app = express();
 app.use(bodyParser.json());
 
 // Enable CORS
 app.use(cors());
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
 
 let config = require("./config.js");
 
@@ -293,7 +297,8 @@ sql
         'LAPTOP21',
         '${req.body.browserName}',
         '${req.body.username}', 
-        'BOOKCAFE'
+        'BOOKCAFE',
+        '${req.body.orderNumber}'
         `,
           (err, recordset) => {
             if (err) console.log(err);
@@ -305,6 +310,19 @@ sql
             }
           }
         );
+
+        // Skip one order for a duplicate transaction (11111111 with Credit and 11111111 with Debit)
+        if (req.body.transType !== "CREDIT") {
+          const message = JSON.stringify({
+            orderNumber: req.body.orderNumber,
+            item: [{ name: req.body.item, count: 1}],
+          });
+          wss.clients.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
+              client.send(message);
+            }
+          });
+        }
       } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Can't make a payment" });
@@ -414,7 +432,6 @@ sql
   .catch((err) => console.log("Database Connection Failed", err));
 
 // Start the server
-app.listen(config.apiPort, () => {
+server.listen(config.apiPort, () => {
   console.log("Server is running on http://localhost:" + config.apiPort);
 });
-

@@ -298,23 +298,23 @@ export const useTransactionStore = defineStore('transaction', {
         });
     },
     // Make a payment (Cafe)
-    async payCafe(barcodeInfo, item, paymentMethod) {
+    async payCafe(barcodeInfo, item, paymentMethod, orderNumber) {
       try {
         if (paymentMethod === "SCAN") {
           await this.validateBarcode(barcodeInfo);
           if (this.isValidPhoneNumber) {
-            await this.makePayment(this.memberId, "DEBIT", item, "SCAN");
+            await this.makePayment(this.memberId, "DEBIT", item, "SCAN", orderNumber);
           }
         } else if (paymentMethod === "CC" || paymentMethod === "CASH") {
           // add commit, rollback for two transactions
-          await this.makePayment("11111111", "CREDIT", item, paymentMethod);
-          await this.makePayment("11111111", "DEBIT", item, paymentMethod);
+          await this.makePayment("11111111", "CREDIT", item, paymentMethod, orderNumber);
+          await this.makePayment("11111111", "DEBIT", item, paymentMethod, orderNumber);
         }
       } catch (error) {
         console.error("Failed to make a payment:", paymentMethod, error);
       }
     },
-    async makePayment(memberId, transType, item, paymentMethod) {
+    async makePayment(memberId, transType, item, paymentMethod, orderNumber) {
       await axios.post(process.env.VUE_APP_API_URL + '/api/member/pay-cafe', {
           memberId,
           transType,
@@ -322,7 +322,8 @@ export const useTransactionStore = defineStore('transaction', {
           paymentMethod,
           username: useAuthStore().username,
           ipAddress: useAuthStore().ipAddress,
-          browserName: useAuthStore().browserName
+          browserName: useAuthStore().browserName,
+          orderNumber
         })
         .catch(error => {
           console.error("Failed to make a payment", error);

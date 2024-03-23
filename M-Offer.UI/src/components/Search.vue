@@ -159,6 +159,8 @@ button {
   border-radius: 4px;
   cursor: pointer;
   margin-top: 15px;
+  font-weight: 500;
+  font-size: 18px;
 }
 .validation-msg {
   color: red;
