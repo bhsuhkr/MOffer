@@ -315,7 +315,7 @@ sql
         if (req.body.transType !== "CREDIT") {
           const message = JSON.stringify({
             orderNumber: req.body.orderNumber,
-            item: req.body.item,
+            item: [{ name: req.body.item, count: 1}],
           });
           wss.clients.forEach((client) => {
             if (client.readyState === WebSocket.OPEN) {

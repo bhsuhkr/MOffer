@@ -39,9 +39,12 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(field, index) in scannedItems" :key="index" @click="deleteRow(index)" :id="'item' + index">
+          <tr v-for="(field, index) in scannedItems" :key="index" :id="'item' + index">
             <td>{{ field.item }}</td>
-            <td>{{ field.price }}</td>
+            <td>${{ field.price.toFixed(2) }}</td>
+            <td>
+              <button @click="deleteItem(index)" class="delete-btn">x</button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -85,12 +88,6 @@ export default defineComponent({
     const barcodeType = ref(BARCODE_TYPES.ITEM);
     const isPaid = ref(false);
     const paymentType = ref(PAYMENT_TYPES.BARCODE);
-
-    const deleteRow = (index) => {
-      const deletedPrice = parseFloat(scannedItems.value[index].price);
-      scannedItems.value.splice(index, 1);
-      total.value -= deletedPrice;
-    };
 
     const isValidPhoneNumber = computed({
       get: () => transactionStore.isValidPhoneNumber,
@@ -139,7 +136,6 @@ export default defineComponent({
       itemList,
       getBalance,
       balance,
-      deleteRow,
       payCafe,
     };
   },
@@ -161,6 +157,11 @@ export default defineComponent({
         this.$refs["barcodeField"].value = "";
         this.showPopup = false;
       }
+    },
+    deleteItem(index) {
+      const deletedPrice = parseFloat(this.scannedItems[index].price);
+      this.scannedItems.splice(index, 1);
+      this.total -= deletedPrice;
     },
     async handleEnterKey() {
       // A single input field takes item barcode, user barcode, and order number barcode.
@@ -257,7 +258,6 @@ export default defineComponent({
 .input-row {
   display: flex;
   margin-bottom: 10px;
-  height: 1px;
 }
 .barcode-input {
   width: 100%;
@@ -295,5 +295,8 @@ export default defineComponent({
     padding-bottom: 3px;
     margin-left: 5px;
   }
+}
+.delete-btn {
+  background-color: red;
 }
 </style>

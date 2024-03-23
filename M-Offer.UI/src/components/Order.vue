@@ -12,9 +12,16 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(field, index) in scannedItems" :key="index" @click="deleteRow(index)" :id="'item' + index">
-            <td>{{ field.item }}</td>
-            <td>{{ field.orderNumber }}</td>
+          <tr v-for="(order, index) in scannedItems" :key="index" :id="'order' + index">
+            <td>
+              <P v-for="(item, orderIndex) in order.item" :key="orderIndex" :id="'item' + orderIndex">
+                {{ item.name }}({{ item.count }})
+              </P>
+            </td>
+            <td>{{ order.orderNumber }}</td>
+            <td>
+              <button @click="completeOrder(index)" class="complete-btn">주문 완료</button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -35,23 +42,25 @@ export default defineComponent({
     const titles = ["Item", "Order Number"];
     const scannedItems = ref([]);
 
-    const deleteRow = (index) => {
-      scannedItems.value.splice(index, 1);
-    };
-
     const itemList = computed({
       get: () => transactionStore.items,
       set: (newValue) => (transactionStore.items = newValue),
     });
 
+    const getAllItemsAndPrices = async () => {
+      await transactionStore.getAllItemsAndPrices();
+    };
+
     return {
-      deleteRow,
       titles,
       scannedItems,
       itemList,
+      getAllItemsAndPrices,
     };
   },
   mounted() {
+    this.getAllItemsAndPrices();
+
     // Establish WebSocket connection when the component is mounted
     this.websocket = new WebSocket("ws://localhost:3001"); // Replace with your server URL
 
@@ -64,8 +73,36 @@ export default defineComponent({
     this.websocket.onmessage = (event) => {
       const order = JSON.parse(event.data);
       console.log("Order received from server:", order);
-      this.scannedItems.push(order);
+
+      const description = this.itemList.find((item) => item.itemNumber === order.item[0].name).itemDesc;
+      const existingOrderIndex = this.scannedItems.findIndex((item) => item.orderNumber === order.orderNumber);
+
+      if (existingOrderIndex !== -1) {
+        const existingItemIndex = this.scannedItems[existingOrderIndex].item.findIndex(
+          (item) => item.name === order.item[0].name
+        );
+
+        if (existingItemIndex !== -1) {
+          this.scannedItems[existingOrderIndex].item[existingItemIndex].count++;
+        } else {
+          this.scannedItems[existingOrderIndex].item.push({ name: description, count: 1 });
+        }
+      } else {
+        this.scannedItems.push({
+          orderNumber: order.orderNumber,
+          item: [{ name: description, count: 1 }],
+        });
+      }
+
+      localStorage.setItem("scannedOrders", JSON.stringify(this.scannedItems));
     };
+
+    window.addEventListener("load", () => {
+      const storedOrders = localStorage.getItem("scannedOrders");
+      if (storedOrders) {
+        this.scannedItems = JSON.parse(storedOrders);
+      }
+    });
 
     // Event listener for WebSocket connection closed
     this.websocket.onclose = () => {
@@ -77,6 +114,12 @@ export default defineComponent({
       console.error("WebSocket error:", error);
     };
   },
+  methods: {
+    completeOrder(index) {
+      this.scannedItems.splice(index, 1);
+      localStorage.setItem("scannedOrders", JSON.stringify(this.scannedItems));
+    },
+  },
 });
 </script>
 
@@ -84,5 +127,10 @@ export default defineComponent({
 .order-container {
   margin: 20px 40px;
   width: 100%;
+}
+
+.table-text {
+  font-size: 25px;
+  font-weight: 500;
 }
 </style>
