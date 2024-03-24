@@ -78,7 +78,7 @@ export default defineComponent({
   setup() {
     // State variables
     const transactionStore = useTransactionStore();
-    const titles = ["Item", "Price ($)"];
+    const titles = ["Item", "Price ($)", "Option"];
     const scannedItems = ref([]);
     const total = ref(0);
     const orderNumber = ref(0);

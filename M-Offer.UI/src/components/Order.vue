@@ -39,7 +39,7 @@ export default defineComponent({
   setup() {
     // State variables
     const transactionStore = useTransactionStore();
-    const titles = ["Item", "Order Number"];
+    const titles = ["Item", "Order Number", "Option"];
     const scannedItems = ref([]);
 
     const itemList = computed({
@@ -47,8 +47,8 @@ export default defineComponent({
       set: (newValue) => (transactionStore.items = newValue),
     });
 
-    const completeOrderStatus = async () => {
-      await transactionStore.completeOrderStatus();
+    const completeOrderStatus = async (transId) => {
+      await transactionStore.completeOrderStatus(transId);
     };
 
     const orderInProgress = computed({
@@ -62,7 +62,7 @@ export default defineComponent({
       orderInProgress.value.forEach((order) => {
         const orderNumber = order["orderNumber"];
         const itemName = order["name"];
-        const transId = order["TransId"];
+        const transId = order["transId"];
 
         const existingOrder = analyzedOrders.find((o) => o.orderNumber === orderNumber);
         if (existingOrder) {
