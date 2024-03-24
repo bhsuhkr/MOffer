@@ -143,7 +143,8 @@ export const useTransactionStore = defineStore('transaction', {
     balance: 0,
     isValidPhoneNumber: true,
     didPay: false,
-    isGetTodayTransactionsCalled: false // call getTodayTransactions() only once
+    isGetTodayTransactionsCalled: false, // call getTodayTransactions() only once
+    orderInProgress: []
   }),
   actions: {
     // Add the latest transaction in an array after pay, deposit, or refund
@@ -303,18 +304,36 @@ export const useTransactionStore = defineStore('transaction', {
         if (paymentMethod === "SCAN") {
           await this.validateBarcode(barcodeInfo);
           if (this.isValidPhoneNumber) {
-            await this.makePayment(this.memberId, "DEBIT", item, "SCAN", orderNumber);
+            await this.makePayment(this.memberId, "DEBIT", item, "SCAN", orderNumber, "IP");
           }
         } else if (paymentMethod === "CC" || paymentMethod === "CASH") {
           // add commit, rollback for two transactions
-          await this.makePayment("11111111", "CREDIT", item, paymentMethod, orderNumber);
-          await this.makePayment("11111111", "DEBIT", item, paymentMethod, orderNumber);
+          await this.makePayment("11111111", "CREDIT", item, paymentMethod, orderNumber, "");
+          await this.makePayment("11111111", "DEBIT", item, paymentMethod, orderNumber, "IP");
         }
       } catch (error) {
         console.error("Failed to make a payment:", paymentMethod, error);
       }
     },
-    async makePayment(memberId, transType, item, paymentMethod, orderNumber) {
+    async getOrdersInProgress() {
+      await axios.get(process.env.VUE_APP_API_URL + '/api/member/orders-in-progress')
+        .then((response) => {
+          this.orderInProgress = response.data.orders;
+        })
+        .catch((error) => {
+          console.error("Failed to load orders in progress", error);
+        });
+    },
+    async completeOrderStatus(transId) {
+      await axios.post(process.env.VUE_APP_API_URL + '/api/member/complete-cafe-order', { transId })
+        .then(() => {
+          console.log("Order Completed ", transId);
+        })
+        .catch(error => {
+          console.error("Failed to update order status code", error);
+        });
+    },
+    async makePayment(memberId, transType, item, paymentMethod, orderNumber, orderStatusCode) {
       await axios.post(process.env.VUE_APP_API_URL + '/api/member/pay-cafe', {
           memberId,
           transType,
@@ -323,7 +342,8 @@ export const useTransactionStore = defineStore('transaction', {
           username: useAuthStore().username,
           ipAddress: useAuthStore().ipAddress,
           browserName: useAuthStore().browserName,
-          orderNumber
+          orderNumber,
+          orderStatusCode
         })
         .catch(error => {
           console.error("Failed to make a payment", error);

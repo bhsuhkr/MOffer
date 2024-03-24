@@ -287,45 +287,104 @@ sql
     app.post("/api/member/pay-cafe", async (req, res) => {
       try {
         pool.query(
-          `exec sp_insertTransaction 
-        '${req.body.memberId}',
-        '${req.body.transType}',
-        '${req.body.item}',
-        0,
-        '${req.body.paymentMethod}',
-        '${req.body.ipAddress}',
-        'LAPTOP21',
-        '${req.body.browserName}',
-        '${req.body.username}', 
-        'BOOKCAFE',
-        '${req.body.orderNumber}'
+          `declare @returnValue INT;
+          exec @returnValue = sp_insertTransaction 
+          '${req.body.memberId}',
+          '${req.body.transType}',
+          '${req.body.item}',
+          0,
+          '${req.body.paymentMethod}',
+          '${req.body.ipAddress}',
+          'LAPTOP21',
+          '${req.body.browserName}',
+          '${req.body.username}', 
+          'BOOKCAFE',
+          '${req.body.orderNumber}',
+          '${req.body.orderStatusCode}';
+          select @returnValue AS ReturnValue;
         `,
           (err, recordset) => {
             if (err) console.log(err);
             else {
+              const transId = recordset && recordset.recordset[0].ReturnValue;
+
+              if (transId) {
+                res.status(200).json({
+                  message: "Paid successfully",
+                  transId,
+                });
+
+                // Skip one order for a duplicate transaction (11111111 with Credit and 11111111 with Debit)
+                if (req.body.transType !== "CREDIT") {
+                  const message = JSON.stringify({
+                    orderNumber: req.body.orderNumber,
+                    item: [{ name: req.body.item, count: 1, transId }],
+                  });
+                  wss.clients.forEach((client) => {
+                    if (client.readyState === WebSocket.OPEN) {
+                      client.send(message);
+                    }
+                  });
+                }
+              } else {
+                res.status(500).json({
+                  error: "transId not available.",
+                });
+              }
+            }
+          }
+        );
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Can't make a payment" });
+      }
+    });
+
+    app.post("/api/member/complete-cafe-order", async (req, res) => {
+      try {
+        pool.query(
+          `update nc_transactions set orderStatusCode = 'DONE' where transID = '${req.body.transId}'`,
+          (err) => {
+            if (err) console.log(err, "transId:", req.body.transId);
+            else {
               res.status(200).json({
-                message: "Paid successfully",
-                data: recordset,
+                message: "OrderStatusCode Updated to DONE",
               });
             }
           }
         );
-
-        // Skip one order for a duplicate transaction (11111111 with Credit and 11111111 with Debit)
-        if (req.body.transType !== "CREDIT") {
-          const message = JSON.stringify({
-            orderNumber: req.body.orderNumber,
-            item: [{ name: req.body.item, count: 1}],
-          });
-          wss.clients.forEach((client) => {
-            if (client.readyState === WebSocket.OPEN) {
-              client.send(message);
-            }
-          });
-        }
       } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "Can't make a payment" });
+        res.status(500).json({ error: "Can't update OrderStatusCode" });
+      }
+    });
+
+    app.get("/api/member/orders-in-progress", async (req, res) => {
+      try {
+        pool.query(
+          `select nc_transactions.transId, nc_transactions.transItem as name, nc_transactions.orderNumber
+            from nc_transactions 
+            where CONVERT(DATE, TransTime) = CONVERT(DATE, GETDATE()) And nc_transactions.OrderStatusCode='IP'
+            AND nc_transactions.TransPoint='BOOKCAFE'`,
+          (err, recordset) => {
+            if (err) console.log(err);
+            else {
+              if (recordset && recordset.recordsets && recordset.recordsets[0]) {
+                res.status(200).json({
+                  message: "Transactions fetched successfully",
+                  orders: recordset.recordsets[0]
+                });
+              } else {
+                res.status(200).json({
+                  error: "No records found",
+                });
+              }
+            }
+          }
+        );
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Can't fetch transactions" });
       }
     });
 

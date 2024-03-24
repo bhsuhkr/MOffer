@@ -20,7 +20,7 @@
             </td>
             <td>{{ order.orderNumber }}</td>
             <td>
-              <button @click="completeOrder(index)" class="complete-btn">주문 완료</button>
+              <button @click="removeOrder(index)" class="complete-btn">주문 완료</button>
             </td>
           </tr>
         </tbody>
@@ -31,7 +31,7 @@
 
 <script>
 import "bootstrap/dist/css/bootstrap.min.css";
-import { defineComponent, ref, computed } from "vue";
+import { defineComponent, ref, computed, onMounted } from "vue";
 import { useTransactionStore } from "@/store";
 
 export default defineComponent({
@@ -47,20 +47,50 @@ export default defineComponent({
       set: (newValue) => (transactionStore.items = newValue),
     });
 
-    const getAllItemsAndPrices = async () => {
-      await transactionStore.getAllItemsAndPrices();
+    const completeOrderStatus = async () => {
+      await transactionStore.completeOrderStatus();
     };
+
+    const orderInProgress = computed({
+      get: () => transactionStore.orderInProgress,
+      set: (newValue) => (transactionStore.orderInProgress = newValue),
+    });
+
+    const formatOrders = () => {
+      const analyzedOrders = [];
+
+      orderInProgress.value.forEach((order) => {
+        const orderNumber = order["orderNumber"];
+        const itemName = order["name"];
+        const transId = order["TransId"];
+
+        const existingOrder = analyzedOrders.find((o) => o.orderNumber === orderNumber);
+        if (existingOrder) {
+          existingOrder.item.push({ name: itemName, count: 1, transId: transId });
+        } else {
+          analyzedOrders.push({ orderNumber: orderNumber, item: [{ name: itemName, count: 1, transId: transId }] });
+        }
+      });
+
+      return analyzedOrders;
+    };
+
+    onMounted(async () => {
+      await transactionStore.getAllItemsAndPrices();
+      await transactionStore.getOrdersInProgress();
+      scannedItems.value = formatOrders();
+      localStorage.setItem("scannedOrders", JSON.stringify(scannedItems.value));
+    });
 
     return {
       titles,
       scannedItems,
       itemList,
-      getAllItemsAndPrices,
+      orderInProgress,
+      completeOrderStatus,
     };
   },
   mounted() {
-    this.getAllItemsAndPrices();
-
     // Establish WebSocket connection when the component is mounted
     this.websocket = new WebSocket("ws://localhost:3001"); // Replace with your server URL
 
@@ -85,21 +115,24 @@ export default defineComponent({
         if (existingItemIndex !== -1) {
           this.scannedItems[existingOrderIndex].item[existingItemIndex].count++;
         } else {
-          this.scannedItems[existingOrderIndex].item.push({ name: description, count: 1 });
+          this.scannedItems[existingOrderIndex].item.push({
+            name: description,
+            count: 1,
+            transId: order.item[0].transId,
+          });
         }
       } else {
         this.scannedItems.push({
           orderNumber: order.orderNumber,
-          item: [{ name: description, count: 1 }],
+          item: [{ name: description, count: 1, transId: order.item[0].transId }],
         });
       }
-
       localStorage.setItem("scannedOrders", JSON.stringify(this.scannedItems));
     };
 
     window.addEventListener("load", () => {
       const storedOrders = localStorage.getItem("scannedOrders");
-      if (storedOrders) {
+      if (storedOrders && storedOrders.length) {
         this.scannedItems = JSON.parse(storedOrders);
       }
     });
@@ -115,7 +148,12 @@ export default defineComponent({
     };
   },
   methods: {
-    completeOrder(index) {
+    async removeOrder(index) {
+      const transIds = this.scannedItems[index].item.map((item) => item.transId);
+      for (let i = 0; i < transIds.length; i++) {
+        console.log("transid", transIds[i]);
+        await this.completeOrderStatus(transIds[i]);
+      }
       this.scannedItems.splice(index, 1);
       localStorage.setItem("scannedOrders", JSON.stringify(this.scannedItems));
     },
