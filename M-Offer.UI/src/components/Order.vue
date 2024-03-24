@@ -57,22 +57,30 @@ export default defineComponent({
     });
 
     const formatOrders = () => {
-      const analyzedOrders = [];
+      const formatOrders = [];
 
       orderInProgress.value.forEach((order) => {
         const orderNumber = order["orderNumber"];
-        const itemName = itemList.value.find((item) => item.itemNumber === order["name"]).itemDesc;
         const transId = order["transId"];
+        const itemName = itemList.value.find((item) => item.itemNumber === order["name"]).itemDesc;
+        const existingOrderIndex = formatOrders.findIndex((item) => item.orderNumber === orderNumber);
 
-        const existingOrder = analyzedOrders.find((o) => o.orderNumber === orderNumber);
-        if (existingOrder) {
-          existingOrder.item.push({ name: itemName, count: 1, transId: transId });
+        if (existingOrderIndex !== -1) {
+          const existingItemIndex = formatOrders[existingOrderIndex].item.findIndex(
+            (item) => item.name.toUpperCase() === order.name.toUpperCase()
+          );
+          if (existingItemIndex !== -1) {
+            formatOrders[existingOrderIndex].item[existingItemIndex].count++;
+          } else {
+            formatOrders[existingOrderIndex].item.push({ name: itemName, count: 1 });
+          }
+          formatOrders[existingOrderIndex].transId.push(order.transId);
         } else {
-          analyzedOrders.push({ orderNumber: orderNumber, item: [{ name: itemName, count: 1, transId: transId }] });
+          formatOrders.push({ orderNumber: orderNumber, item: [{ name: itemName, count: 1 }], transId: [transId] });
         }
       });
 
-      return analyzedOrders;
+      return formatOrders;
     };
 
     onMounted(async () => {
@@ -104,27 +112,24 @@ export default defineComponent({
       const order = JSON.parse(event.data);
       console.log("Order received from server:", order);
 
-      const description = this.itemList.find((item) => item.itemNumber === order.item[0].name).itemDesc;
+      const itemName = this.itemList.find((item) => item.itemNumber === order.item[0].name).itemDesc;
       const existingOrderIndex = this.scannedItems.findIndex((item) => item.orderNumber === order.orderNumber);
 
       if (existingOrderIndex !== -1) {
         const existingItemIndex = this.scannedItems[existingOrderIndex].item.findIndex(
-          (item) => item.name === order.item[0].name
+          (item) => item.name.toUpperCase() === order.item[0].name.toUpperCase()
         );
-
         if (existingItemIndex !== -1) {
           this.scannedItems[existingOrderIndex].item[existingItemIndex].count++;
         } else {
-          this.scannedItems[existingOrderIndex].item.push({
-            name: description,
-            count: 1,
-            transId: order.item[0].transId,
-          });
+          this.scannedItems[existingOrderIndex].item.push({ name: itemName, count: 1 });
         }
+        this.scannedItems[existingOrderIndex].transId.push(order.item[0].transId);
       } else {
         this.scannedItems.push({
           orderNumber: order.orderNumber,
-          item: [{ name: description, count: 1, transId: order.item[0].transId }],
+          item: [{ name: itemName, count: 1 }],
+          transId: [order.item[0].transId],
         });
       }
       localStorage.setItem("scannedOrders", JSON.stringify(this.scannedItems));
@@ -149,7 +154,7 @@ export default defineComponent({
   },
   methods: {
     async removeOrder(index) {
-      const transIds = this.scannedItems[index].item.map((item) => item.transId);
+      const transIds = this.scannedItems[index].transId;
       for (let i = 0; i < transIds.length; i++) {
         await this.completeOrderStatus(transIds[i]);
       }
