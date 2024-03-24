@@ -11,6 +11,7 @@
           type="tel"
           id="phoneNumber"
           ref="phoneNumberField"
+          autocomplete="off"
           v-model="phoneNumber"
           @keyup.enter="handleEnterKey"
           required
@@ -18,7 +19,7 @@
       </div>
       <div>
         <label for="amount">금액 ($):</label>
-        <input type="number" id="amount" ref="amountField" v-model.number.trim="amount" required />
+        <input type="number" id="amount" ref="amountField" autocomplete="off" v-model.number.trim="amount" required />
       </div>
       <div>
         <label for="transType">지불 방법:</label>

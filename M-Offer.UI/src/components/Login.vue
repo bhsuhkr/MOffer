@@ -4,11 +4,11 @@
     <div class="form">
       <div class="form-group">
         <label for="username">Username</label>
-        <input type="text" id="username" v-model="username" />
+        <input type="text" id="username" autocomplete="off" v-model="username" />
       </div>
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" id="password" v-model="password" />
+        <input type="password" id="password" autocomplete="off" v-model="password" />
       </div>
       <p class="validation" v-if="showValidationMessage">아이디와 비밀번호가 일치하지 않습니다.</p>
       <button id="loginButton" @click="login(this.username, this.password)">Login</button>

@@ -13,6 +13,7 @@
         type="text"
         @keydown.enter="handleEnterKey"
         v-on:blur="handleBlur"
+        autocomplete="off"
       />
     </div>
 

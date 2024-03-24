@@ -14,13 +14,14 @@
           type="tel"
           id="phoneNumber"
           ref="phoneNumberField"
+          autocomplete="off"
           v-model="phoneNumber"
           required
         />
       </div>
       <div>
         <label for="email">이메일:</label>
-        <input type="email" id="email" ref="emailField" v-model="email" required />
+        <input type="email" id="email" ref="emailField" autocomplete="off" v-model="email" required />
       </div>
 
       <button type="submit">Search</button>
