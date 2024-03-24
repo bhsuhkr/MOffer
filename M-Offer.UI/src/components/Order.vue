@@ -61,7 +61,7 @@ export default defineComponent({
 
       orderInProgress.value.forEach((order) => {
         const orderNumber = order["orderNumber"];
-        const itemName = order["name"];
+        const itemName = itemList.value.find((item) => item.itemNumber === order["name"]).itemDesc;
         const transId = order["transId"];
 
         const existingOrder = analyzedOrders.find((o) => o.orderNumber === orderNumber);
@@ -151,7 +151,6 @@ export default defineComponent({
     async removeOrder(index) {
       const transIds = this.scannedItems[index].item.map((item) => item.transId);
       for (let i = 0; i < transIds.length; i++) {
-        console.log("transid", transIds[i]);
         await this.completeOrderStatus(transIds[i]);
       }
       this.scannedItems.splice(index, 1);
