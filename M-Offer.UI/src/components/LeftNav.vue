@@ -5,9 +5,12 @@
         <li class="leftnav-item">
           <router-link class="nav-link" to="/pay">Pay</router-link>
         </li>
-        <!-- <li class="leftnav-item">
+        <li class="leftnav-item">
           <router-link class="nav-link" to="/cafe">Cafe</router-link>
-        </li> -->
+        </li>
+        <li class="leftnav-item">
+          <router-link class="nav-link" to="/order">Order</router-link>
+        </li>
         <li class="leftnav-item">
           <router-link class="nav-link" to="/inquiry">Inquiry</router-link>
         </li>

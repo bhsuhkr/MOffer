@@ -1,31 +1,29 @@
 <template>
   <div class="order-container">
-    <div class="order-header">
-      <h3>Order List</h3>
-      <table class="table table-bordered table-text">
-        <thead>
-          <tr>
-            <th v-for="field in titles" :key="field">
-              {{ field }}
-              <i class="bi bi-sort-alpha-down" aria-label="Sort Icon"></i>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(order, index) in scannedItems" :key="index" :id="'order' + index">
-            <td>
-              <P v-for="(item, orderIndex) in order.item" :key="orderIndex" :id="'item' + orderIndex">
-                {{ item.name }}({{ item.count }})
-              </P>
-            </td>
-            <td>{{ order.orderNumber }}</td>
-            <td>
-              <button @click="removeOrder(index)" class="complete-btn">주문 완료</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <h3 class="order-header">Order List</h3>
+    <table class="table table-bordered table-text">
+      <thead>
+        <tr>
+          <th v-for="field in titles" :key="field">
+            {{ field }}
+            <i class="bi bi-sort-alpha-down" aria-label="Sort Icon"></i>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(order, index) in scannedItems" :key="index" :id="'order' + index">
+          <td>
+            <P v-for="(item, orderIndex) in order.item" :key="orderIndex" :id="'item' + orderIndex">
+              {{ item.name }}({{ item.count }})
+            </P>
+          </td>
+          <td>{{ order.orderNumber }}</td>
+          <td>
+            <button @click="removeOrder(index)" class="complete-btn">주문 완료</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -175,6 +173,10 @@ export default defineComponent({
 .order-container {
   margin: 20px 40px;
   width: 100%;
+}
+
+.order-header {
+  margin-bottom: 60px;
 }
 
 .table-text {
