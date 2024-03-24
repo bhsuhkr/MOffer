@@ -313,12 +313,14 @@ sql
                   message: "Paid successfully",
                   transId,
                 });
+                const transTime = new Date().toTimeString().slice(0, 8);
 
                 // Skip one order for a duplicate transaction (11111111 with Credit and 11111111 with Debit)
                 if (req.body.transType !== "CREDIT") {
                   const message = JSON.stringify({
                     orderNumber: req.body.orderNumber,
                     item: [{ name: req.body.item, count: 1, transId }],
+                    transTime
                   });
                   wss.clients.forEach((client) => {
                     if (client.readyState === WebSocket.OPEN) {
@@ -362,7 +364,7 @@ sql
     app.get("/api/member/orders-in-progress", async (req, res) => {
       try {
         pool.query(
-          `select nc_transactions.transId, nc_transactions.transItem as name, nc_transactions.orderNumber
+          `select nc_transactions.transId, nc_transactions.transItem as name, nc_transactions.orderNumber, nc_transactions.transTime
             from nc_transactions 
             where CONVERT(DATE, TransTime) = CONVERT(DATE, GETDATE()) And nc_transactions.OrderStatusCode='IP'
             AND nc_transactions.TransPoint='BOOKCAFE'`,

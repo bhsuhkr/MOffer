@@ -67,7 +67,7 @@ export default defineComponent({
 
         if (existingOrderIndex !== -1) {
           const existingItemIndex = formatOrders[existingOrderIndex].item.findIndex(
-            (item) => item.name.toUpperCase() === order.name.toUpperCase()
+            (item) => item.name.toUpperCase() === itemName.toUpperCase()
           );
           if (existingItemIndex !== -1) {
             formatOrders[existingOrderIndex].item[existingItemIndex].count++;
@@ -76,7 +76,12 @@ export default defineComponent({
           }
           formatOrders[existingOrderIndex].transId.push(order.transId);
         } else {
-          formatOrders.push({ orderNumber: orderNumber, item: [{ name: itemName, count: 1 }], transId: [transId] });
+          formatOrders.push({
+            orderNumber: orderNumber,
+            item: [{ name: itemName, count: 1 }],
+            transId: [transId],
+            transTime: new Date(order.transTime).toLocaleTimeString("en-US", { hour12: false }),
+          });
         }
       });
 
@@ -117,7 +122,7 @@ export default defineComponent({
 
       if (existingOrderIndex !== -1) {
         const existingItemIndex = this.scannedItems[existingOrderIndex].item.findIndex(
-          (item) => item.name.toUpperCase() === order.item[0].name.toUpperCase()
+          (item) => item.name.toUpperCase() === itemName.toUpperCase()
         );
         if (existingItemIndex !== -1) {
           this.scannedItems[existingOrderIndex].item[existingItemIndex].count++;
@@ -130,6 +135,7 @@ export default defineComponent({
           orderNumber: order.orderNumber,
           item: [{ name: itemName, count: 1 }],
           transId: [order.item[0].transId],
+          transTime: order.transTime,
         });
       }
       localStorage.setItem("scannedOrders", JSON.stringify(this.scannedItems));
