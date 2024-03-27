@@ -172,7 +172,8 @@ export default defineComponent({
         this.scanItemBarcode(barcode);
       } else if (barcode && this.barcodeType === BARCODE_TYPES.ORDER_NUMBER) {
         // Validate order number
-        if (barcode >= 1 && barcode <= 30) {
+        //if (barcode >= 1 && barcode <= 30) {
+        if (parseInt(barcode) >= 1 && parseInt(barcode) <= 30) {
           this.orderNumber = barcode;
           switch (this.paymentType) {
             case PAYMENT_TYPES.BARCODE:
